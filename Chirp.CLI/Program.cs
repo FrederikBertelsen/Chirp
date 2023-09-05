@@ -1,5 +1,6 @@
-// See https://aka.ms/new-console-template for more information
+﻿// See https://aka.ms/new-console-template for more information
 using System.Data.Common;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 if(args.Length == 0)
@@ -24,7 +25,7 @@ if (args[0].ToLower() == "cheep")
         Console.WriteLine("Text cannot be emtpy!");
         return;
     }
-    string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+    string userName = Environment.UserName;
     string text = args[1];
     DateTimeOffset timestamp = DateTime.Now;
     Cheep chirp = new Cheep(timestamp, userName, text);

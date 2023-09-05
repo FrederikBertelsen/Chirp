@@ -17,10 +17,10 @@ class Cheep {
         this.text = text;
     }
 
-/// <summary>
-/// Creates a Cheep object from a csv formatted string
-/// </summary>
-/// <param name="dbOutput">The csv formatted string. Fomatted as username,text,timestamp</param>
+    /// <summary>
+    /// Creates a Cheep object from a csv formatted string
+    /// </summary>
+    /// <param name="dbOutput">The csv formatted string. Fomatted as username,text,timestamp</param>
     public Cheep(string dbOutput) 
     {
         var data = Regex.Split(dbOutput,@",""|"",");
@@ -34,7 +34,7 @@ class Cheep {
     /// </summary>
     public void WriteToCSV()
     {
-        ChirpDataBase.Write("data/chirp_cli_db.csv", userName + ",\"" + text + "\"," + timestamp.ToUnixTimeMilliseconds());
+        ChirpDataBase.Write("data/chirp_cli_db.csv", userName + ",\"" + text + "\"," + timestamp.ToUnixTimeSeconds());
     }
     /// <summary>
     /// Returns a formatted string for output
