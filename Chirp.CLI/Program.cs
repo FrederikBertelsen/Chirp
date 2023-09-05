@@ -1,10 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 using System.Data.Common;
 using System.Text.RegularExpressions;
 
 if(args.Length == 0)
     return;
-if(args[0] == "read")
+if(args[0].ToLower() == "read")
 {
     var sr = new StreamReader("data/chirp_cli_db.csv");
     
@@ -17,7 +17,7 @@ if(args[0] == "read")
 }
 
 
-if (args[0] == "cheep") 
+if (args[0].ToLower() == "cheep") 
 {
     if (args[1] == null)
     {
