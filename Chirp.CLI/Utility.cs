@@ -5,11 +5,11 @@ class Utility {
     /// </summary>
     /// <param name="unixTimeStamp">timestamp in miliseconds from jan 1st 1970 00:00:00</param>
     /// <returns>Datetime object</returns>
-    public static DateTime UnixTimeStampToDateTime( double unixTimeStamp )
+    public static DateTime UnixTimeStampToDateTime(double unixTimeStamp )
     {
         // Unix timestamp is seconds past epoch
         DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds( unixTimeStamp ).ToLocalTime();
+        dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
         return dateTime;
     }
 }
