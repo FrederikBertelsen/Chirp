@@ -2,6 +2,7 @@
 using System.Data.Common;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Chirp.CLI;
 
 if(args.Length == 0)
     return;
@@ -13,7 +14,7 @@ if(args[0].ToLower() == "read")
     while(sr.Peek() >= 0)
     {
         Cheep chirp = new Cheep(sr.ReadLine());
-        Console.WriteLine(chirp.ToString());
+        UserInterface.Writechirp(chirp);
     }
 }
 
