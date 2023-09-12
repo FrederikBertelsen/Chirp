@@ -1,6 +1,6 @@
 
 using System.Text.RegularExpressions;
-class Cheep {
+public class Cheep {
 
     DateTimeOffset timestamp;
     string userName;
