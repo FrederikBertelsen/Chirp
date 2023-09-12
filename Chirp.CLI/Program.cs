@@ -11,11 +11,13 @@ if(args[0].ToLower() == "read")
     var sr = new StreamReader("data/chirp_cli_db.csv");
     
     sr.ReadLine();
+    List<Cheep> cheeps = new List<Cheep>();
     while(sr.Peek() >= 0)
     {
         Cheep chirp = new Cheep(sr.ReadLine());
-        UserInterface.Writechirp(chirp);
+        cheeps.Add(chirp);
     }
+    UserInterface.Writechirp(cheeps);
 }
 
 
