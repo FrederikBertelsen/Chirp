@@ -1,33 +1,33 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System.Data.Common;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-
-if(args.Length == 0)
-    return;
-if(args[0].ToLower() == "read")
+﻿class Program
 {
-    var sr = new StreamReader("data/chirp_cli_db.csv");
-    
-    sr.ReadLine();
-    while(sr.Peek() >= 0)
+    private static readonly string PathToCsvFile = "data/chirp_cli_db.csv";
+    public static void Main(string[] args)
     {
-        Cheep chirp = new Cheep(sr.ReadLine());
-        Console.WriteLine(chirp.ToString());
-    }
-}
+        if (args.Length == 0)
+            return;
+        if (args[0].ToLower() == "read")
+        {
+            var cheeps = ChirpDataBase.Read(PathToCsvFile);
+            foreach (var cheep in cheeps)
+            {
+                Console.WriteLine(cheep.ToString());
+            }
+        }
 
 
-if (args[0].ToLower() == "cheep") 
-{
-    if (args[1] == null)
-    {
-        Console.WriteLine("Text cannot be emtpy!");
-        return;
+        if (args[0].ToLower() == "cheep")
+        {
+            if (args[1] == null)
+            {
+                Console.WriteLine("Text cannot be emtpy!");
+                return;
+            }
+
+            string userName = Environment.UserName;
+            string text = args[1];
+            DateTimeOffset timestamp = DateTime.Now;
+            Cheep cheep = new Cheep(timestamp.ToUnixTimeSeconds(), userName, text);
+            ChirpDataBase.Write(PathToCsvFile, cheep);
+        }
     }
-    string userName = Environment.UserName;
-    string text = args[1];
-    DateTimeOffset timestamp = DateTime.Now;
-    Cheep chirp = new Cheep(timestamp, userName, text);
-    chirp.WriteToCSV();
 }
