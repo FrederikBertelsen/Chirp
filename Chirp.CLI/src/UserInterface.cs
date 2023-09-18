@@ -12,5 +12,9 @@ public class UserInterface
            Console.WriteLine(cheep.ToString());
         }
     }
+
+    public static void PrintMessage(string message) {
+        Console.WriteLine(message);
+    }
     
 }

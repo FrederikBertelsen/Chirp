@@ -1,4 +1,4 @@
-using Chirp.CLI;
+﻿using Chirp.CLI;
 using DocoptNet;
 
 class Program
@@ -29,6 +29,9 @@ Options:
         else if (arguments["cheep"].IsTrue)
         {
             WriteCheep(arguments["<message>"].ToString());
+        }
+        else {
+            UserInterface.PrintMessage("Unknown argument. Please use --help or -h for help");
         }
     }
 
