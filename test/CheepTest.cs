@@ -6,7 +6,7 @@ public class CheepTest
     /// tests that the cheep constructor saves the arguments correctly
     /// </summary>
     [Fact]
-    public void CheepConstruction()
+    public void CheepConstructor_SameValues()
     {
         // arrange
         double timestamp = 1695034276;
@@ -27,10 +27,15 @@ public class CheepTest
     /// it should throw an ArgumentException error 
     /// </summary>
     [Fact]
-    public void CheepConstruction_EmptyAuthor_Exception()
+    public void CheepConstruction_EmptyAuthor_ArgumentException()
     {
-        // arrange & act & assert
-        Assert.Throws<ArgumentException>(() => new Cheep(1695034276, "", "Hello"));
+        // arrange
+        double timeStamp = 1695034276;
+        string author = "";
+        string message = "hello";
+        
+        // act & assert
+        Assert.Throws<ArgumentException>(() => new Cheep(timeStamp, author, message));
     }
 
     /// <summary>
@@ -38,10 +43,15 @@ public class CheepTest
     /// it should throw an ArgumentException error 
     /// </summary>
     [Fact]
-    public void CheepConstruction_EmptyMessage_Exception()
+    public void CheepConstruction_EmptyMessage_ArgumentException()
     {
-        //arrange & act & assert
-        Assert.Throws<ArgumentException>(() => new Cheep(1695034267, "Hansen", ""));
+        // arrange
+        double timeStamp = 1695034276;
+        string author = "Hansen";
+        string message = ""; 
+        
+        // act & assert
+        Assert.Throws<ArgumentException>(() => new Cheep(timeStamp, author, message));
     }
 
     /// <summary>
@@ -49,10 +59,15 @@ public class CheepTest
     /// it should throw an ArgumentException error 
     /// </summary>
     [Fact]
-    public void CheepConstruction_NegativeTimestamp_Exception()
+    public void CheepConstruction_NegativeTimestamp_ArgumentException()
     {
-        // arrange & act & assert
-        Assert.Throws<ArgumentException>(() => new Cheep(-1695034267, "Hansen", "Nice"));
+        // arrange
+        double timeStamp = -1695034267;
+        string author = "Hansen";
+        string message = "Nice";
+        
+        // act & assert
+        Assert.Throws<ArgumentException>(() => new Cheep(timeStamp, author, message));
     }
 
 
@@ -64,7 +79,7 @@ public class CheepTest
     [InlineData(123456789, null, "hopla")]
     [InlineData(123456789, "Peter", null)]
     [InlineData(123456789, null, null)]
-    public void CheepConstruction_NullArgument_Exception(double timeStamp, string author, string message)
+    public void CheepConstruction_NullArgument_ArgumentNullException(double timeStamp, string author, string message)
     {
         // arrange & act & assert
         Assert.Throws<ArgumentNullException>(() => new Cheep(timeStamp, author, message));
