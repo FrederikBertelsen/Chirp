@@ -5,11 +5,15 @@ class Program
 {
     private static readonly string PathToCsvFile = "../../data/chirp_cli_db.csv";
 
+    //the amount of cheeps shown when no specific amount is given when reading
+    const int standardReadAmount = 10;
+
     //chirp --version in usage useless? still works when removed
     const string usage = @"Chirp.
 
 Usage:
     chirp read
+    chirp read <amount>
     chirp cheep <message>
     chirp (-h | --help)
     chirp --version
@@ -23,8 +27,15 @@ Options:
     {
         var arguments = new Docopt().Apply(usage, args, version: "Chirp 1.0", exit: true)!;
         if (arguments["read"].IsTrue)
-        {
-            ReadCheeps();
+        {   
+            //Checking for empty string instead of 0 (through AsInt), in the rare case that a user asks for 0 cheeps (ie. "dotnet run read 0")
+            //otherwise the standard amount would be shown when asking for zero
+            if (arguments["<amount>"].ToString() == ""){
+                ReadCheeps(standardReadAmount);
+            }
+            else {
+                ReadCheeps(arguments["<amount>"].AsInt);
+            }
         }
         else if (arguments["cheep"].IsTrue)
         {
@@ -38,10 +49,10 @@ Options:
     /// <summary>
     /// Writes all cheep messages in the csv file to the console
     /// </summary>
-    static void ReadCheeps()
+    static void ReadCheeps(int amountToRead)
     {
         IDatabase<Cheep> reader = new CSVDatabase<Cheep>(PathToCsvFile);
-        UserInterface.PrintCheeps(reader.Read(10));
+        UserInterface.PrintCheeps(reader.Read(amountToRead));
     }
 
     /// <summary>
