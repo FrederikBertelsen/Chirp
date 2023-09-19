@@ -1,9 +1,9 @@
 
 using System.Text.RegularExpressions;
 class Cheep {
-    public string author{get; set;}
-    public string message{get; set;}
-    public double timestamp{get; set;}
+    public string Author{get; set;}
+    public string Message{get; set;}
+    public double Timestamp{get; set;}
 
     /// <summary>
     /// Creates a Cheep object from the data
@@ -12,9 +12,9 @@ class Cheep {
     /// <param name="author">User making the Cheep</param>
     /// <param name="message">Text of the Cheep</param>
     public Cheep(double timestamp, string author, string message) {
-        this.timestamp = timestamp;
-        this.author = author;
-        this.message = message;
+        this.Timestamp = timestamp;
+        this.Author = author;
+        this.Message = message;
     }
     
     /// <summary>
@@ -22,6 +22,6 @@ class Cheep {
     /// </summary>
     /// <returns>String formatted for output</returns>
     override public string ToString() {
-        return $"{author} @ {Utility.UnixTimeStampToDateTime(timestamp)}: {message}";
+        return $"{Author} @ {Utility.UnixTimeStampToDateTime(Timestamp)}: {Message}";
     }
 }
