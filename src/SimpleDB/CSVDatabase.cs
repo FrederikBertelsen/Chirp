@@ -1,0 +1,82 @@
+﻿namespace SimpleDB;
+using CsvHelper;
+using CsvHelper.Configuration;
+using System.Globalization;
+
+public interface IDatabase<T>
+{
+    public IEnumerable<T> Read(int? limit = null);
+    public void Store(T record);
+    public void SetPath(string path);
+}
+public sealed class CSVDatabase<T> : IDatabase<T>
+{
+    private static readonly CSVDatabase<T> instance = new CSVDatabase<T>();
+    public static CSVDatabase<T> Instance 
+    {
+        get{return instance;}
+    }
+    protected string Path;
+    public void SetPath(string path){
+        this.Path = path;
+    }
+    /// <summary>
+    /// Constructor for the CSVDatabase
+    /// </summary>
+    /// <param name="path">path to .csv file</param>
+    private CSVDatabase ()
+    {
+        Path = "";
+    }
+
+    /// <summary>
+    /// returns a list of records with all records of the file or 
+    /// the limit
+    /// </summary>
+    /// <param name="limit">the maximum number of records method will return</param>
+    /// <returns>list of records in specified format</returns>
+    public IEnumerable<T> Read(int? limit = null)
+    {
+        List<T> result = new List<T>();
+        CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            PrepareHeaderForMatch = args => args.Header.ToLower(),
+        };
+        using (StreamReader reader = new StreamReader(Path))
+        using (CsvReader csv = new CsvReader(reader, config))
+        {
+            int i=0;
+            foreach(T t in csv.GetRecords<T>())
+            {
+                if(i>=limit)
+                {
+                    break;
+                }
+                result.Add(t);
+                i++;
+            }
+        }
+        return result;
+    }
+    /// <summary>
+    /// Writes fields in csv-file from record to file. Not case-sensitive
+    /// </summary>
+    /// <param name="record">the record that should be appended to the csvfile</param>
+    public void Store(T record)
+    {
+        CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            //ensures that we can have variablenames in "Cheep.cs" in lowercase
+            PrepareHeaderForMatch = args => args.Header.ToLower(),
+            //prevents extra headers
+            HasHeaderRecord = false
+        };
+        //"true" in constructor makes writter append instead of overwrite
+        using (StreamWriter writer = new StreamWriter(Path, true))
+        using (CsvWriter csv = new CsvWriter(writer, config))
+        {
+            //creates a list containing only the record to use "WriteRecords", since "WriteRecord" does not create a newline
+            csv.WriteRecords(new List<T> {record});
+        }
+    }
+}
