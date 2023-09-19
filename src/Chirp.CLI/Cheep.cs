@@ -1,53 +1,27 @@
+
 using System.Text.RegularExpressions;
-using Chirp.CLI;
-
-public class Cheep
-{
-    public string Author;
-    public string Message;
-    public double Timestamp;
-
+public class Cheep {
+    public string Author{get; set;}
+    public string Message{get; set;}
+    public double Timestamp{get; set;}
 
     /// <summary>
     /// Creates a Cheep object from the data
     /// </summary>
-    /// <param name="timestamp">UnixTimeStamp of the Cheep being made</param>
+    /// <param name="timestamp">Time of the Cheep being made</param>
     /// <param name="author">User making the Cheep</param>
     /// <param name="message">Text of the Cheep</param>
-    public Cheep(double timestamp, string author, string message)
-    {
-        Timestamp = timestamp;
-        Author = author;
-        Message = message;
+    public Cheep(double timestamp, string author, string message) {
+        this.Timestamp = timestamp;
+        this.Author = author;
+        this.Message = message;
     }
-    /// <summary>
-    /// creates an empty Cheep object
-    /// </summary>
-    public Cheep()
-    {
-        Author = "";
-        Message = "";
-        Timestamp = 0;
-    }
-
-    /// <summary>
-    /// Creates a Cheep object from a csv formatted string
-    /// </summary>
-    /// <param name="dbOutput">The csv formatted string. Fomatted as username,text,timestamp</param>
-    public Cheep(string dbOutput, string author, string message)
-    {
-        var data = Regex.Split(dbOutput, @",""|"",");
-        Author = data[0];
-        Message = data[1];
-        Timestamp = Double.Parse(data[2]);
-    }
-
+    
     /// <summary>
     /// Returns a formatted string for output
     /// </summary>
     /// <returns>String formatted for output</returns>
-    public override string ToString()
-    {
+    override public string ToString() {
         return $"{Author} @ {Utility.UnixTimeStampToDateTime(Timestamp)}: {Message}";
     }
 }
