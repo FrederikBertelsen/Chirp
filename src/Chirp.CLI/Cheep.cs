@@ -1,6 +1,6 @@
 
 using System.Text.RegularExpressions;
-class Cheep {
+public class Cheep {
     public string Author{get; set;}
     public string Message{get; set;}
     public double Timestamp{get; set;}
