@@ -48,11 +48,11 @@ public sealed class CSVDatabase<T> : IDatabase<T>
             int i=0;
             foreach(T t in csv.GetRecords<T>())
             {
-                result.Add(t);
-                if(i>limit)
+                if(i>=limit)
                 {
                     break;
                 }
+                result.Add(t);
                 i++;
             }
         }
