@@ -1,19 +1,26 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Data.Common;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using SimpleDB;
 
 if(args.Length == 0)
     return;
 if(args[0].ToLower() == "read")
 {
-    var sr = new StreamReader("data/chirp_cli_db.csv");
-    
-    sr.ReadLine();
-    while(sr.Peek() >= 0)
+    int limit;
+    if (args.Length < 2)
     {
-        Cheep chirp = new Cheep(sr.ReadLine());
-        Console.WriteLine(chirp.ToString());
+        limit = 10;
+    }else 
+    {
+        limit = int.Parse(args[1]);
+    }
+    IDatabase<Cheep> reader = new CSVDatabase<Cheep>("data/chirp_cli_db.csv");
+    foreach(Cheep cheep in reader.Read(limit))
+    {
+        Console.WriteLine(cheep);
     }
 }
 
@@ -28,6 +35,6 @@ if (args[0].ToLower() == "cheep")
     string userName = Environment.UserName;
     string text = args[1];
     DateTimeOffset timestamp = DateTime.Now;
-    Cheep chirp = new Cheep(timestamp, userName, text);
+    Cheep chirp = new Cheep(timestamp.ToUnixTimeSeconds(), userName, text);
     chirp.WriteToCSV();
 }

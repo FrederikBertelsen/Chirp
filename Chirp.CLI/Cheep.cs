@@ -2,31 +2,31 @@
 using System.Text.RegularExpressions;
 class Cheep {
 
-    DateTimeOffset timestamp;
-    string userName;
-    string text;
+    public double timestamp{get; set;}
+    public string author{get; set;}
+    public string message{get; set;}
     /// <summary>
     /// Creates a Cheep object from the data
     /// </summary>
     /// <param name="timestamp">Time of the Cheep being made</param>
-    /// <param name="userName">User making the Cheep</param>
-    /// <param name="text">Text of the Cheep</param>
-    public Cheep(DateTimeOffset timestamp, string userName, string text) {
+    /// <param name="author">User making the Cheep</param>
+    /// <param name="message">Text of the Cheep</param>
+    public Cheep(double timestamp, string author, string message) {
         this.timestamp = timestamp;
-        this.userName = userName;
-        this.text = text;
+        this.author = author;
+        this.message = message;
     }
 
     /// <summary>
     /// Creates a Cheep object from a csv formatted string
     /// </summary>
-    /// <param name="dbOutput">The csv formatted string. Fomatted as username,text,timestamp</param>
+    /// <param name="dbOutput">The csv formatted string. Fomatted as author,message,timestamp</param>
     public Cheep(string dbOutput) 
     {
         var data = Regex.Split(dbOutput,@",""|"",");
-        this.userName = data[0];
-        this.text = data[1];
-        this.timestamp = Utility.UnixTimeStampToDateTime(Double.Parse(data[2]));
+        this.author = data[0];
+        this.message = data[1];
+        this.timestamp = Double.Parse(data[2]);
     }
 
     /// <summary>
@@ -34,13 +34,13 @@ class Cheep {
     /// </summary>
     public void WriteToCSV()
     {
-        ChirpDataBase.Write("data/chirp_cli_db.csv", userName + ",\"" + text + "\"," + timestamp.ToUnixTimeSeconds());
+        ChirpDataBase.Write("data/chirp_cli_db.csv", author + ",\"" + message + "\"," + timestamp);
     }
     /// <summary>
     /// Returns a formatted string for output
     /// </summary>
     /// <returns>String formatted for output</returns>
-    public string ToString() {
-        return $"{userName} @ {timestamp}: {text}";
+    override public string ToString() {
+        return $"{author} @ {Utility.UnixTimeStampToDateTime(timestamp)}: {message}";
     }
 }

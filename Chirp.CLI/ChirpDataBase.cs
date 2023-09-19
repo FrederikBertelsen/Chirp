@@ -22,7 +22,7 @@ public class ChirpDataBase{
         sr.ReadLine();
         while(sr.Peek() >= 0)
         {
-            result.Add(sr.ReadLine());
+            //result.Add(sr.ReadLine());
         }
         return result;
     }
