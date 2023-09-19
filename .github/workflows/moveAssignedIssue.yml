@@ -13,4 +13,4 @@ jobs:
         with:
           project: ITU-BDSA23-GROUP24 Chirp
           column: In progress
-          repo-token: 123
+          repo-token: ${{ secrets.ACTION }}
