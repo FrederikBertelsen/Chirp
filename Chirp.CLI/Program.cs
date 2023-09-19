@@ -27,6 +27,7 @@ if(args[0].ToLower() == "read")
 
 if (args[0].ToLower() == "cheep") 
 {
+    IDatabase<Cheep> reader = new CSVDatabase<Cheep>("data/chirp_cli_db.csv");
     if (args[1] == null)
     {
         Console.WriteLine("Text cannot be emtpy!");
@@ -35,6 +36,6 @@ if (args[0].ToLower() == "cheep")
     string userName = Environment.UserName;
     string text = args[1];
     DateTimeOffset timestamp = DateTime.Now;
-    Cheep chirp = new Cheep(timestamp.ToUnixTimeSeconds(), userName, text);
-    chirp.WriteToCSV();
+    Cheep cheep = new Cheep(timestamp.ToUnixTimeSeconds(), userName, text);
+    reader.Store(cheep);
 }

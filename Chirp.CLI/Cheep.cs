@@ -1,10 +1,10 @@
 
 using System.Text.RegularExpressions;
 class Cheep {
-
-    public double timestamp{get; set;}
     public string author{get; set;}
     public string message{get; set;}
+    public double timestamp{get; set;}
+
     /// <summary>
     /// Creates a Cheep object from the data
     /// </summary>
@@ -16,26 +16,7 @@ class Cheep {
         this.author = author;
         this.message = message;
     }
-
-    /// <summary>
-    /// Creates a Cheep object from a csv formatted string
-    /// </summary>
-    /// <param name="dbOutput">The csv formatted string. Fomatted as author,message,timestamp</param>
-    public Cheep(string dbOutput) 
-    {
-        var data = Regex.Split(dbOutput,@",""|"",");
-        this.author = data[0];
-        this.message = data[1];
-        this.timestamp = Double.Parse(data[2]);
-    }
-
-    /// <summary>
-    /// Writes this object to the csv file
-    /// </summary>
-    public void WriteToCSV()
-    {
-        ChirpDataBase.Write("data/chirp_cli_db.csv", author + ",\"" + message + "\"," + timestamp);
-    }
+    
     /// <summary>
     /// Returns a formatted string for output
     /// </summary>
