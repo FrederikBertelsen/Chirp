@@ -4,6 +4,8 @@ on:
   issues:
     types:
       - assigned
+env:
+  GITHUB_TOKEN: ${{ secrets.ACTION }}
 jobs:
   move-assigned-card:
     runs-on: ubuntu-latest
@@ -12,4 +14,3 @@ jobs:
         with:
           project: ITU-BDSA23-GROUP24 Chirp
           column: In progress
-          repo-token: ${{ secrets.action }}
