@@ -1,9 +1,9 @@
 ﻿using Chirp.CLI;
 using DocoptNet;
-
+using SimpleDB;
 class Program
 {
-    private static readonly string PathToCsvFile = "data/chirp_cli_db.csv";
+    private static readonly string PathToCsvFile = "../../data/chirp_cli_db.csv";
 
     //chirp --version in usage useless? still works when removed
     const string usage = @"Chirp.
@@ -40,8 +40,8 @@ Options:
     /// </summary>
     static void ReadCheeps()
     {
-        var cheeps = ChirpDataBase.Read(PathToCsvFile);
-        UserInterface.PrintCheeps(cheeps);
+        IDatabase<Cheep> reader = new CSVDatabase<Cheep>(PathToCsvFile);
+        UserInterface.PrintCheeps(reader.Read(10));
     }
 
     /// <summary>
@@ -50,10 +50,11 @@ Options:
     /// <param name="message">The message sent as a cheep, to be written to the csv file</param>
     static void WriteCheep(string message)
     {
+        IDatabase<Cheep> reader = new CSVDatabase<Cheep>(PathToCsvFile);
         string author = Environment.UserName;
         double timestamp = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
         Cheep cheep = new Cheep(timestamp, author, message);
         
-        ChirpDataBase.Write(PathToCsvFile, cheep);
+        reader.Store(cheep);
     }
 }
