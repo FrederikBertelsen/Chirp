@@ -3,6 +3,7 @@ using DocoptNet;
 using SimpleDB;
 class Program
 {
+    private static IDatabase<Cheep> database = CSVDatabase<Cheep>.Instance;
     private static readonly string PathToCsvFile = "../../data/chirp_cli_db.csv";
 
     //the amount of cheeps shown when no specific amount is given when reading
@@ -25,6 +26,7 @@ Options:
 
     public static void Main(string[] args)
     {
+        database.SetPath(PathToCsvFile);
         var arguments = new Docopt().Apply(usage, args, version: "Chirp 1.0", exit: true)!;
         if (arguments["read"].IsTrue)
         {   
@@ -51,8 +53,7 @@ Options:
     /// </summary>
     static void ReadCheeps(int amountToRead)
     {
-        IDatabase<Cheep> reader = new CSVDatabase<Cheep>(PathToCsvFile);
-        UserInterface.PrintCheeps(reader.Read(amountToRead));
+        UserInterface.PrintCheeps(database.Read(amountToRead));
     }
 
     /// <summary>
@@ -61,11 +62,10 @@ Options:
     /// <param name="message">The message sent as a cheep, to be written to the csv file</param>
     static void WriteCheep(string message)
     {
-        IDatabase<Cheep> reader = new CSVDatabase<Cheep>(PathToCsvFile);
         string author = Environment.UserName;
         double timestamp = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
         Cheep cheep = new Cheep(timestamp, author, message);
         
-        reader.Store(cheep);
+        database.Store(cheep);
     }
 }
