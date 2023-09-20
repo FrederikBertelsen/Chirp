@@ -31,9 +31,9 @@ public class CsvDatabaseTest
         int csvFileLineCount = File.ReadAllLines(PathToTestCsvFile).Length - 1;
 
         // act
-        IEnumerable<Cheep> cheeps = testDatabase.Read(quantity);
-        int readCount = cheeps.Count();
-        
+        IEnumerable<Cheep> testCheeps = testDatabase.Read(quantity);
+        int readCount = testCheeps.Count();
+
         // assert
         if (quantity == null)
             Assert.Equal(csvFileLineCount, readCount);
@@ -41,7 +41,9 @@ public class CsvDatabaseTest
         else
             Assert.Equal(quantity, readCount);
     }
-
+/// <summary>
+/// here we test that inputing a negative number into read gives an ArgumentException
+/// </summary>
     [Fact]
     public void CsvDatabase_NegativeReadQuantity_ArgumentException()
     {
@@ -49,8 +51,32 @@ public class CsvDatabaseTest
         SetupTestCsvDatabase();
         int quantity = -1;
 
-        
         // act & assert
         Assert.Throws<ArgumentException>(() => testDatabase.Read(quantity));
+    }
+
+    /// <summary>
+    /// here we test that that cheeps stored via the store() function are correctly formatted
+    /// and can be fetched via the read() function
+    /// </summary>
+    [Fact]
+    public void CsvDatabase_StoreInCsvFile()
+    {
+        //arrange
+        SetupTestCsvDatabase();
+        double timestamp = 1695034276;
+        string author = "Henrik";
+        string message = "boomba";
+        Cheep testCheep = new Cheep(timestamp, author, message);
+
+        //act
+        testDatabase.Store(testCheep);
+        IEnumerable<Cheep> testCheeps = testDatabase.Read();
+        Cheep storedCheep = testCheeps.Last();
+        //assert
+
+        Assert.Equal(testCheep.Timestamp, storedCheep.Timestamp);
+        Assert.Equal(testCheep.Author, storedCheep.Author);
+        Assert.Equal(testCheep.Message, storedCheep.Message);
     }
 }
