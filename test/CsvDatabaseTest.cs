@@ -15,6 +15,7 @@ public class CsvDatabaseTest
 
     /// <summary>
     /// Here we check if the database returns the correct amount of Cheeps from read().
+    /// We used code from here to get line count of csv file: https://stackoverflow.com/questions/119559/determine-the-number-of-lines-within-a-text-file
     /// </summary>
     /// <param name="quantity">The quantity of Cheeps we want from the database</param>
     [Theory]
@@ -26,16 +27,17 @@ public class CsvDatabaseTest
     {
         // arrange
         SetupTestCsvDatabase();
-        
+        // -1 because of the .csv file format header
+        int csvFileLineCount = File.ReadAllLines(PathToTestCsvFile).Length - 1;
+
         // act
         IEnumerable<Cheep> cheeps = testDatabase.Read(quantity);
         int readCount = cheeps.Count();
         
         // assert
         if (quantity == null)
-            // null currently returns all the Cheeps in the .csv file.
-            // Is this a bug or a feature
-            Assert.Equal(0, readCount);
+            Assert.Equal(csvFileLineCount, readCount);
+
         else
             Assert.Equal(quantity, readCount);
     }
