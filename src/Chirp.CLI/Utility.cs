@@ -1,4 +1,4 @@
-class Utility {
+public class Utility {
     /// <summary>
     /// Creates a datetime object from a miliseconds timestamp.
     /// Code is taken from https://stackoverflow.com/questions/249760/how-can-i-convert-a-unix-timestamp-to-datetime-and-vice-versa 

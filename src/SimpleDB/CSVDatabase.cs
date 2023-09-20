@@ -7,17 +7,26 @@ public interface IDatabase<T>
 {
     public IEnumerable<T> Read(int? limit = null);
     public void Store(T record);
+    public void SetPath(string path);
 }
 public sealed class CSVDatabase<T> : IDatabase<T>
 {
-    private string path;
+    private static readonly CSVDatabase<T> instance = new CSVDatabase<T>();
+    public static CSVDatabase<T> Instance 
+    {
+        get{return instance;}
+    }
+    protected string Path;
+    public void SetPath(string path){
+        this.Path = path;
+    }
     /// <summary>
     /// Constructor for the CSVDatabase
     /// </summary>
     /// <param name="path">path to .csv file</param>
-    public CSVDatabase (string path)
+    private CSVDatabase ()
     {
-        this.path = path;
+        Path = "";
     }
 
     /// <summary>
@@ -33,17 +42,17 @@ public sealed class CSVDatabase<T> : IDatabase<T>
         {
             PrepareHeaderForMatch = args => args.Header.ToLower(),
         };
-        using (StreamReader reader = new StreamReader(path))
+        using (StreamReader reader = new StreamReader(Path))
         using (CsvReader csv = new CsvReader(reader, config))
         {
             int i=0;
             foreach(T t in csv.GetRecords<T>())
             {
-                result.Add(t);
-                if(i>limit)
+                if(i>=limit)
                 {
                     break;
                 }
+                result.Add(t);
                 i++;
             }
         }
@@ -63,7 +72,7 @@ public sealed class CSVDatabase<T> : IDatabase<T>
             HasHeaderRecord = false
         };
         //"true" in constructor makes writter append instead of overwrite
-        using (StreamWriter writer = new StreamWriter(path, true))
+        using (StreamWriter writer = new StreamWriter(Path, true))
         using (CsvWriter csv = new CsvWriter(writer, config))
         {
             //creates a list containing only the record to use "WriteRecords", since "WriteRecord" does not create a newline
