@@ -16,7 +16,7 @@ public sealed class CSVDatabase<T> : IDatabase<T>
     {
         get{return instance;}
     }
-    protected string Path;
+    protected string Path = "./data/chirp_cli_db.csv";
     public void SetPath(string path){
         this.Path = path;
     }
@@ -26,7 +26,6 @@ public sealed class CSVDatabase<T> : IDatabase<T>
     /// <param name="path">path to .csv file</param>
     private CSVDatabase ()
     {
-        Path = "";
     }
 
     /// <summary>
