@@ -10,7 +10,7 @@ public class CsvDatabaseTest
     private void SetupTestCsvDatabase()
     {
         testDatabase = CSVDatabase<Cheep>.Instance;
-        testDatabase.SetPath(PathToTestCsvFile);
+        testDatabase.SetFilePath(PathToTestCsvFile);
     }
 
     /// <summary>
