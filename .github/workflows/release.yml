@@ -23,9 +23,9 @@ jobs:
 
           
           # Build everything
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --framework netcoreapp3.1 --runtime "linux-x64" -c Release -o "folders/linux"
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --framework netcoreapp3.1 --runtime "windows-x64" -c Release -o "folders/windows"
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --framework netcoreapp3.1 --runtime "osx-x64" -c Release -o "folders/osx"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "linux-x64" -c Release -o "folders/linux"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "windows-x64" -c Release -o "folders/windows"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "osx-x64" -c Release -o "folders/osx"
 
 
           # Pack files
