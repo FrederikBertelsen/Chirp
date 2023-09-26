@@ -13,9 +13,9 @@ public interface IDatabase<T>
     public void Store(T record);
 }
 
-public sealed class CsvDatabase<T> : IDatabase<T>
+public sealed class CSVDatabase<T> : IDatabase<T>
 {
-    public static CsvDatabase<T> Instance { get; } = new CsvDatabase<T>();
+    public static CSVDatabase<T> Instance { get; } = new CSVDatabase<T>();
 
     public const string CsvFilePath = "./data/chirp_cli_db.csv";
     
@@ -23,7 +23,7 @@ public sealed class CsvDatabase<T> : IDatabase<T>
     /// Constructor for the CSVDatabase.
     /// This will create a csv file if no file already exists.
     /// </summary>
-    private CsvDatabase()
+    private CSVDatabase()
     {
         CreateEmptyCsvFileIfNoneExists();
     }
