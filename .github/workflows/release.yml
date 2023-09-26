@@ -43,7 +43,9 @@ jobs:
           
         
           # Delete output directory
-          rm -r "folders"
+          rm -r "linux"
+          rm -r "windows"
+          rm -r "osx"
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
