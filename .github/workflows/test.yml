@@ -1,7 +1,6 @@
 on:
   push:
-    tags:
-      - '*'
+    branches: main
 jobs:
   github-example-tags:
     runs-on: ubuntu latest
