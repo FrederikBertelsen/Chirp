@@ -4,19 +4,16 @@ namespace test;
 
 public class CsvDatabaseTest
 {
-    private const string PathToTestCsvFile = "./testdata/chirp_cli_test_db.csv";
-    private IDatabase<Cheep> testDatabase = CSVDatabase<Cheep>.Instance;
+    private const string PathToTestCsvFile = CsvDatabase<Cheep>.CsvFilePath;
+    private IDatabase<Cheep> testDatabase = CsvDatabase<Cheep>.Instance;
 
     /// <summary>
     /// Sets up the csv database with 12 cheeps of test data.
     /// </summary>
     private void SetupTestCsvDatabase()
     {
-        testDatabase = CSVDatabase<Cheep>.Instance;
-
         // delete test file if it already exists
-        if (File.Exists(PathToTestCsvFile)) File.Delete(PathToTestCsvFile);
-        testDatabase.SetFilePath(PathToTestCsvFile);
+        if (File.Exists(CsvDatabase<Cheep>.CsvFilePath)) File.Delete(PathToTestCsvFile);
         
         for (int i = 0; i < 12; i++) 
             testDatabase.Store(new Cheep(1690891760, "testAuthor" + i, "testMessage" + i));
