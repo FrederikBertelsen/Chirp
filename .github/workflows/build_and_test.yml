@@ -2,7 +2,7 @@ name: .NET Build and Test
 
 on:
   push:
-    branches: main
+    branches: [ main, development ]
 
 jobs:
   build:
@@ -20,3 +20,12 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+  #release-linux:
+  #  needs: build
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #  - name: dotnet publish
+  #    run: dotnet publish
+        
+    
+    
