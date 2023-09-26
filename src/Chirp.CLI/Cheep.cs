@@ -12,9 +12,21 @@ public class Cheep {
     /// <param name="author">User making the Cheep</param>
     /// <param name="message">Text of the Cheep</param>
     public Cheep(double timestamp, string author, string message) {
-        this.Timestamp = timestamp;
-        this.Author = author;
-        this.Message = message;
+        if (author is null)
+            throw new ArgumentNullException(nameof(author));
+        if (message is null)
+            throw new ArgumentNullException(nameof(message));
+        if (author == "")
+            throw new ArgumentException("author can not be empty");
+        if (message == "")
+            throw new ArgumentException("message can not be empty");
+        if (timestamp < 0)
+            throw new ArgumentException("timestamp can not be negative");
+   
+        
+        Timestamp = timestamp;
+        Author = author;
+        Message = message;
     }
     
     /// <summary>
