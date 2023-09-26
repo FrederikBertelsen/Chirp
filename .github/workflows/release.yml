@@ -27,25 +27,34 @@ jobs:
           dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "win-x64" -c Release -o "windows"
           dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "osx-x64" -c Release -o "osx"
 
+          # Cleaning and zip'ing linux file
           cd linux
           rm SimpleDB.pdb
           zip "Chirp-v${{ github.ref_name }}-linux-x64.zip" *
           mv "Chirp-v${{ github.ref_name }}-linux-x64.zip" ../
           cd ..
 
-          rm windows/SimpleDB.pdb
-          rm osx/SimpleDB.pdb
+          # Cleaning and zip'ing windows file
+          cd windows
+          rm SimpleDB.pdb
+          zip "Chirp-v${{ github.ref_name }}-win-x64.zip" *
+          mv "Chirp-v${{ github.ref_name }}-win-x64.zip" ../
+          cd ..
 
 
-          # Pack files
-          zip -r "Chirp-v${{ github.ref_name }}-win-x64.zip" "windows/."
-          zip -r "Chirp-v${{ github.ref_name }}-osx-x64.zip" "osx/."
+          # Cleaning and zip'ing windows file
+          cd osx
+          rm SimpleDB.pdb
+          zip "Chirp-v${{ github.ref_name }}-osx-x64.zip" *
+          mv "Chirp-v${{ github.ref_name }}-osx-x64.zip" ../
+          cd ..
           
         
           # Delete output directory
           rm -r "linux"
           rm -r "windows"
           rm -r "osx"
+          rm Chirp.sln
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
