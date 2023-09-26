@@ -1,5 +1,5 @@
 name: .NET Release
-
+run-name: "Release on push to main"
 on:
   push:
     branches: main
