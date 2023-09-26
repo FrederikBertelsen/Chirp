@@ -1,5 +1,5 @@
 name: .NET Build and Test
-run-name: "Build and test on ${{ github.ref }}"
+run-name: "Build and test on ${{ github.ref#refs/heads/ }}"
 on:
   push:
     branches: [ main, development ]
