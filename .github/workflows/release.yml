@@ -18,8 +18,8 @@ jobs:
         shell: bash
         run: |
           # Define some variables for things we need
-          tag=${"${{ github.ref }}":10}
-          echo "${{ github.ref }}":10
+          tag=${"${{ github.ref }}"}
+          echo "${{ github.ref }}"
 
           
           # Build everything
@@ -29,9 +29,9 @@ jobs:
 
 
           # Pack files
-          #zip -r "Chirp-v$tag-linux-x64.zip" "folders/linux"
-          #zip -r "Chirp-v$tag-win-x64.zip" "folders/windows"
-          #zip -r "Chirp-v$tag-osx-x64.zip" "folders/osx"
+          zip -r "Chirp-v$tag-linux-x64.zip" "folders/linux"
+          zip -r "Chirp-v$tag-win-x64.zip" "folders/windows"
+          zip -r "Chirp-v$tag-osx-x64.zip" "folders/osx"
           
         
           # Delete output directory
