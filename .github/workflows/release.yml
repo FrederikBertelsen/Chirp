@@ -18,14 +18,14 @@ jobs:
         shell: bash
         run: |
           # Define some variables for things we need
-          echo {"${{ github.ref }}":10}
+          echo ${"${{ github.ref }}":10}
           tag="${{ github.ref }}"
 
           
           # Build everything
-          dotnet publish src/Chirp.CLI/App.csproj --framework netcoreapp3.1 --runtime "linux-x64" -c Release -o "folders/linux"
-          dotnet publish src/Chirp.CLI/App.csproj --framework netcoreapp3.1 --runtime "windows-x64" -c Release -o "folders/windows"
-          dotnet publish src/Chirp.CLI/App.csproj --framework netcoreapp3.1 --runtime "osx-x64" -c Release -o "folders/osx"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --framework netcoreapp3.1 --runtime "linux-x64" -c Release -o "folders/linux"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --framework netcoreapp3.1 --runtime "windows-x64" -c Release -o "folders/windows"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --framework netcoreapp3.1 --runtime "osx-x64" -c Release -o "folders/osx"
 
 
           # Pack files
