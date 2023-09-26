@@ -1,4 +1,5 @@
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 public class Cheep {
     public string Author{get; set;}
@@ -35,7 +36,7 @@ public class Cheep {
     /// <returns>String formatted for output</returns>
     public override string ToString()
     {
-        string output = $"{Author} @ {Utility.UnixTimeStampToDateTime(Timestamp).ToString("dd/MM/yyyy H:mm:ss")}: {Message}";
+        string output = $"{Author} @ {Utility.UnixTimeStampToDateTime(Timestamp).ToString(CultureInfo.InvariantCulture)}: {Message}";
         Regex.Replace(output, @"\/", @"\-");
         return output;
     }
