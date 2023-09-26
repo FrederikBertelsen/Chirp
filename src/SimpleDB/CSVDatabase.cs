@@ -33,7 +33,7 @@ public sealed class CsvDatabase<T> : IDatabase<T>
         // do not create a file if a file already exists
         if (File.Exists(CsvFilePath)) return;
         
-        Console.WriteLine($"No csv file found. Creating new csv file at '{CsvFilePath}'.");
+        // Console.WriteLine($"No csv file found. Creating new csv file at '{CsvFilePath}'.");
 
         // create the folders that the file will be in, if the folders doesn't exist
         string dirPath = Regex.Replace(CsvFilePath,@"[\w_\-.]+$", "");
