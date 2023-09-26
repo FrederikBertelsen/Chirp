@@ -1,7 +1,5 @@
-# project file ignores
-data/*
-
-
+# project-file ignores
+*.csv
 
 # Created by https://www.toptal.com/developers/gitignore/api/rider,jetbrains,visualstudio,visualstudiocode,csharp,dotnetcore,aspnetcore
 # Edit at https://www.toptal.com/developers/gitignore?templates=rider,jetbrains,visualstudio,visualstudiocode,csharp,dotnetcore,aspnetcore

@@ -5,9 +5,6 @@ using DocoptNet;
 using SimpleDB;
 class Program
 {
-    private static IDatabase<Cheep> database = CSVDatabase<Cheep>.Instance;
-    private static readonly string PathToCsvFile = "../../data/chirp_cli_db.csv";
-
     //the amount of cheeps shown when no specific amount is given when reading
     const int standardReadAmount = 10;
 
@@ -38,7 +35,6 @@ Options:
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         client.BaseAddress = new Uri(baseURL);
 
-        database.SetPath(PathToCsvFile);
         var arguments = new Docopt().Apply(usage, args, version: "Chirp 1.0", exit: true)!;
         if (arguments["read"].IsTrue && (arguments["<amount>"].IsInt || arguments["<amount>"].IsNullOrEmpty))
         {   
