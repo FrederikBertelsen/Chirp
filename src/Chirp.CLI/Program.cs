@@ -35,7 +35,7 @@ Options:
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         client.BaseAddress = new Uri(baseURL);
 
-        var arguments = new Docopt().Apply(usage, args, version: "Chirp 1.0", exit: true)!;
+        IDictionary<string, ValueObject>? arguments = new Docopt().Apply(usage, args, version: "Chirp 1.0", exit: true)!;
         if (arguments["read"].IsTrue && (arguments["<amount>"].IsInt || arguments["<amount>"].IsNullOrEmpty))
         {   
             //Checking for empty string instead of 0 (through AsInt), in the rare case that a user asks for 0 cheeps (ie. "dotnet run read 0")
@@ -71,7 +71,6 @@ Options:
         HttpResponseMessage response = await client.GetAsync("cheeps/"+amountToRead);
         response.EnsureSuccessStatusCode();
         List<Cheep> cheepList = await response.Content.ReadFromJsonAsync<List<Cheep>>();
-        Console.WriteLine(cheepList.Count());
         UserInterface.PrintCheeps(cheepList);
         }
         catch (HttpRequestException e){
