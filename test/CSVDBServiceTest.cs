@@ -18,11 +18,14 @@ public class CSVDBServiceTest{
 
         // Send an asynchronous HTTP GET request and automatically construct a Cheep object from the
         // JSON object in the body of the response
-        HttpResponseMessage responseMessage = await client.GetAsync("cheeps");
+        HttpResponseMessage responseMessage = await client.GetAsync("cheeps/3");
         
         //assert
         Assert.Equal(200,(int)responseMessage.StatusCode);
-        Cheep responseCheep = await responseMessage.Content.ReadFromJsonAsync<Cheep>();
+        List<Cheep> responseCheeps = await responseMessage.Content.ReadFromJsonAsync<List<Cheep>>();
+        Assert.Equal(responseCheeps.Count(),3);
+        Assert.Equal(responseCheeps[0], new Cheep(1690891760,"ropf","Hello, BDSA students!"));
+
     }
 
  [Fact]
