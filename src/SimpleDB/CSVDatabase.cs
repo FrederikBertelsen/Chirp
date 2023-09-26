@@ -23,7 +23,7 @@ public sealed class CSVDatabase<T> : IDatabase<T>
 
     /// <summary>
     /// Sets the path of the database.
-    /// If the path doesn't lead to a already existing file, it will create a new file at that path
+    /// If the path doesn't lead to a already existing file, it will create a new file at that path.
     /// </summary>
     /// <param name="filePath">The file-path that the database will use to store data</param>
     public void SetFilePath(string filePath)
