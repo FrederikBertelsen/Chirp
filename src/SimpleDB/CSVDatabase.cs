@@ -45,7 +45,7 @@ public sealed class CsvDatabase<T> : IDatabase<T>
         // create the csv file at filePath, with the csv Cheep headers
         using (StreamWriter sw = File.CreateText(CsvFilePath))
         {
-            sw.WriteLine("Author,Message,Timestamp\n");
+            sw.WriteLine("Author,Message,Timestamp");
         }
     }
 
