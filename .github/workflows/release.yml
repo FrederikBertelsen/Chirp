@@ -18,7 +18,7 @@ jobs:
         shell: bash
         run: |
           # Define some variables for things we need
-          echo ${"${{ github.ref }}":10}
+          echo "${{ github.ref_name }}"
           tag="${{ github.ref }}"
 
           
