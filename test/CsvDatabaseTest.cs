@@ -71,6 +71,7 @@ public class CsvDatabaseTest
     {
         //arrange
         SetupTestCsvDatabase();
+        
         double timestamp = 1695034276;
         string author = "Henrik";
         string message = "boomba";
