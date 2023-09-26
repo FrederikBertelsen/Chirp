@@ -29,9 +29,9 @@ jobs:
 
 
           # Pack files
-          zip -r "Chirp-v${{release_name}}-linux-x64.zip" "folders/linux"
-          zip -r "Chirp-v${{release_name}}-win-x64.zip" "folders/windows"
-          zip -r "Chirp-v${{release_name}}-osx-x64.zip" "folders/osx"
+          zip -r "Chirp-v0.0.0-linux-x64.zip" "folders/linux"
+          zip -r "Chirp-v0.0.0-win-x64.zip" "folders/windows"
+          zip -r "Chirp-v0.0.0-osx-x64.zip" "folders/osx"
           
         
           # Delete output directory
