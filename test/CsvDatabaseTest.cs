@@ -7,29 +7,19 @@ public class CsvDatabaseTest
     private const string PathToTestCsvFile = "./testdata/chirp_cli_test_db.csv";
     private IDatabase<Cheep> testDatabase = CSVDatabase<Cheep>.Instance;
 
+    /// <summary>
+    /// Sets up the csv database with 12 cheeps of test data.
+    /// </summary>
     private void SetupTestCsvDatabase()
     {
-        bool csvFileAlreadyExists = File.Exists(PathToTestCsvFile);
-
         testDatabase = CSVDatabase<Cheep>.Instance;
-        testDatabase.SetFilePath(PathToTestCsvFile);
 
-        if (!csvFileAlreadyExists)
-        {
-            testDatabase.SetFilePath(PathToTestCsvFile);
-            testDatabase.Store(new Cheep(1690891760, "testAuthor0", "testMessage0"));
-            testDatabase.Store(new Cheep(1690978778, "testAuthor1", "testMessage1"));
-            testDatabase.Store(new Cheep(1690981487, "testAuthor2", "testMessage2"));
-            testDatabase.Store(new Cheep(1690981487, "testAuthor3", "testMessage3"));
-            testDatabase.Store(new Cheep(1690978778, "testAuthor4", "testMessage4"));
-            testDatabase.Store(new Cheep(1690891760, "testAuthor5", "testMessage5"));
-            testDatabase.Store(new Cheep(1690981487, "testAuthor6", "testMessage6"));
-            testDatabase.Store(new Cheep(1690978778, "testAuthor7", "testMessage7"));
-            testDatabase.Store(new Cheep(1690891760, "testAuthor8", "testMessage8"));
-            testDatabase.Store(new Cheep(1690981487, "testAuthor9", "testMessage9"));
-            testDatabase.Store(new Cheep(1690978778, "testAuthor10", "testMessage10"));
-            testDatabase.Store(new Cheep(1690891760, "testAuthor11", "testMessage11"));
-        }
+        // delete test file if it already exists
+        if (File.Exists(PathToTestCsvFile)) File.Delete(PathToTestCsvFile);
+        testDatabase.SetFilePath(PathToTestCsvFile);
+        
+        for (int i = 0; i < 12; i++) 
+            testDatabase.Store(new Cheep(1690891760, "testAuthor" + i, "testMessage" + i));
     }
 
     /// <summary>
