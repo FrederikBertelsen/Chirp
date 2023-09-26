@@ -101,6 +101,6 @@ public class CheepTest
         Cheep cheepTest = new Cheep(timestamp, author, message);
 
         // assert
-        Assert.Equal("Henrik @ 18-09-2023 12:51:16: boomba", cheepTest.ToString());
+        Assert.Equal("Henrik @ 18/09/2023 12.51.16: boomba", cheepTest.ToString());
     }
 }

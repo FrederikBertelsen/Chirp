@@ -51,16 +51,16 @@ public class CsvDatabaseTest
     /// <summary>
     /// here we test that inputing a negative number into read gives an ArgumentException
     /// </summary>
-    // [Fact]
-    // public void CsvDatabase_NegativeReadQuantity_ArgumentException()
-    // {
-    //     // arrange
-    //     SetupTestCsvDatabase();
-    //     int quantity = -1;
-    //
-    //     // act & assert
-    //     Assert.Throws<ArgumentException>(() => testDatabase.Read(quantity));
-    // }
+    [Fact]
+    public void CsvDatabase_NegativeReadQuantity_ArgumentException()
+    {
+        // arrange
+        SetupTestCsvDatabase();
+        int quantity = -1;
+    
+        // act & assert
+        Assert.Throws<ArgumentException>(() => testDatabase.Read(quantity));
+    }
 
     /// <summary>
     /// here we test that that cheeps stored via the store() function are correctly formatted

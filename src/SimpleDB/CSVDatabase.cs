@@ -58,6 +58,9 @@ public sealed class CsvDatabase<T> : IDatabase<T>
     public IEnumerable<T> Read(int? limit = null)
     {
         CreateEmptyCsvFileIfNoneExists();
+
+        if (limit is not null && limit < 0)
+            throw new ArgumentException("Limit cannot be negative.");
         
         List<T> result = new List<T>();
         CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)

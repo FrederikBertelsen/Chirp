@@ -33,7 +33,10 @@ public class Cheep {
     /// Returns a formatted string for output
     /// </summary>
     /// <returns>String formatted for output</returns>
-    override public string ToString() {
-        return $"{Author} @ {Utility.UnixTimeStampToDateTime(Timestamp)}: {Message}";
+    public override string ToString()
+    {
+        string output = $"{Author} @ {Utility.UnixTimeStampToDateTime(Timestamp).ToString("dd/MM/yyyy H:mm:ss")}: {Message}";
+        Regex.Replace(output, @"\/", @"\-");
+        return output;
     }
 }
