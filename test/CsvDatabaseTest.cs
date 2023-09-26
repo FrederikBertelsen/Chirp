@@ -4,13 +4,19 @@ namespace test;
 
 public class CsvDatabaseTest
 {
-    private const string PathToTestCsvFile = "../../../testdata/chirp_cli_test_db.csv";
-    private IDatabase<Cheep> testDatabase = CSVDatabase<Cheep>.Instance;
+    private const string PathToTestCsvFile = CsvDatabase<Cheep>.CsvFilePath;
+    private IDatabase<Cheep> testDatabase = CsvDatabase<Cheep>.Instance;
 
+    /// <summary>
+    /// Sets up the csv database with 12 cheeps of test data.
+    /// </summary>
     private void SetupTestCsvDatabase()
     {
-        testDatabase = CSVDatabase<Cheep>.Instance;
-        testDatabase.SetFilePath(PathToTestCsvFile);
+        // delete test file if it already exists
+        if (File.Exists(CsvDatabase<Cheep>.CsvFilePath)) File.Delete(PathToTestCsvFile);
+        
+        for (int i = 0; i < 12; i++) 
+            testDatabase.Store(new Cheep(1690891760, "testAuthor" + i, "testMessage" + i));
     }
 
     /// <summary>
@@ -41,16 +47,17 @@ public class CsvDatabaseTest
         else
             Assert.Equal(quantity, readCount);
     }
-/// <summary>
-/// here we test that inputing a negative number into read gives an ArgumentException
-/// </summary>
+
+    /// <summary>
+    /// here we test that inputing a negative number into read gives an ArgumentException
+    /// </summary>
     [Fact]
     public void CsvDatabase_NegativeReadQuantity_ArgumentException()
     {
         // arrange
         SetupTestCsvDatabase();
         int quantity = -1;
-
+    
         // act & assert
         Assert.Throws<ArgumentException>(() => testDatabase.Read(quantity));
     }

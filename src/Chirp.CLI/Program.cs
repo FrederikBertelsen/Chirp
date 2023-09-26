@@ -3,8 +3,7 @@ using DocoptNet;
 using SimpleDB;
 class Program
 {
-    private static IDatabase<Cheep> database = CSVDatabase<Cheep>.Instance;
-    private static readonly string PathToCsvFile = "./data/chirp_cli_db.csv";
+    private static IDatabase<Cheep> database = CsvDatabase<Cheep>.Instance;
 
     //the amount of cheeps shown when no specific amount is given when reading
     const int standardReadAmount = 10;
@@ -26,7 +25,6 @@ Options:
 
     public static void Main(string[] args)
     {
-        database.SetFilePath(PathToCsvFile);
         var arguments = new Docopt().Apply(usage, args, version: "Chirp 1.0", exit: true)!;
         if (arguments["read"].IsTrue)
         {   
