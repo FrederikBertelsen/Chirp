@@ -16,5 +16,9 @@ public class UserInterface
     public static void PrintMessage(string message) {
         Console.WriteLine(message);
     }
+
+    public static void  PrintError(string message) {
+        Console.WriteLine(message);
+    }
     
 }
