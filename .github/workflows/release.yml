@@ -23,15 +23,23 @@ jobs:
 
           
           # Build everything
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "linux-x64" -c Release -o "folders/linux"
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "win-x64" -c Release -o "folders/windows"
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "osx-x64" -c Release -o "folders/osx"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "linux-x64" -c Release -o "linux"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "win-x64" -c Release -o "windows"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "osx-x64" -c Release -o "osx"
+
+          cd linux
+          rm SimpleDB.pdb
+          zip "Chirp-v${{ github.ref_name }}-linux-x64.zip" *
+          mv "Chirp-v${{ github.ref_name }}-linux-x64.zip" ../
+          cd ..
+
+          rm windows/SimpleDB.pdb
+          rm osx/SimpleDB.pdb
 
 
           # Pack files
-          zip -r "Chirp-v${{ github.ref_name }}-linux-x64.zip" "folders/linux"
-          zip -r "Chirp-v${{ github.ref_name }}-win-x64.zip" "folders/windows"
-          zip -r "Chirp-v${{ github.ref_name }}-osx-x64.zip" "folders/osx"
+          zip -r "Chirp-v${{ github.ref_name }}-win-x64.zip" "windows/."
+          zip -r "Chirp-v${{ github.ref_name }}-osx-x64.zip" "osx/."
           
         
           # Delete output directory
