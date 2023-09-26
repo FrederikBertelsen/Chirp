@@ -6,10 +6,10 @@ namespace test;
 
 public class End2EndTest
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-    private const string PathToTestCsvFile = CsvDatabase<Cheep>.CsvFilePath;
-    private IDatabase<Cheep> testDatabase = CsvDatabase<Cheep>.Instance;
+    private const string PathToTestCsvFile = CSVDatabase<Cheep>.CsvFilePath;
+    private IDatabase<Cheep> testDatabase = CSVDatabase<Cheep>.Instance;
 
+    private readonly ITestOutputHelper _testOutputHelper;
     public End2EndTest(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
@@ -21,7 +21,7 @@ public class End2EndTest
     private void SetupTestCsvDatabase()
     {
         // delete test file if it already exists
-        if (File.Exists(CsvDatabase<Cheep>.CsvFilePath)) File.Delete(PathToTestCsvFile);
+        if (File.Exists(CSVDatabase<Cheep>.CsvFilePath)) File.Delete(PathToTestCsvFile);
 
         for (int i = 0; i < 12; i++)
             testDatabase.Store(new Cheep(1690891760, "testAuthor" + i, "testMessage" + i));
@@ -110,7 +110,7 @@ public class End2EndTest
     {
         // Arrange
         // delete test file if it already exists
-        if (File.Exists(CsvDatabase<Cheep>.CsvFilePath)) File.Delete(PathToTestCsvFile);
+        if (File.Exists(CSVDatabase<Cheep>.CsvFilePath)) File.Delete(PathToTestCsvFile);
         
         // Act
         // write
