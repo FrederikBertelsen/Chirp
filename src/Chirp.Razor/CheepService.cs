@@ -15,8 +15,8 @@ public class CheepService : ICheepService
     // These would normally be loaded from a database for example
     private static readonly List<CheepViewModel> _cheeps = new()
         {
-            new CheepViewModel("Helge", "Hello, BDSA students!", Utility.UnixTimeStampToDateTimeString(1690892208)),
-            new CheepViewModel("Rasmus", "Hej, velkommen til kurset.", Utility.UnixTimeStampToDateTimeString(1690895308)),
+            new CheepViewModel("Helge", "Hello, BDSA students!", Utility.UnixTimeStampToFormatString(1690892208)),
+            new CheepViewModel("Rasmus", "Hej, velkommen til kurset.", Utility.UnixTimeStampToFormatString(1690895308)),
         };
 
     public List<CheepViewModel> GetCheeps()

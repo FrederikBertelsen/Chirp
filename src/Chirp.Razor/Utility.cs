@@ -19,7 +19,7 @@ public class Utility
         return dateTime;
     }
 
-    public static String UnixTimeStampToDateTimeString(double unixTimeStamp)
+    public static String UnixTimeStampToFormatString(double unixTimeStamp)
     {
         DateTime dateTime = UnixTimeStampToDateTime(unixTimeStamp);
         return dateTime.ToString(CultureInfo.InvariantCulture);

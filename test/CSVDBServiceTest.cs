@@ -24,7 +24,7 @@ public class CSVDBServiceTest{
         Assert.Equal(200,(int)responseMessage.StatusCode);
         List<Cheep> responseCheeps = await responseMessage.Content.ReadFromJsonAsync<List<Cheep>>();
         Assert.Equal(responseCheeps.Count(),3);
-        Assert.Equal(responseCheeps[0], new Cheep(1690891760,"ropf","Hello, BDSA students!"));
+        Assert.Equal(responseCheeps[0], new Cheep("ropf","Hello, BDSA students!", 1690891760));
 
     }
 
@@ -32,10 +32,10 @@ public class CSVDBServiceTest{
     public async Task CsvDatabase_StoreInCsvFileAsync()
     {
         //arrange
-        double timestamp = 1695034276;
+        long timestamp = 1695034276;
         string author = "Henrik";
         string message = "boomba";
-        Cheep testCheep = new Cheep(timestamp, author, message);
+        Cheep testCheep = new Cheep(author, message, timestamp);
 
         //act
         // Create an HTTP client object
