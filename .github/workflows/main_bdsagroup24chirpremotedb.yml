@@ -11,28 +11,33 @@ on:
 
 jobs:
   build:
+    name: Release
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v1
 
-      - name: Set up .NET Core
+      - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '7.x'
-          include-prerelease: true
+          dotnet-version: 7.0.111
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        shell: bash
+        run: |
+          # Define some variables for things we need
 
-      #- name: Build with dotnet
-      #  run: dotnet build --configuration Release
-
-      - name: dotnet publish
-        run: dotnet publish src/Chirp.CSVDBService/Chirp.CSVDBService.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
-
+          
+          # Build everything
+          dotnet publish src/Chirp.Razor/ --runtime "linux-x64" -c Release -o "publish"
+          
+          
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: publish
 
   deploy:
     runs-on: ubuntu-latest
