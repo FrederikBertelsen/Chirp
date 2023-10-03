@@ -57,7 +57,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'bdsagroup24chirpremotedb'
+          app-name: 'bdsagroup24chirprazor'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_009349179BEE443C9A3E7722522F9825 }}
           package: .
