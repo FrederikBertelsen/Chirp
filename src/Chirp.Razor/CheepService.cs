@@ -1,3 +1,4 @@
+using Chirp.Razor;
 using SimpleDB;
 
 public record CheepViewModel(string Author, string Message, string Timestamp);
@@ -12,9 +13,11 @@ public class CheepService : ICheepService
 {
     private static HttpClient client = new();
 
+    private static DBFacade facade = new();
+
     public List<CheepViewModel> GetCheeps()
     {
-        return null;
+        return facade.QueryCheeps();
     }
 
     public List<CheepViewModel> GetCheepsFromAuthor(string author)
