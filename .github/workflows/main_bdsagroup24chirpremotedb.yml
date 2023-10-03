@@ -31,13 +31,14 @@ jobs:
           
           # Build everything
           dotnet publish src/Chirp.Razor/ --runtime "linux-x64" -c Release -o "publish"
+          zip app.zip .
           
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: publish
+          path: app.zip
 
   deploy:
     runs-on: ubuntu-latest
