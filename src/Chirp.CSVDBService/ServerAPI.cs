@@ -12,4 +12,3 @@ app.MapPost("/cheep", (Cheep cheep) => {
 
 
 app.Run();
-public record Cheep(string Author, string Message, long Timestamp);
