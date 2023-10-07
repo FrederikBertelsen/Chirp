@@ -1,9 +1,16 @@
+using Chirp.Razor;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<ICheepService, CheepService>();
 
+// add data to DB if it is empty.
+using (var db = new ChirpDBContext())
+{
+    DbInitializer.SeedDatabase(db);
+}
 
 var app = builder.Build();
 

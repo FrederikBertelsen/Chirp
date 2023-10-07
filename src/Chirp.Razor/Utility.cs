@@ -1,4 +1,7 @@
 using System.Globalization;
+using Chirp.Razor;
+using Chirp.Razor.Pages;
+using Microsoft.EntityFrameworkCore;
 
 public class Utility
 {
@@ -19,11 +22,32 @@ public class Utility
         return dateTime;
     }
 
+    /// <summary>
+    /// Creates a string object from a miliseconds timestamp.
+    /// </summary>
+    /// <param name="unixTimeStamp">timestamp in miliseconds from jan 1st 1970 00:00:00</param>
+    /// <returns>a string containing the date</returns>
     public static String UnixTimeStampToFormatString(double unixTimeStamp)
     {
         DateTime dateTime = UnixTimeStampToDateTime(unixTimeStamp);
         return dateTime.ToString(CultureInfo.InvariantCulture);
     }
 
-    
+    /// <summary>
+    /// Converts a list of Cheep objects from the database to a list of Cheep Records.
+    /// </summary>
+    /// <param name="dbCheeps">A list of cheep objects</param>
+    /// <returns>A list of Cheep Records</returns>
+    public static List<CheepViewModel> DbCheepsToRecordCheeps(List<Cheep> dbCheeps)
+    {
+        if (dbCheeps[0].Author == null)
+            throw new ArgumentException(
+                "Cheep.Author is null! Remember to include the author in the Cheeps that need to be displayed.");
+
+        return (
+            from cheep in dbCheeps
+            select new CheepViewModel(cheep.Author.Name, cheep.Text,
+                cheep.TimeStamp.ToString(CultureInfo.InvariantCulture))
+        ).ToList();
+    }
 }
