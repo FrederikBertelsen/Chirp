@@ -1,3 +1,5 @@
+using SimpleDB;
+
 namespace test;
 
 public class CsvDatabaseTest

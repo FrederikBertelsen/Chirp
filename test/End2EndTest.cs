@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using SimpleDB;
 using Xunit.Abstractions;
 
 namespace test;
