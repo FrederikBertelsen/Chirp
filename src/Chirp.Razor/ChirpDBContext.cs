@@ -15,7 +15,7 @@ public class ChirpDBContext : DbContext
         var folderPath = Path.GetTempPath();
         
         DbPath = Path.Combine(folderPath, dbFileName);
-        Console.WriteLine($"Saved SQLite DB at: {DbPath}");
+        // Console.WriteLine($"Saved SQLite DB at: {DbPath}");
     }
 
     // The following configures EF to create a Sqlite database file in the
