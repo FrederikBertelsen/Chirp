@@ -17,6 +17,11 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <PublishRelease>true</PublishRelease>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <DebugType>embedded</DebugType>
+    <AssemblyName>Chirp</AssemblyName>
   </PropertyGroup>
 
 </Project>

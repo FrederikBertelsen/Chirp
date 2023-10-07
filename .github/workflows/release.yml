@@ -5,7 +5,7 @@ on:
 jobs:
   release:
     name: Release
-    runs-on: ubuntu latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -14,23 +14,50 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 7.0.111
+      - name: Restore dependencies
+        run: dotnet restore
       - name: Build
         shell: bash
         run: |
           # Define some variables for things we need
-          tag=$(git describe --tags --abbrev=0)
-          release_name="App-$tag-${{ matrix.target }}"
-        
+
+          
           # Build everything
-          dotnet publish src/Chirp.CLI/App.csproj --framework netcoreapp3.1 --runtime "linux-x64" -c Release -o "$release_name/linux"
-          dotnet publish src/Chirp.CLI/App.csproj --framework netcoreapp3.1 --runtime "windows-x64" -c Release -o "$release_name/windows"
-          dotnet publish src/Chirp.CLI/App.csproj --framework netcoreapp3.1 --runtime "osx-arm64" -c Release -o "$release_name/osx"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "linux-x64" -c Release -o "linux"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "win-x64" -c Release -o "windows"
+          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "osx-x64" -c Release -o "osx"
+
+          # Cleaning and zip'ing linux file
+          cd linux
+          rm SimpleDB.pdb
+          zip "Chirp-v${{ github.ref_name }}-linux-x64.zip" *
+          mv "Chirp-v${{ github.ref_name }}-linux-x64.zip" ../
+          cd ..
+
+          # Cleaning and zip'ing windows file
+          cd windows
+          rm SimpleDB.pdb
+          zip "Chirp-v${{ github.ref_name }}-win-x64.zip" *
+          mv "Chirp-v${{ github.ref_name }}-win-x64.zip" ../
+          cd ..
 
 
-          # Pack files
-          zip -r "Chirp-v${{release_name}}-linux-x64.zip" "$release_name/linux"
-          zip -r "Chirp-v${{release_name}}-win-x64.zip" "$release_name/windows"
-          zip -r "Chirp-v${{release_name}}-osx-x64.zip" "$release_name/osx"
+          # Cleaning and zip'ing windows file
+          cd osx
+          rm SimpleDB.pdb
+          zip "Chirp-v${{ github.ref_name }}-osx-x64.zip" *
+          mv "Chirp-v${{ github.ref_name }}-osx-x64.zip" ../
+          cd ..
+          
         
           # Delete output directory
-          rm -r "$release_name"
+          rm -r "linux"
+          rm -r "windows"
+          rm -r "osx"
+          rm Chirp.sln
+      - name: Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "Chirp*"
+        env:
+          GITHUB_TOKEN: ${{ secrets.action }}
