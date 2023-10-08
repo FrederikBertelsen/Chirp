@@ -8,9 +8,7 @@ builder.Services.AddSingleton<ICheepService, CheepService>();
 
 // add data to DB if it is empty.
 using (var db = new ChirpDBContext())
-{
     DbInitializer.SeedDatabase(db);
-}
 
 var app = builder.Build();
 
