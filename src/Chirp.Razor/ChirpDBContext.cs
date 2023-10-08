@@ -12,7 +12,7 @@ public class ChirpDBContext : DbContext
     public ChirpDBContext()
     {
         string dbFileName = "Chirp.db";
-        var folderPath = Path.GetTempPath();
+        string folderPath = Path.GetTempPath();
         
         DbPath = Path.Combine(folderPath, dbFileName);
         // Console.WriteLine($"Saved SQLite DB at: {DbPath}");
