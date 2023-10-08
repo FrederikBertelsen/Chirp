@@ -29,7 +29,7 @@ jobs:
           # Define some variables for things we need
 
           # Make SQL databse runnable
-          dotnet ef database update src/Chirp.Razor
+          dotnet ef database update -p src/Chirp.Razor
 
           # Build everything
           dotnet publish src/Chirp.Razor/ --runtime "linux-x64" -c Release -o "publish"
