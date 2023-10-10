@@ -15,9 +15,17 @@ public class PublicModel : PageModel
         _service = service;
     }
 
-    public ActionResult OnGet()
+       public ActionResult OnGet(int? page)
     {
-        Cheeps = _service.GetCheeps();
+        if (page != null){
+            if (page.Value < 1){
+                page = 1;
+            }
+            Cheeps = _service.GetCheeps(page.Value);
+        }
+        else {
+            Cheeps = _service.GetCheeps(1);
+        }
         return Page();
     }
 }

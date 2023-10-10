@@ -13,9 +13,17 @@ public class UserTimelineModel : PageModel
         _service = service;
     }
 
-    public ActionResult OnGet(string author)
+    public ActionResult OnGet(string author, int? page)
     {
-        Cheeps = _service.GetCheepsFromAuthor(author);
+        if (page != null){
+            if (page.Value < 1){
+                page = 1;
+            }
+            Cheeps = _service.GetCheepsFromAuthor(author, page.Value);
+        }
+        else {
+            Cheeps = _service.GetCheepsFromAuthor(author, 1);
+        }
         return Page();
     }
 }
