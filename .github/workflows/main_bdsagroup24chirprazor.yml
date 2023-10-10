@@ -31,10 +31,10 @@ jobs:
           dotnet tool install --global dotnet-ef
           # Make SQL databse runnable
           #dotnet ef database update -p src/Chirp.Razor
-
+          
           # Build everything
           dotnet publish src/Chirp.Razor/ --runtime "linux-x64" -c Release -o "publish"
-          
+          ls publish
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
