@@ -34,7 +34,8 @@ jobs:
           
           # Build everything
           dotnet publish src/Chirp.Razor/ --runtime "linux-x64" -c Release -o "publish"
-          ls publish
+          cd publish
+          ./Chirp &
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
