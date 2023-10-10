@@ -1,9 +1,10 @@
 using Chirp.Razor;
+using Microsoft.EntityFrameworkCore;
 
 using (ChirpDBContext db = new ChirpDBContext())
 {
     // create a database if none exists
-    db.Database.EnsureCreated();
+    db.Database.Migrate();
     // fill the database with data if it's empty
     DbInitializer.SeedDatabase(db);
 }
