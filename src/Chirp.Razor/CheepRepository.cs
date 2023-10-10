@@ -56,23 +56,17 @@ public class CheepRepository : ICheepRepository
         if (pageNumber < 1)
             throw new ArgumentException("Page number cannot be under 1");
 
-        Author? author = dbContext.Authors
-            .Where(a => a.Name == authorName)
-            .Include(a => a.Cheeps)
-            .SingleOrDefault();
-        
-        if (author is null)
-            throw new ArgumentException($"Author with name '{authorName}' not found.");
-        
         int skipCount = (pageNumber - 1) * PageSize;
 
-        List<Cheep> orderedCheeps = author.Cheeps
+        List<Cheep> cheepList = dbContext.Cheeps
+            .Include(c => c.Author)
+            .Where(c => c.Author.Name == authorName)
             .OrderBy(c => c.TimeStamp)
             .Skip(skipCount)
             .Take(PageSize)
             .ToList();
 
-        return orderedCheeps;
+        return cheepList;
     }
 
     // public IEnumerable<Cheep> GetAllCheeps()
@@ -94,15 +88,17 @@ public class CheepRepository : ICheepRepository
     {
         if (pageNumber < 1)
             throw new ArgumentException("Page number cannot be under 1");
-        
+
         int skipCount = (pageNumber - 1) * PageSize;
 
-        List<Cheep> dbCheepList = dbContext.Cheeps
+        List<Cheep> cheepList = dbContext.Cheeps
+            .Include(c => c.Author)
+            .OrderBy(c => c.TimeStamp)
             .Skip(skipCount)
             .Take(PageSize)
             .ToList();
-        
-        return dbCheepList;
+
+        return cheepList;
     }
 
     /// <summary>
@@ -117,14 +113,14 @@ public class CheepRepository : ICheepRepository
             throw new ArgumentNullException(nameof(authorName));
         if (text is null)
             throw new ArgumentNullException(nameof(text));
-        
+
         Author? author = dbContext.Authors.SingleOrDefault(a => a.Name == authorName);
-        
+
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
-        
+
         Cheep newCheep = new Cheep() { Author = author, Text = text, TimeStamp = timestamp };
-        
+
         dbContext.Cheeps.Add(newCheep);
         dbContext.SaveChanges();
     }
@@ -136,10 +132,10 @@ public class CheepRepository : ICheepRepository
     public void RemoveCheep(int cheepId)
     {
         Cheep? cheep = dbContext.Cheeps.SingleOrDefault(c => c.CheepId == cheepId);
-        
+
         if (cheep is null)
             throw new ArgumentException($"Cheep with ID '{cheepId}' not found.");
-        
+
         dbContext.Cheeps.Remove(cheep);
         dbContext.SaveChanges();
     }
@@ -157,7 +153,7 @@ public class CheepRepository : ICheepRepository
 
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
-        
+
         dbContext.Cheeps.RemoveRange(author.Cheeps);
         dbContext.Authors.Remove(author);
         dbContext.SaveChanges();
