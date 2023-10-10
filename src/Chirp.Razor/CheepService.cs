@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 public interface ICheepService
 {
-    public List<CheepViewModel> GetCheeps();
-    public List<CheepViewModel> GetCheepsFromAuthor(string authorName);
+    public List<CheepViewModel> GetCheeps(int page);
+    public List<CheepViewModel> GetCheepsFromAuthor(string authorName, int page);
 }
 
 public class CheepService : ICheepService
@@ -14,15 +14,13 @@ public class CheepService : ICheepService
     /// Returns a list of all Cheep Records in the DB
     /// </summary>
     /// <returns>A list of Cheep Records</returns>
-    public List<CheepViewModel> GetCheeps()
+    public List<CheepViewModel> GetCheeps(int page)
     {
         using ChirpDBContext db = new ChirpDBContext();
+        CheepRepository cheepRepository = new CheepRepository(db);
 
-        List<Cheep> dbCheepList = db.Cheeps
-            .Include(c => c.Author)
-            .OrderBy(c => c.TimeStamp)
-            .ToList();
 
+        List<Cheep> dbCheepList = (List<Cheep>)cheepRepository.GetPageOfCheeps(page);
         return Utility.DbCheepsToRecordCheeps(dbCheepList);
     }
 
@@ -31,17 +29,13 @@ public class CheepService : ICheepService
     /// </summary>
     /// <param name="authorName">The name of the author</param>
     /// <returns>A list of Cheep Records written by the author</returns>
-    public List<CheepViewModel> GetCheepsFromAuthor(string authorName)
+    public List<CheepViewModel> GetCheepsFromAuthor(string authorName, int page)
     {
         using ChirpDBContext db = new ChirpDBContext();
+        CheepRepository cheepRepository = new CheepRepository(db);
 
-        Author author = db.Authors
-            .Where(a => a.Name == authorName)
-            .Include(a => a.Cheeps)
-            .Single();
+        List<Cheep> dbCheepList = (List<Cheep>)cheepRepository.GetPageOfCheepsByAuthor(authorName, page);
 
-        List<Cheep> orderedCheeps = author.Cheeps.OrderBy(c => c.TimeStamp).ToList();
-
-        return Utility.DbCheepsToRecordCheeps(orderedCheeps);
+        return Utility.DbCheepsToRecordCheeps(dbCheepList);
     }
 }
