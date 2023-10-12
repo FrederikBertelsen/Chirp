@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -15,13 +16,13 @@ public class PublicModel : PageModel
         _service = service;
     }
 
-       public ActionResult OnGet(int? page)
+    public ActionResult OnGet(int? pageNo)
     {
-        if (page != null){
-            if (page.Value < 1){
-                page = 1;
+        if (pageNo != null){
+            if (pageNo < 1){
+                pageNo = 1;
             }
-            Cheeps = _service.GetCheeps(page.Value);
+            Cheeps = _service.GetCheeps(pageNo.Value);
         }
         else {
             Cheeps = _service.GetCheeps(1);
