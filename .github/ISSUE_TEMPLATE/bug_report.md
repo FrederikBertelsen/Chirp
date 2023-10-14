@@ -16,9 +16,11 @@ A clear and concise description of what the bug is.
 3. Scroll down to '....'
 4. See error
 
+
 ### Expected behavior
 Write a description of what should happen (without the bug).
 
 ## Success Criteria
 - [ ] Write the success criteria here.
 - [ ] ...
+- [ ] There are no warnings or errors when running 'dotnet build'

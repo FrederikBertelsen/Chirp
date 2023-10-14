@@ -23,20 +23,20 @@ jobs:
 
           
           # Build everything
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "linux-x64" -c Release -o "linux"
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "win-x64" -c Release -o "windows"
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --runtime "osx-x64" -c Release -o "osx"
+          dotnet publish src/Chirp.Razor/Chirp.Razor.csproj --runtime "linux-x64" -c Release -o "linux"
+          dotnet publish src/Chirp.Razor/Chirp.Razor.csproj --runtime "win-x64" -c Release -o "windows"
+          dotnet publish src/Chirp.Razor/Chirp.Razor.csproj --runtime "osx-x64" -c Release -o "osx"
 
           # Cleaning and zip'ing linux file
           cd linux
-          rm SimpleDB.pdb
+          #rm SimpleDB.pdb
           zip "Chirp-v${{ github.ref_name }}-linux-x64.zip" *
           mv "Chirp-v${{ github.ref_name }}-linux-x64.zip" ../
           cd ..
 
           # Cleaning and zip'ing windows file
           cd windows
-          rm SimpleDB.pdb
+          #rm SimpleDB.pdb
           zip "Chirp-v${{ github.ref_name }}-win-x64.zip" *
           mv "Chirp-v${{ github.ref_name }}-win-x64.zip" ../
           cd ..
@@ -44,7 +44,7 @@ jobs:
 
           # Cleaning and zip'ing windows file
           cd osx
-          rm SimpleDB.pdb
+          #rm SimpleDB.pdb
           zip "Chirp-v${{ github.ref_name }}-osx-x64.zip" *
           mv "Chirp-v${{ github.ref_name }}-osx-x64.zip" ../
           cd ..

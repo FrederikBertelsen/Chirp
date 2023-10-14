@@ -1,16 +1,19 @@
 using Chirp.Razor;
+using Microsoft.EntityFrameworkCore;
+
+using (ChirpDBContext db = new ChirpDBContext())
+{
+    // create a database if none exists
+    db.Database.Migrate();
+    // fill the database with data if it's empty
+    DbInitializer.SeedDatabase(db);
+}
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<ICheepService, CheepService>();
-
-// add data to DB if it is empty.
-using (ChirpDBContext db = new ChirpDBContext())
-{
-    DbInitializer.SeedDatabase(db);
-}
 
 WebApplication app = builder.Build();
 

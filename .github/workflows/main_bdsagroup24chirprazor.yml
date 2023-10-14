@@ -30,11 +30,12 @@ jobs:
           
           dotnet tool install --global dotnet-ef
           # Make SQL databse runnable
-          dotnet ef database update -p src/Chirp.Razor
-
+          #dotnet ef database update -p src/Chirp.Razor
+          
           # Build everything
           dotnet publish src/Chirp.Razor/ --runtime "linux-x64" -c Release -o "publish"
-          
+          cd publish
+          ./Chirp &
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -55,7 +56,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: .net-app
-
+      - name: ls
+        run: ls
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
