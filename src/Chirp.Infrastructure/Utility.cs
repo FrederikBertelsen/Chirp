@@ -1,6 +1,5 @@
 using System.Globalization;
-using Chirp.Razor;
-using Chirp.Razor.Pages;
+using Chirp.Core;
 using Microsoft.EntityFrameworkCore;
 
 public class Utility

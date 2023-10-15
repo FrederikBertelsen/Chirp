@@ -1,12 +1,6 @@
-using Chirp.Razor;
-using Chirp.Razor.Pages;
+using Chirp.Core;
+using Chirp.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-
-public interface ICheepService
-{
-    public List<CheepViewModel> GetCheeps();
-    public List<CheepViewModel> GetCheepsFromAuthor(string authorName);
-}
 
 public class CheepService : ICheepService
 {
