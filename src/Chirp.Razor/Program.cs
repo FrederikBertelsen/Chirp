@@ -13,7 +13,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<ICheepService, CheepService>();
+builder.Services.AddDbContext<ChirpDBContext>();
+builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 
 WebApplication app = builder.Build();
 

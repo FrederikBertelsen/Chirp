@@ -5,28 +5,38 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Chirp.Razor.Pages;
 
-public record CheepViewModel(string Author, string Message, string TimeStamp);
+public record CheepViewModel(string Author, string Message, DateTime TimeStamp);
+
 public class PublicModel : PageModel
 {
-    private readonly ICheepService _service;
+    private readonly ICheepRepository cheepRepository;
     public List<CheepViewModel> Cheeps { get; set; }
 
-    public PublicModel(ICheepService service)
+    public PublicModel(ICheepRepository cheepRepository)
     {
-        _service = service;
+        this.cheepRepository = cheepRepository;
     }
 
     public ActionResult OnGet(int? pageNo)
     {
-        if (pageNo != null){
-            if (pageNo < 1){
+        if (pageNo != null)
+        {
+            if (pageNo < 1)
+            {
                 pageNo = 1;
             }
-            Cheeps = _service.GetCheeps(pageNo.Value);
+
+            var cheeps = cheepRepository.GetPageOfCheeps(pageNo.Value);
+            cheeps.Wait();
+            Cheeps = cheeps.Result.ToList();
         }
-        else {
-            Cheeps = _service.GetCheeps(1);
+        else
+        {
+            var cheeps = cheepRepository.GetPageOfCheeps(1);
+            cheeps.Wait();
+            Cheeps = cheeps.Result.ToList();
         }
+
         return Page();
     }
 }
