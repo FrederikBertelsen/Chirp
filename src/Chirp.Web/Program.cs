@@ -1,5 +1,6 @@
 using Chirp.Core;
 using Chirp.Infrastructure;
+using Chirp.Web.Migrations;
 using Microsoft.EntityFrameworkCore;
 
 using (ChirpDBContext db = new ChirpDBContext())
