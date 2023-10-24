@@ -1,7 +1,6 @@
-﻿@page "/"
-@using Chirp.Core
-@using Chirp.Web.Pages
-@model Chirp.Web.Pages.PublicModel
+﻿@page "/{pageNo:int?}"
+@using Chirp.Razor.Pages
+@model Chirp.Razor.Pages.PublicModel
 @{
     ViewData["Title"] = "Chirp!";
     Layout = "Shared/_Layout";
