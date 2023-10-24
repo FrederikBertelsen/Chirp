@@ -22,10 +22,20 @@ public class PublicModel : PageModel
             if (page < 1){
                 page = 1;
             }
-            Cheeps = _service.GetCheeps(page.Value);
+            try{
+                Cheeps = _service.GetCheeps(page);
+            }
+            catch {
+                Cheeps = new List<CheepViewModel>();
+            }
         }
         else {
-            Cheeps = _service.GetCheeps(1);
+            try{
+                Cheeps = _service.GetCheeps(1);
+            }
+            catch {
+                Cheeps = new List<CheepViewModel>();
+            }
         }
         return Page();
     }
