@@ -1,5 +1,6 @@
-namespace test;
+using Xunit;
 
+namespace test;
 public class CsvDatabaseTest
 {
     // private const string PathToTestCsvFile = CSVDatabase<Cheep>.CsvFilePath;
