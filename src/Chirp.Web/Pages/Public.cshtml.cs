@@ -13,26 +13,22 @@ public class PublicModel : PageModel
     public PublicModel(ICheepRepository cheepRepository)
     {
         this.cheepRepository = cheepRepository;
+        Cheeps = new List<CheepViewModel>();
     }
 
-    public ActionResult OnGet(int? pageNo)
+    public ActionResult OnGet([FromQuery] int page)
     {
-        if (pageNo != null)
-        {
-            if (pageNo < 1)
-            {
-                pageNo = 1;
-            }
+        if (page < 1) page = 1;
 
-            var cheeps = cheepRepository.GetPageOfCheeps(pageNo.Value);
+        try
+        {
+            var cheeps = cheepRepository.GetPageOfCheeps(page);
             cheeps.Wait();
             Cheeps = cheeps.Result.ToList();
         }
-        else
+        catch
         {
-            var cheeps = cheepRepository.GetPageOfCheeps(1);
-            cheeps.Wait();
-            Cheeps = cheeps.Result.ToList();
+            Cheeps = new List<CheepViewModel>();
         }
 
         return Page();

@@ -13,26 +13,22 @@ public class UserTimelineModel : PageModel
     public UserTimelineModel(ICheepRepository cheepRepository)
     {
         this.cheepRepository = cheepRepository;
+        Cheeps = new List<CheepViewModel>();
     }
 
-    public ActionResult OnGet(string author, int? pageNo)
+    public ActionResult OnGet(string author, [FromQuery] int page)
     {
-        if (pageNo != null)
-        {
-            if (pageNo.Value < 1)
-            {
-                pageNo = 1;
-            }
+        if (page < 1) page = 1;
 
-            var cheeps = cheepRepository.GetPageOfCheepsByAuthor(author, pageNo.Value);
+        try
+        {
+            var cheeps = cheepRepository.GetPageOfCheepsByAuthor(author, page);
             cheeps.Wait();
             Cheeps = cheeps.Result.ToList();
         }
-        else
+        catch
         {
-            var cheeps = cheepRepository.GetPageOfCheepsByAuthor(author, 1);
-            cheeps.Wait();
-            Cheeps = cheeps.Result.ToList();
+            Cheeps = new List<CheepViewModel>();
         }
 
         return Page();
