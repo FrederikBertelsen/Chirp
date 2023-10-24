@@ -1,9 +1,7 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Chirp.Razor.Pages;
+using Chirp.Core;
 using Microsoft.EntityFrameworkCore;
 
-namespace Chirp.Razor;
+namespace Chirp.Infrastructure;
 
 public record AuthorViewModel(string AuthorName, string AuthorEmail);
 

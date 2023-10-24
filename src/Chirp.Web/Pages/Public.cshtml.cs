@@ -1,11 +1,9 @@
-﻿using System.Globalization;
-using Microsoft.AspNetCore.Http.Connections;
+﻿using Chirp.Core;
+using Chirp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Chirp.Razor.Pages;
-
-public record CheepViewModel(string Author, string Message, DateTime TimeStamp);
+namespace Chirp.Web.Pages;
 
 public class PublicModel : PageModel
 {
