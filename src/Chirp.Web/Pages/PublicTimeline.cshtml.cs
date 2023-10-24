@@ -22,7 +22,7 @@ public class PublicModel : PageModel
 
         try
         {
-            var cheeps = cheepRepository.GetPageOfCheeps(page);
+            Task<IEnumerable<CheepViewModel>> cheeps = cheepRepository.GetPageOfCheeps(page);
             cheeps.Wait();
             Cheeps = cheeps.Result.ToList();
         }

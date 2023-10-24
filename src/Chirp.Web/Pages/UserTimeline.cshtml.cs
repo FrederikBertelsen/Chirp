@@ -22,7 +22,7 @@ public class UserTimelineModel : PageModel
 
         try
         {
-            var cheeps = cheepRepository.GetPageOfCheepsByAuthor(author, page);
+            Task<IEnumerable<CheepViewModel>> cheeps = cheepRepository.GetPageOfCheepsByAuthor(author, page);
             cheeps.Wait();
             Cheeps = cheeps.Result.ToList();
         }
