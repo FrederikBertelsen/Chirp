@@ -16,6 +16,7 @@ Write a description of what the feature is and what it will do.
 ## Success Criteria
 - [ ] Write the success criteria here.
 - [ ] ...
+- [ ] There are comments for each new method created
 - [ ] There are tests that tests the implemented functionality
 - [ ] The tests pass without issue
 - [ ] There are no warnings or errors when running 'dotnet build'
