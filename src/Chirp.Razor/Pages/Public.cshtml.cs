@@ -16,13 +16,13 @@ public class PublicModel : PageModel
         _service = service;
     }
 
-    public ActionResult OnGet(int? pageNo)
+    public ActionResult OnGet([FromQuery] int page)
     {
-        if (pageNo != null){
-            if (pageNo < 1){
-                pageNo = 1;
+        if (page != null){
+            if (page < 1){
+                page = 1;
             }
-            Cheeps = _service.GetCheeps(pageNo.Value);
+            Cheeps = _service.GetCheeps(page.Value);
         }
         else {
             Cheeps = _service.GetCheeps(1);
