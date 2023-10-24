@@ -14,29 +14,24 @@ public class PublicModel : PageModel
     public PublicModel(ICheepService service)
     {
         _service = service;
+        //assigned empty list to avoid warning/making it nullable
+        Cheeps = Cheeps = new List<CheepViewModel>();
     }
 
     public ActionResult OnGet([FromQuery] int page)
     {
-        if (page != null){
-            if (page < 1){
-                page = 1;
-            }
-            try{
-                Cheeps = _service.GetCheeps(page);
-            }
-            catch {
-                Cheeps = new List<CheepViewModel>();
-            }
+    
+        if (page < 1){
+            page = 1;
         }
-        else {
-            try{
-                Cheeps = _service.GetCheeps(1);
-            }
-            catch {
-                Cheeps = new List<CheepViewModel>();
-            }
+        try{
+            Cheeps = _service.GetCheeps(page);
         }
+        catch {
+            Cheeps = new List<CheepViewModel>();
+        }
+        
+       
         return Page();
     }
 }
