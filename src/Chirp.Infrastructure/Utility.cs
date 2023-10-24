@@ -1,6 +1,5 @@
 using System.Globalization;
-using Chirp.Razor;
-using Chirp.Razor.Pages;
+using Chirp.Core;
 using Microsoft.EntityFrameworkCore;
 
 public class Utility
@@ -43,11 +42,10 @@ public class Utility
         if (dbCheeps[0].Author == null)
             throw new ArgumentException(
                 "Cheep.Author is null! Remember to include the author in the Cheeps that need to be displayed.");
-
+    
         return (
             from cheep in dbCheeps
-            select new CheepViewModel(cheep.Author.Name, cheep.Text,
-                cheep.TimeStamp.ToString(CultureInfo.InvariantCulture))
+            select new CheepViewModel(cheep.Author.Name, cheep.Text, cheep.TimeStamp)
         ).ToList();
     }
 }

@@ -1,21 +1,29 @@
-using Chirp.Razor;
+using Chirp.Core;
+using Chirp.Infrastructure;
+using Chirp.Web.Migrations;
 using Microsoft.EntityFrameworkCore;
-
-using (ChirpDBContext db = new ChirpDBContext())
-{
-    // create a database if none exists
-    db.Database.Migrate();
-    // fill the database with data if it's empty
-    DbInitializer.SeedDatabase(db);
-}
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<ICheepService, CheepService>();
+
+builder.Services.AddDbContext<ChirpDBContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("Chirp")));
+builder.Services.AddScoped<ICheepRepository, CheepRepository>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+
+
 
 WebApplication app = builder.Build();
+
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    IServiceProvider services = scope.ServiceProvider;
+    ChirpDBContext context = services.GetRequiredService<ChirpDBContext>();
+    DbInitializer.SeedDatabase(context);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

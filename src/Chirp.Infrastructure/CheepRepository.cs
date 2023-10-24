@@ -1,19 +1,15 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Chirp.Core;
 using Microsoft.EntityFrameworkCore;
 
-namespace Chirp.Razor;
+namespace Chirp.Infrastructure;
 
 public interface ICheepRepository
 {
-    // IEnumerable<Cheep> GetCheepsByAuthor(string authorName);
-    IEnumerable<Cheep> GetPageOfCheepsByAuthor(string authorName, int pageNumber);
+    Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByAuthor(string authorName, int pageNumber);
 
-    // IEnumerable<Cheep> GetAllCheeps();
-    IEnumerable<Cheep> GetPageOfCheeps(int pageNumber);
-    void AddCheep(string authorName, string text, DateTime timestamp);
-    void RemoveCheep(int cheepId);
-    void RemoveAuthor(string authorName);
+    Task<IEnumerable<CheepViewModel>> GetPageOfCheeps(int pageNumber);
+    Task CreateCheep(string authorName, string text, DateTime timestamp);
+    Task RemoveCheep(int cheepId);
 }
 
 public class CheepRepository : ICheepRepository
@@ -32,24 +28,13 @@ public class CheepRepository : ICheepRepository
         this.dbContext = dbContext;
     }
 
-    // public IEnumerable<Cheep> GetCheepsByAuthor(string authorName)
-    // {
-    //     Author author = dbContext.Authors
-    //         .Where(a => a.Name == authorName)
-    //         .Include(a => a.Cheeps)
-    //         .Single();
-    //
-    //     List<Cheep> orderedCheeps = author.Cheeps.OrderBy(c => c.TimeStamp).ToList();
-    //     return orderedCheeps;
-    // }
-
     /// <summary>
     /// Returns a list of Cheeps (size: PageSize) written by the specified Author sorted by time posted.
     /// </summary>
     /// <param name="authorName">The name of the Author</param>
     /// <param name="pageNumber">The page number (starts at 1)</param>
     /// <returns>A IEnumerable of Cheeps</returns>
-    public IEnumerable<Cheep> GetPageOfCheepsByAuthor(string authorName, int pageNumber)
+    public async Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByAuthor(string authorName, int pageNumber)
     {
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
@@ -58,45 +43,37 @@ public class CheepRepository : ICheepRepository
 
         int skipCount = (pageNumber - 1) * PageSize;
 
-        List<Cheep> cheepList = dbContext.Cheeps
+        List<CheepViewModel> cheepList = await dbContext.Cheeps
             .Include(c => c.Author)
             .Where(c => c.Author.Name == authorName)
-            .OrderBy(c => c.TimeStamp)
+            .OrderByDescending(c => c.TimeStamp)
             .Skip(skipCount)
             .Take(PageSize)
-            .ToList();
+            .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp))
+            .ToListAsync();
 
         return cheepList;
     }
-
-    // public IEnumerable<Cheep> GetAllCheeps()
-    // {
-    //     List<Cheep> dbCheepList = dbContext.Cheeps
-    //         .Include(c => c.Author)
-    //         .OrderBy(c => c.TimeStamp)
-    //         .ToList();
-    //
-    //     return dbCheepList;
-    // }
 
     /// <summary>
     /// Returns a list of Cheeps (size: PageSize) sorted by time posted.
     /// </summary>
     /// <param name="pageNumber">The page number (starts at 1)</param>
     /// <returns></returns>
-    public IEnumerable<Cheep> GetPageOfCheeps(int pageNumber)
+    public async Task<IEnumerable<CheepViewModel>> GetPageOfCheeps(int pageNumber)
     {
         if (pageNumber < 1)
             throw new ArgumentException("Page number cannot be under 1");
 
         int skipCount = (pageNumber - 1) * PageSize;
 
-        List<Cheep> cheepList = dbContext.Cheeps
+        List<CheepViewModel> cheepList = await dbContext.Cheeps
             .Include(c => c.Author)
-            .OrderBy(c => c.TimeStamp)
+            .OrderByDescending(c => c.TimeStamp)
             .Skip(skipCount)
             .Take(PageSize)
-            .ToList();
+            .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp))
+            .ToListAsync();
 
         return cheepList;
     }
@@ -107,14 +84,14 @@ public class CheepRepository : ICheepRepository
     /// <param name="authorName">The name of the Author of the Cheep</param>
     /// <param name="text">The text in the Cheep</param>
     /// <param name="timestamp">The time the Cheep was posted</param>
-    public void AddCheep(string authorName, string text, DateTime timestamp)
+    public async Task CreateCheep(string authorName, string text, DateTime timestamp)
     {
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
         if (text is null)
             throw new ArgumentNullException(nameof(text));
 
-        Author? author = dbContext.Authors.SingleOrDefault(a => a.Name == authorName);
+        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
 
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
@@ -122,40 +99,21 @@ public class CheepRepository : ICheepRepository
         Cheep newCheep = new Cheep() { Author = author, Text = text, TimeStamp = timestamp };
 
         dbContext.Cheeps.Add(newCheep);
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
     }
 
     /// <summary>
     /// Removes a Cheep from the database.
     /// </summary>
     /// <param name="cheepId">The ID of the Cheep</param>
-    public void RemoveCheep(int cheepId)
+    public async Task RemoveCheep(int cheepId)
     {
-        Cheep? cheep = dbContext.Cheeps.SingleOrDefault(c => c.CheepId == cheepId);
+        Cheep? cheep = await dbContext.Cheeps.SingleOrDefaultAsync(c => c.CheepId == cheepId);
 
         if (cheep is null)
             throw new ArgumentException($"Cheep with ID '{cheepId}' not found.");
 
         dbContext.Cheeps.Remove(cheep);
-        dbContext.SaveChanges();
-    }
-
-    /// <summary>
-    /// Removes an Author and all of their Cheeps.
-    /// </summary>
-    /// <param name="authorName">The name of the Author</param>
-    public void RemoveAuthor(string authorName)
-    {
-        Author? author = dbContext.Authors
-            .Where(a => a.Name == authorName)
-            .Include(a => a.Cheeps)
-            .SingleOrDefault();
-
-        if (author is null)
-            throw new ArgumentException($"Author with name '{authorName}' not found.");
-
-        dbContext.Cheeps.RemoveRange(author.Cheeps);
-        dbContext.Authors.Remove(author);
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
     }
 }

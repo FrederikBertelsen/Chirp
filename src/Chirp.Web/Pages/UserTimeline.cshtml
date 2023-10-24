@@ -1,6 +1,6 @@
-﻿@page "/{author}/{pageNo:int?}"
-@using Chirp.Razor.Pages
-@model Chirp.Razor.Pages.UserTimelineModel
+@page "/{author}"
+@using Chirp.Core
+@model Chirp.Web.Pages.UserTimelineModel
 @{
     ViewData["Title"] = "Chirp!";
     Layout = "Shared/_Layout";
@@ -29,6 +29,6 @@
     }
     else
     {
-        <em>There are no cheeps so far.</em>
+        <em>There are no cheeps here.</em>
     }
 </div>
