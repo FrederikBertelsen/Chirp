@@ -35,9 +35,9 @@ jobs:
 
           
           # Build everything
-          dotnet publish src/Chirp.Razor/Chirp.Razor.csproj --runtime "linux-x64" -c Release -o "linux"
-          dotnet publish src/Chirp.Razor/Chirp.Razor.csproj --runtime "win-x64" -c Release -o "windows"
-          dotnet publish src/Chirp.Razor/Chirp.Razor.csproj --runtime "osx-x64" -c Release -o "osx"
+          dotnet publish src/Chirp.Web/Chirp.Web.csproj --runtime "linux-x64" -c Release -o "linux"
+          dotnet publish src/Chirp.Web/Chirp.Web.csproj --runtime "win-x64" -c Release -o "windows"
+          dotnet publish src/Chirp.Web/Chirp.Web.csproj --runtime "osx-x64" -c Release -o "osx"
 
           # Cleaning and zip'ing linux file
           cd linux
