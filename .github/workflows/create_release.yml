@@ -42,23 +42,23 @@ jobs:
           # Cleaning and zip'ing linux file
           cd linux
           #rm SimpleDB.pdb
-          zip "Chirp-v${{ github.ref_name }}-linux-x64.zip" *
-          mv "Chirp-v${{ github.ref_name }}-linux-x64.zip" ../
+          zip "Chirp-${{ github.ref_name }}-linux-x64.zip" *
+          mv "Chirp-${{ github.ref_name }}-linux-x64.zip" ../
           cd ..
 
           # Cleaning and zip'ing windows file
           cd windows
           #rm SimpleDB.pdb
-          zip "Chirp-v${{ github.ref_name }}-win-x64.zip" *
-          mv "Chirp-v${{ github.ref_name }}-win-x64.zip" ../
+          zip "Chirp-${{ github.ref_name }}-win-x64.zip" *
+          mv "Chirp-${{ github.ref_name }}-win-x64.zip" ../
           cd ..
 
 
           # Cleaning and zip'ing windows file
           cd osx
           #rm SimpleDB.pdb
-          zip "Chirp-v${{ github.ref_name }}-osx-x64.zip" *
-          mv "Chirp-v${{ github.ref_name }}-osx-x64.zip" ../
+          zip "Chirp-${{ github.ref_name }}-osx-x64.zip" *
+          mv "Chirp-${{ github.ref_name }}-osx-x64.zip" ../
           cd ..
           
         
