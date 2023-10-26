@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Infrastructure;
 
-public record AuthorViewModel(string AuthorName, string AuthorEmail);
-
 public interface IAuthorRepository
 {
     Task CreateAuthor(string authorName, string authorEmail);
@@ -15,8 +13,6 @@ public interface IAuthorRepository
 
 public class AuthorRepository : IAuthorRepository
 {
-    public const int PageSize = 32;
-
     private readonly ChirpDBContext dbContext;
 
     /// <summary>

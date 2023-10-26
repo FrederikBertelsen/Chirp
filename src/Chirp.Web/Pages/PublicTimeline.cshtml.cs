@@ -16,15 +16,14 @@ public class PublicModel : PageModel
         Cheeps = new List<CheepViewModel>();
     }
 
-    public ActionResult OnGet([FromQuery] int page)
+    public async Task<ActionResult> OnGetAsync([FromQuery] int page)
     {
         if (page < 1) page = 1;
 
         try
         {
-            Task<IEnumerable<CheepViewModel>> cheeps = cheepRepository.GetPageOfCheeps(page);
-            cheeps.Wait();
-            Cheeps = cheeps.Result.ToList();
+            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheeps(page);
+            Cheeps = cheeps.ToList();
         }
         catch
         {
