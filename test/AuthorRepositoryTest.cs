@@ -15,5 +15,47 @@ public class AuthorRepositoryTest {
         return new AuthorRepository(context);
     }
 
-    
+    public void CreateAnAuthor(){
+
+    }
+    public void CreateAuthorsWithSameData(){
+
+    }
+
+    public void CreateAuthorNullValue(){
+
+    }
+
+    public void RemoveAnAuthor(){
+
+    }
+
+    public void RemoveAuthorNullValue(){
+
+    }
+
+    public void RemoveAuthorTwice(){
+
+    }
+
+    public void RemoveNonexistingAuthor(){
+
+    }
+
+    public void FindAuthorByNameTest(){
+
+    }
+
+    public void FindNonexistingAuthorByName(){
+
+    }
+
+    public void FindAuthorByEmailTest(){
+
+    }
+
+    public void FindNonexistingAuthorEmail(){
+
+    }
+
 }
