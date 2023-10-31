@@ -37,10 +37,11 @@ public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
         Assert.Contains("Chirp!", content);
         Assert.Contains("Public Timeline", content);
     }
-/// <summary>
-///  this test checks that we go to a users private timeline when we specify a user in the url 
-/// </summary>
-/// <param name="author"> the specified user</param>
+
+    /// <summary>
+    ///  this test checks that we go to a users private timeline when we specify a user in the url 
+    /// </summary>
+    /// <param name="author"> the specified user</param>
     [Theory]
     [InlineData("Helge")]
     [InlineData("Rasmus")]
@@ -56,11 +57,11 @@ public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
         Assert.Contains($"{author}'s Timeline", content);
     }
 
-/// <summary>
-/// here we cheek that there are exactly 32 cheeps in a full page of cheeps
-/// both on the public and on a private timeline
-/// </summary>
-/// <param name="page">the specified page(public or private)</param>
+    /// <summary>
+    /// here we cheek that there are exactly 32 cheeps in a full page of cheeps
+    /// both on the public and on a private timeline
+    /// </summary>
+    /// <param name="page">the specified page(public or private)</param>
     [Theory]
     [InlineData("")]
     [InlineData("Jacqualine Gilcoine")]
@@ -77,11 +78,11 @@ public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
         string cheepListStr = cheepListMatches[0].ToString();
 
         int listElementCount = Regex.Matches(cheepListStr, "<li>").Count;
-        
+
         response = await client.GetAsync($"/{page}?page=2");
         response.EnsureSuccessStatusCode();
         string page2 = await response.Content.ReadAsStringAsync();
-        
+
         string contentOneLinePage2 = Regex.Replace(content, "\n", "");
         GroupCollection cheepListMatchesPage2 =
             Regex.Match(contentOneLine, "<ul id=\"messagelist\" class=\"cheeps\">.*<\\/ul>").Groups;
@@ -95,26 +96,28 @@ public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(32, listElementCount);
         Assert.True(listElementCountPage2 <= 32);
     }
-/// <summary>
-/// 
-/// </summary>
-/// <param name="author"></param>
+
+    /// <summary>
+    /// Tests that page 1 is the same as not using ?page=X
+    /// And that page 1 != page 2
+    /// </summary>
+    /// <param name="pageURL">The page the request will be made on</param>
     [Theory]
     [InlineData("")]
     [InlineData("Jacqualine Gilcoine")]
-    public async void PaginationTest_MoreThanOnePage(string author)
+    public async void PaginationTest_MoreThanOnePage(string pageURL)
     {
         // Act
         // get HTML
-        HttpResponseMessage response = await client.GetAsync($"/{author}");
+        HttpResponseMessage response = await client.GetAsync($"/{pageURL}");
         response.EnsureSuccessStatusCode();
         string page = await response.Content.ReadAsStringAsync();
 
-        response = await client.GetAsync($"/{author}?page=1");
+        response = await client.GetAsync($"/{pageURL}?page=1");
         response.EnsureSuccessStatusCode();
         string page1 = await response.Content.ReadAsStringAsync();
 
-        response = await client.GetAsync($"/{author}?page=2");
+        response = await client.GetAsync($"/{pageURL}?page=2");
         response.EnsureSuccessStatusCode();
         string page2 = await response.Content.ReadAsStringAsync();
 
@@ -142,14 +145,18 @@ public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
     }
 
 
+    /// <summary>
+    /// Tests that our PageNotFound page displays correctly
+    /// </summary>
+    /// <param name="pageURL">The page the request will be made on</param>
     [Theory]
     [InlineData("Jacqualine Gilcoine?page=999")]
     [InlineData("Non Existing Author")]
-    public async void PaginationTest_PageNotFound(string author)
+    public async void PaginationTest_PageNotFound(string pageURL)
     {
         // Act
         // get HTML
-        HttpResponseMessage response = await client.GetAsync($"/{author}");
+        HttpResponseMessage response = await client.GetAsync($"/{pageURL}");
         response.EnsureSuccessStatusCode();
         string page = await response.Content.ReadAsStringAsync();
 
