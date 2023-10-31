@@ -1,10 +1,64 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Xunit.Abstractions;
 using Xunit;
 namespace test;
 
-public class End2EndTest
+public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
 {
+    private readonly WebApplicationFactory<Program> factory;
+    private readonly HttpClient client;
+
+    public IntegrationTest(WebApplicationFactory<Program> factory)
+    {
+        this.factory = factory;
+        client = factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = true, HandleCookies = true });
+    }
+
+    // [Theory]
+    // [InlineData("/")]
+    // [InlineData("/Index")]
+    // [InlineData("/About")]
+    // [InlineData("/Privacy")]
+    // [InlineData("/Contact")]
+    // public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
+    // {
+    //     // Arrange
+    //     // var client = _factory.CreateClient();
+    //
+    //     // Act
+    //     var response = await client.GetAsync(url);
+    //
+    //     // Assert
+    //     response.EnsureSuccessStatusCode(); // Status Code 200-299
+    //     Assert.Equal("text/html; charset=utf-8", response.Content.Headers.ContentType.ToString());
+    // }
+    
+    [Fact]
+    public async void CanSeePublicTimeline()
+    {
+        var response = await client.GetAsync("/public");
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Chirp!", content);
+        Assert.Contains("Public Timeline", content);
+    }
+    
+    // [Theory]
+    // [InlineData("Helge")]
+    // [InlineData("Rasmus")]
+    // public async void CanSeePrivateTimeline(string author)
+    // {
+    //     var response = await client.GetAsync($"/{author}");
+    //     response.EnsureSuccessStatusCode();
+    //     var content = await response.Content.ReadAsStringAsync();
+    //
+    //     Assert.Contains("Chirp!", content);
+    //     Assert.Contains($"{author}'s Timeline", content);
+    // }
+    
     // private const string PathToTestCsvFile = CSVDatabase<Cheep>.CsvFilePath;
     // private IDatabase<Cheep> testDatabase = CSVDatabase<Cheep>.Instance;
     //

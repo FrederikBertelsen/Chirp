@@ -41,3 +41,6 @@ app.UseRouting();
 app.MapRazorPages();
 
 app.Run();
+
+// make the Chirp.Web Program class public so test project can access it
+public partial class Program { }
