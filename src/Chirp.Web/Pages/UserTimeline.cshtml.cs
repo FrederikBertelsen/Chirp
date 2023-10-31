@@ -16,15 +16,14 @@ public class UserTimelineModel : PageModel
         Cheeps = new List<CheepViewModel>();
     }
 
-    public ActionResult OnGet(string author, [FromQuery] int page)
+    public async Task<ActionResult> OnGetAsync(string author, [FromQuery] int page)
     {
         if (page < 1) page = 1;
 
         try
         {
-            Task<IEnumerable<CheepViewModel>> cheeps = cheepRepository.GetPageOfCheepsByAuthor(author, page);
-            cheeps.Wait();
-            Cheeps = cheeps.Result.ToList();
+            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
+            Cheeps = cheeps.ToList();
         }
         catch
         {
