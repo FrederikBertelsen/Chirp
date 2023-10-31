@@ -7,12 +7,12 @@ using Xunit;
 
 namespace test;
 
-public class EndToEndTesting : IClassFixture<WebApplicationFactory<Program>>
+public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> factory;
     private readonly HttpClient client;
 
-    public EndToEndTesting(WebApplicationFactory<Program> factory)
+    public IntegrationTesting(WebApplicationFactory<Program> factory)
     {
         // Arrange
         this.factory = factory;
