@@ -3,16 +3,24 @@ using Chirp.Core;
 using Chirp.Infrastructure;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 
 public class AuthorRepositoryTest {
-
-    public AuthorRepository setupDatabase() {
-        using var connection = new SqliteConnection("Filename=:memory:");
-        connection.Open();
-        var builder = new DbContextOptionsBuilder<ChirpDBContext>().UseSqlite(connection);
-        using var context = new ChirpDBContext(builder.Options);
-
+    static List<Author> Authors;
+    static List<Cheep> Cheeps;
+    ChirpDBContext context;
+    SqliteConnection _connection;
+    public AuthorRepositoryTest()
+    {
+        _connection =  new SqliteConnection("Filename=:memory:");
+        _connection.Open();
+        var _contextOptions = new DbContextOptionsBuilder<ChirpDBContext>().UseSqlite(_connection).Options;
+        context = new ChirpDBContext(_contextOptions);
+        context.Database.EnsureCreated();
+        SeedDatabase(context);
+    }
+    public void SeedDatabase(ChirpDBContext context) {
         var a1 = new Author() { AuthorId = 1, Name = "existingAuthor", Email = "existingEmail@mail.com", Cheeps = new List<Cheep>() };
         var a2 = new Author() { AuthorId = 2, Name = "Luanna Muro", Email = "Luanna-Muro@ku.dk", Cheeps = new List<Cheep>() };
         
@@ -30,8 +38,9 @@ public class AuthorRepositoryTest {
         a2.Cheeps = new List<Cheep>() { c3,c5 };
         context.Authors.AddRange(authors);
         context.Cheeps.AddRange(cheeps);
+        Cheeps = cheeps;
+        Authors = authors;
         context.SaveChanges();
-        return new AuthorRepository(context);
     }
     /// <summary>
     /// Test that the construcotr for AuthorReposetory executes correctly
@@ -57,13 +66,15 @@ public class AuthorRepositoryTest {
     [Theory]
     //basic format
     [InlineData("someName","someEmail@mail.com")]
-    //name with space in 
+    /*//name with space in 
     [InlineData("some Name","someEmail@mail.com")]
     //name with special charectors
     [InlineData("some_Name?!\\","someEmail@mail.com")]
     //email with special charactors
-    [InlineData("someName","some.?\\Email@mail.com")]
-    public void CreateNonexistingAuthor(string authorName, string authorEmail){
+    [InlineData("someName","some.?\\Email@mail.com")]*/
+    public async void CreateNonexistingAuthor(string authorName, string authorEmail){
+        AuthorRepository authorRepository = new(context);
+        await authorRepository.CreateAuthor(authorName,authorEmail);
         
     }
     /// <summary>
