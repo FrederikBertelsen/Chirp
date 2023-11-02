@@ -50,6 +50,8 @@ public class AuthorRepository : IAuthorRepository
     /// <exception cref="ArgumentException">If an author with authorName doesn't exist</exception>
     public async Task RemoveAuthor(string authorName)
     {
+        if (authorName is null)
+            throw new ArgumentNullException(nameof(authorName));
         Author? author = await dbContext.Authors
             .Where(a => a.Name == authorName)
             .Include(a => a.Cheeps)

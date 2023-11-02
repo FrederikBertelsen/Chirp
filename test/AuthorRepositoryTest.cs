@@ -105,53 +105,143 @@ public class AuthorRepositoryTest {
     public void CreateAuthorTwiceTest(string authorName, string authorEmail){
 
     }
-
-    [Theory]
-    //Existing author values
-    [InlineData("existingAuthor", "existingEmail@mail.com")]
-    public void RemoveExistingAuthorTest(string authorName, string authorEmail){
-        
-    }
-    [Theory]
-    //both as null
-    [InlineData(null,null)]
-    public void RemoveAuthorNullValue(string authorName, string authorEmail){
-
-    }
-    [Theory]
-    //both as null
-    [InlineData("existingAuthor", "existingEmail@mail.com")]
-    public void RemoveAuthorTwice(string authorName, string authorEmail){
-
-    }
-    [Theory]
-    //basic format
-    [InlineData("someName","someEmail@mail.com")]
-    public void RemoveNonexistingAuthor(string authorName, string authorEmail){
-
-    }
+    /// <summary>
+    /// tests that removing an author that exists in the database works correctly
+    /// </summary>
+    /// <param name="authorName"></param>
     [Theory]
     //Existing author values
     [InlineData("existingAuthor")]
-    public void FindAuthorByNameTest(string authorName){
+    public async void RemoveExistingAuthorTest(string authorName){
+        //arrange
+        AuthorRepository authorRepository = new AuthorRepository(context);
+
+        //act
+        int size = context.Authors.Count();
+        await authorRepository.RemoveAuthor(authorName);
+
+        //assert
+        Assert.Equal(size-1, context.Authors.Count());  
 
     }
+    /// <summary>
+    /// tests that removing an author with null as the name value returns an error
+    /// </summary>
+    /// <param name="authorName"></param>
+    [Theory]
+    //both as null
+    [InlineData(null)]
+    public async void RemoveAuthorNullValue(string authorName){
+        //arrange
+        AuthorRepository authorRepository = new AuthorRepository(context);
+
+        //act
+        async Task result() => await authorRepository.RemoveAuthor(authorName);
+
+        //assert
+        await Assert.ThrowsAsync<ArgumentNullException>(result);
+    }
+    /// <summary>
+    /// tests that removing an author that exists in the database twice is no different from removing them once
+    /// </summary>
+    /// <param name="authorName"></param>
+    [Theory]
+    //both as null
+    [InlineData("existingAuthor")]
+    public async void RemoveAuthorTwice(string authorName){
+        //arrange
+        AuthorRepository authorRepository = new AuthorRepository(context);
+
+        //act
+        int size = context.Authors.Count();
+        await authorRepository.RemoveAuthor(authorName);
+        async Task result() => await authorRepository.RemoveAuthor(authorName);
+
+        //assert
+        await Assert.ThrowsAsync<ArgumentException>(result);
+        Assert.Equal(size-1, context.Authors.Count());  
+
+    }
+    /// <summary>
+    /// tests that removing an author that has never been in the database returns an error
+    /// </summary>
+    /// <param name="authorName"></param>
     [Theory]
     //basic format
     [InlineData("someName")]
-    public void FindNonexistingAuthorByName(string authorName){
+    public async void RemoveNonexistingAuthor(string authorName){
+        //arrange
+        AuthorRepository authorRepository = new AuthorRepository(context);
 
+        //act 
+        async Task result() => await authorRepository.RemoveAuthor(authorName);
+        //assert
+        await Assert.ThrowsAsync<ArgumentException>(result);
     }
+    /// <summary>
+    /// tests that an author in the database can be found through their name
+    /// </summary>
+    /// <param name="authorName"></param>
+    [Theory]
+    //Existing author values
+    [InlineData("existingAuthor")]
+    public async void FindAuthorByNameTest(string authorName){
+        //arrange
+        AuthorRepository authorRepository = new AuthorRepository(context);
+
+        //act
+        AuthorViewModel foundAuthor = await authorRepository.FindAuthorByName(authorName);
+        //assert
+        Assert.Equal("existingAuthor", foundAuthor.AuthorName);  
+        Assert.Equal("existingEmail@mail.com", foundAuthor.AuthorEmail);
+    }
+    /// <summary>
+    /// tests that attempting to find an author that does not exist in the database through their name returns an error
+    /// </summary>
+    /// <param name="authorName"></param>
+    [Theory]
+    //basic format
+    [InlineData("someName")]
+    public async void FindNonexistingAuthorByName(string authorName){
+        //arrange
+        AuthorRepository authorRepository = new AuthorRepository(context);
+
+        //act 
+        async Task result() => await authorRepository.FindAuthorByName(authorName);
+        //assert
+        await Assert.ThrowsAsync<ArgumentException>(result);
+    }
+    /// <summary>
+    /// tests that an author in the database can be found through their email
+    /// </summary>
+    /// <param name="authorEmail"></param>
     [Theory]
     //Existing author values
     [InlineData("existingEmail@mail.com")]
-    public void FindAuthorByEmailTest(string authorEmail){
+    public async void FindAuthorByEmailTest(string authorEmail){
+           //arrange
+        AuthorRepository authorRepository = new AuthorRepository(context);
 
+        //act
+        AuthorViewModel foundAuthor = await authorRepository.FindAuthorByEmail(authorEmail);
+        //assert
+        Assert.Equal("existingEmail@mail.com", foundAuthor.AuthorEmail);
+        Assert.Equal("existingAuthor", foundAuthor.AuthorName);  
     }
+    /// <summary>
+    /// tests that attempting to find an author that does not exist in the database through their email returns an error
+    /// </summary>
+    /// <param name="authorEmail"></param>
     [Theory]
     //basic format
     [InlineData("someEmail@mail.com")]
-    public void FindNonexistingAuthorEmail(string authorEmail){
+    public async void FindNonexistingAuthorEmail(string authorEmail){
+        //arrange
+        AuthorRepository authorRepository = new AuthorRepository(context);
 
+        //act 
+        async Task result() => await authorRepository.FindAuthorByName(authorEmail);
+        //assert
+        await Assert.ThrowsAsync<ArgumentException>(result);
     }
 }
