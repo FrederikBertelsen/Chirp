@@ -8,6 +8,10 @@ public interface ICheepRepository
     Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByAuthor(string authorName, int pageNumber);
 
     Task<IEnumerable<CheepViewModel>> GetPageOfCheeps(int pageNumber);
+
+    Task<int> GetCheepCountAll();
+
+    Task<int> GetCheepCountAuthor(string authorName);
     Task CreateCheep(string authorName, string text, DateTime timestamp);
     Task RemoveCheep(int cheepId);
 }
@@ -78,6 +82,33 @@ public class CheepRepository : ICheepRepository
             .ToListAsync();
 
         return cheepList;
+    }
+
+    public async Task<int> GetCheepCountAll() {
+
+        List<CheepViewModel> cheepList = await dbContext.Cheeps
+            .Include(c => c.Author)
+            .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp))
+            .ToListAsync();
+        
+        return cheepList.Count();
+    }
+
+    public async Task<int> GetCheepCountAuthor(string authorName){
+        if (authorName is null)
+            throw new ArgumentNullException(nameof(authorName));
+
+        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
+        if (author is null)
+            throw new ArgumentException($"Author with name '{authorName}' not found.");
+
+        List<CheepViewModel> cheepList = await dbContext.Cheeps
+            .Where(c => c.AuthorId == author.AuthorId)
+            .Select(c => new CheepViewModel(author.Name, c.Text, c.TimeStamp))
+            .ToListAsync();
+
+        return cheepList.Count();
+        
     }
 
     /// <summary>
