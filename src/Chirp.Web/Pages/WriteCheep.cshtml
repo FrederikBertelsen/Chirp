@@ -1,0 +1,23 @@
+﻿@page
+@using Chirp.Core
+@model Chirp.Web.Pages.PostCheepModel
+@{
+    ViewData["Title"] = "Chirp!";
+    Layout = "Shared/_Layout";
+}
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div>
+        <h2>Write Cheep</h2>
+        <p>Whats on your mind?</p>
+        <textarea></textarea>
+        <button>Post Cheep</button>
+    </div>
+}
+else
+{
+    <div>
+        <p>You are not logged in, so you can't post cheeps!</p>
+    </div>
+}
