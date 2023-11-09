@@ -8,13 +8,15 @@
 <body>
 <div class=page>
     <h1><img src="/images/icon1.png" alt="Icon1"/>Chirp!</h1>
-
+    
+    <!--This code was taken lecture 8's notes (https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_08/README_PROJECT.md#1-software-development)-->
     <div class=navigation>
         @if (User.Identity?.IsAuthenticated == true)
         {
             <div>
                 <a href="/">public timeline</a> |
                 <a href="/@(User.Identity.Name)">my timeline</a> |
+                <a href="/WriteCheep">Write Cheep</a> |
                 <a href="/MicrosoftIdentity/Account/SignOut">logout [@(User.Identity.Name)]</a>
             </div>
         }
