@@ -8,13 +8,13 @@
 <body>
 <div class=page>
     <h1><img src="/images/icon1.png" alt="Icon1"/>Chirp!</h1>
-    
+
     <div class=navigation>
         @if (User.Identity?.IsAuthenticated == true)
         {
             <div>
-                <a href="/@(User.Identity.Name)">my timeline</a> |
                 <a href="/">public timeline</a> |
+                <a href="/@(User.Identity.Name)">my timeline</a> |
                 <a href="/MicrosoftIdentity/Account/SignOut">logout [@(User.Identity.Name)]</a>
             </div>
         }
