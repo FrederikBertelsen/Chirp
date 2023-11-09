@@ -4,16 +4,45 @@
 @{
     ViewData["Title"] = "Chirp!";
     Layout = "Shared/_Layout";
+
+    if (HttpMethods.IsPost(Request.Method))
+    {
+        string cheepText = Request.Form["CheepText"];
+        switch (cheepText.Length)
+        {
+            case 0:
+                <script type="text/javascript">
+                    alert("Your Cheep is too short!")
+                </script>
+                break;
+            case > 160:
+                <script type="text/javascript">
+                    alert("Your Cheep is too long!")
+                </script>
+                break;
+            default:
+                Model.createCheep(User.Identity?.Name, cheepText);
+
+                <script type="text/javascript">
+                    alert("Your Cheep was successfully cheeped!")
+                </script>
+                break;
+        }
+    }
 }
 
 @if (User.Identity?.IsAuthenticated == true)
 {
-    <div>
-        <h2>Write Cheep</h2>
-        <p>Whats on your mind?</p>
-        <textarea></textarea>
-        <button>Post Cheep</button>
-    </div>
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <div class="cheepbox">
+            <h3>What's on your mind @(User.Identity.Name)?</h3>
+            <form method="post">
+                <input style="float: left" type="text" name="CheepText" minlength="1" maxlength="160">
+                <input type="submit" value="Cheep!">
+            </form>
+        </div>
+    </form>
 }
 else
 {
