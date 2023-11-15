@@ -32,9 +32,13 @@
     }
 </div>
 <div>
-    <ul>
-        <li>
-            <a asp-page="/" asp-route-currentPage="@(Model.currentPage+1)">Go forward</a>
-        </li>
-    </ul>
+    @if (Model.currentPage != 1){
+        <a href = "/?page=@(Model.currentPage-1)">&lt;Previous</a>
+    }
+    @foreach (int pageNumber in Model.numbersToShow){
+        <a href = "/?page=@(pageNumber)">@(pageNumber)</a>
+    }  
+    @if (Model.currentPage != Model.totalPages){
+        <a href = "/?page=@(Model.currentPage+1)">Next&gt;</a>
+    }
 </div>
