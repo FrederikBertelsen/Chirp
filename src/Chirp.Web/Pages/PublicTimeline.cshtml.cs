@@ -27,8 +27,6 @@ public class PublicModel : PageModel
         if (cheepText is null || userName is null || userName.Trim() == "" || cheepText.Trim() == "" || cheepText.Length == 0 || cheepText.Length > 160 ||
             User.Identity?.Name is null || User.Identity.IsAuthenticated != true) return RedirectToPage();
 
-        string cheep = cheepText;
-        string authorName = userName;
         string? authorEmail = User.Claims
             .Where(c => c.Type == ClaimTypes.Email)
             .Select(c => c.Value)
@@ -36,20 +34,20 @@ public class PublicModel : PageModel
         
         DateTime dateTime = DateTime.Now;
 
-        Task<bool> authorTask = authorRepository.DoesUserNameExists(authorName);
+        Task<bool> authorTask = authorRepository.DoesUserNameExists(userName);
         authorTask.Wait();
         bool authorExists = authorTask.Result;
         if (!authorExists)
         {
             if (authorEmail is not null)
             {
-                await authorRepository.CreateAuthor(authorName, authorEmail);
+                await authorRepository.CreateAuthor(userName, authorEmail);
             }
 
-            await authorRepository.CreateAuthor(authorName, "noEmail@found.error");
+            await authorRepository.CreateAuthor(userName, "noEmail@found.error");
         }
 
-        await cheepRepository.CreateCheep(authorName, cheep, dateTime);
+        await cheepRepository.CreateCheep(userName, cheepText, dateTime);
 
         return RedirectToPage();
     }
