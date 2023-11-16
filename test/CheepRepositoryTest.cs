@@ -57,28 +57,72 @@ public class CheepRepositoryTest {
 /// <param name="text">Text of the created cheep</param>
 /// <param name="dateTime">String used to create the datetime object. Format: yyyy-mm-dd hh:mm:ss</param>
     [Theory]
-    [InlineData(1, "Hello", "2023-08-01 13:14:37")]
-
-    public async void testCreateCheep(int authorIndex, string text, string dateTime) {
-        Assert.Equal(5, context.Cheeps.Count());
+    [InlineData("existingAuthor", "Hello", "2023-08-01 13:14:37")]
+    [InlineData("existingAuthor", "this string is exact 160 chars. this string is exact 160 chars. this string is exact 160 chars. this string is exact 160 chars. this string is exact 160 chars. ", "2023-08-01 13:14:37")]
+    [InlineData("existingAuthor", "1", "2023-08-01 13:14:37")]
+    public async void CreateCheep(string author, string text, string dateTime) {
+        //arrange
+        int cheepcount = context.Cheeps.Count();
         CheepRepository cr = new CheepRepository(context);
-        await cr.CreateCheep("existingAuthor", text, DateTime.Parse(dateTime));
-        Assert.Equal(6, context.Cheeps.Count());
-
+        //act
+        await cr.CreateCheep(author, text, DateTime.Parse(dateTime));
+        //assert
+        Assert.Equal(cheepcount+1, context.Cheeps.Count());
     }
+    
+    [Theory]
+    [InlineData("existingAuthor",null, null)]
+    [InlineData("existingAuthor",null, "2023-08-01 13:14:37")]
+    [InlineData("existingAuthor","Hello", null)]
 
-    public void testCreateCheepLimits(Author author, string text, DateTime dateTime) {
-
+    public async void CreateCheepWithNullValues(string author, string text, string dateTime) {
+        //arrange
+        int cheepcount = context.Cheeps.Count();
+        CheepRepository cr = new CheepRepository(context);
+        //act
+        async Task result() => await cr.CreateCheep(author, text, DateTime.Parse(dateTime));
+        //assert
+        await Assert.ThrowsAsync<ArgumentNullException>(result);
+        Assert.Equal(cheepcount, context.Cheeps.Count());
     }
+    [Theory]
+    [InlineData("nonExisitngAuthor","Hello", "2023-08-01 13:14:37")]
 
-    public void testCreateCheepNullValues(Author author, string text, DateTime dateTime) {
-
+    public async void CreateCheepAuthorDoesNotExist(string author, string text, string dateTime) {
+        //arrange
+        int cheepcount = context.Cheeps.Count();
+        CheepRepository cr = new CheepRepository(context);
+        //act
+        async Task result() => await cr.CreateCheep(author, text, DateTime.Parse(dateTime));
+        //assert
+        await Assert.ThrowsAsync<ArgumentException>(result);
+        Assert.Equal(cheepcount, context.Cheeps.Count());
     }
-
-    public void testCreateCheepAuthorDoesNotExist(Author author) {
-
+    [Theory]
+    [InlineData(null,"Hello", "2023-08-01 13:14:37")]
+    public async void CreateCheepAuthorNull(string author, string text, string dateTime) {
+        //arrange
+        int cheepcount = context.Cheeps.Count();
+        CheepRepository cr = new CheepRepository(context);
+        //act
+        async Task result() => await cr.CreateCheep(author, text, DateTime.Parse(dateTime));
+        //assert
+        await Assert.ThrowsAsync<ArgumentNullException>(result);
+        Assert.Equal(cheepcount, context.Cheeps.Count());
     }
-
+    /*[Theory]
+    [InlineData("existingAuthor", "", "2023-08-01 13:14:37")]
+    [InlineData("existingAuthor", "this is a string over 160 chars.this is a string over 160 chars.this is a string over 160 chars.this is a string over 160 chars.this is a string over 160 chars..", "2023-08-01 13:14:37")]
+    public async void CreateCheepLimits(string author, string text, string dateTime) {
+        //arrange
+        int cheepcount = context.Cheeps.Count();
+        CheepRepository cr = new CheepRepository(context);
+        //act
+        async Task result() => await cr.CreateCheep(author, text, DateTime.Parse(dateTime));
+        //assert
+        await Assert.ThrowsAsync<ArgumentException>(result);
+        Assert.Equal(cheepcount, context.Cheeps.Count());
+    }*/
     public void testRemoveCheep() {
 
     }
