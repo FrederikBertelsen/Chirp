@@ -42,21 +42,6 @@ public class AuthorRepositoryTest {
         Authors = authors;
         context.SaveChanges();
     }
-    /// <summary>
-    /// Test that the construcotr for AuthorReposetory executes correctly
-    /// </summary>
-    [Fact]
-    public void AuthorRepositoryConstructorTest(){
-
-    }
-
-    /// <summary>
-    /// Test that the construcotr for AuthorReposetory with null input fails
-    /// </summary>
-    [Fact]
-    public void AuthorRepositoryConstructorWithNullInputTest(){
-        //should fail/throw exception
-    }
 
     /// <summary>
     /// tests that different ways of creating an author executes correctly 
@@ -66,29 +51,43 @@ public class AuthorRepositoryTest {
     [Theory]
     //basic format
     [InlineData("someName","someEmail@mail.com")]
-    /*//name with space in 
+    //name with space in 
     [InlineData("some Name","someEmail@mail.com")]
     //name with special charectors
     [InlineData("some_Name?!\\","someEmail@mail.com")]
     //email with special charactors
-    [InlineData("someName","some.?\\Email@mail.com")]*/
+    [InlineData("someName","some.?\\Email@mail.com")]
     public async void CreateNonexistingAuthor(string authorName, string authorEmail){
+        //arrange
         AuthorRepository authorRepository = new(context);
+        //act
+        int size = context.Authors.Count();
         await authorRepository.CreateAuthor(authorName,authorEmail);
         
+        //assert
+        Assert.Equal(size+1, context.Authors.Count());  
     }
     /// <summary>
-    /// 
+    /// creates author with data already in the database
     /// </summary>
     /// <param name="authorName"></param>
     /// <param name="authorEmail"></param>
     [Theory]
     [InlineData("existingAuthor","existingEmail@mail.com")]
-    [InlineData("someName","existingEmail@mail.com")]
-    [InlineData("someName","someEmail@mail.com")]
-    public void CreateAuthorsWithExistingData(string authorName, string authorEmail){
-        //should throw exception
+    public async void CreateAuthorsWithExistingData(string authorName, string authorEmail){
+        //arrange
+        AuthorRepository authorRepository = new(context);
+        
+        //act
+        int size = context.Authors.Count();
+        async Task result() => await authorRepository.CreateAuthor(authorName, authorEmail);
+
+        //assert
+        await Assert.ThrowsAsync<ArgumentException>(result);
+        Assert.Equal(size, context.Authors.Count());  
     }
+
+
     [Theory]
     //both as null
     [InlineData(null,null)]
@@ -96,14 +95,33 @@ public class AuthorRepositoryTest {
     [InlineData(null,"someEmail@mail.com")]
     //mail as unll
     [InlineData("someName",null)]
-    public void CreateAuthorNullValue(string authorName, string authorEmail){
+    public async void CreateAuthorNullValue(string authorName, string authorEmail){
+        //arrange
+        AuthorRepository authorRepository = new(context);
+        
+        //act
+        int size = context.Authors.Count();
+        async Task result() => await authorRepository.CreateAuthor(authorName, authorEmail);
 
+        //assert
+        await Assert.ThrowsAsync<DbUpdateException>(result);
+        Assert.Equal(size, context.Authors.Count());  
     }
     [Theory]
     //basic format
     [InlineData("someName","someEmail@mail.com")]
-    public void CreateAuthorTwiceTest(string authorName, string authorEmail){
+    public async void CreateAuthorTwiceTest(string authorName, string authorEmail){
+        //arrange
+        AuthorRepository authorRepository = new(context);
+        
+        //act
+        int size = context.Authors.Count();
+        await authorRepository.CreateAuthor(authorName, authorEmail);
+        async Task result() => await authorRepository.CreateAuthor(authorName, authorEmail);
 
+        //assert
+        await Assert.ThrowsAsync<ArgumentException>(result);
+        Assert.Equal(size+1, context.Authors.Count());  
     }
     /// <summary>
     /// tests that removing an author that exists in the database works correctly
