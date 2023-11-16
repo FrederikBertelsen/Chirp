@@ -7,11 +7,12 @@ using Xunit;
 
 
 public class CheepRepositoryTest {
-
     static List<Author> Authors;
     static List<Cheep> Cheeps;
     ChirpDBContext context;
     SqliteConnection _connection;
+    //might not be neccarcary when pagesize is refactored
+    int pageSize;
     public CheepRepositoryTest()
     {
         _connection =  new SqliteConnection("Filename=:memory:");
@@ -19,6 +20,7 @@ public class CheepRepositoryTest {
         var _contextOptions = new DbContextOptionsBuilder<ChirpDBContext>().UseSqlite(_connection).Options;
         context = new ChirpDBContext(_contextOptions);
         context.Database.EnsureCreated();
+        pageSize = 32;
         SeedDatabase(context);
     }
 
@@ -46,8 +48,27 @@ public class CheepRepositoryTest {
     }
 
     [Fact]
-    public void testGetPageOfCheeps() {
-        Assert.True(true);
+    public async void GetPageOfCheeps() {
+        //arrange
+        int actualCount = 0;
+        CheepRepository cr = new CheepRepository(context);
+        //act
+        IEnumerable<CheepViewModel> result = await cr.GetPageOfCheeps(1);
+        foreach(var e in result)
+            actualCount++;
+        //assert
+        Assert.Equal(Math.Min(context.Cheeps.Count(),pageSize),actualCount);
+    }
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-6)]
+    public async void GetPageOfCheepsPagenumberOutOfRange(int pageNumber) {
+        //arrange
+        CheepRepository cr = new CheepRepository(context);
+        //act
+        async Task result ()=> await cr.GetPageOfCheeps(pageNumber);
+        //assert
+        await Assert.ThrowsAsync<ArgumentException>(result);
     }
 
 /// <summary>
@@ -123,19 +144,69 @@ public class CheepRepositoryTest {
         await Assert.ThrowsAsync<ArgumentException>(result);
         Assert.Equal(cheepcount, context.Cheeps.Count());
     }*/
-    public void testRemoveCheep() {
-
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(5)]
+    public async void RemoveCheep(int cheepId) {
+        //arrange
+        int cheepcount = context.Cheeps.Count();
+        CheepRepository cr = new CheepRepository(context);
+        //act
+        await cr.RemoveCheep(cheepId);
+        //assert
+        Assert.Equal(cheepcount-1, context.Cheeps.Count());
+    }
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(10)]
+    public async void RemoveCheepDoesNotExist(int cheepId) {
+        //arrange
+        int cheepcount = context.Cheeps.Count();
+        CheepRepository cr = new CheepRepository(context);
+        //act
+        async Task result() => await cr.RemoveCheep(cheepId);
+        //assert
+        await Assert.ThrowsAsync<ArgumentException>(result);
+        Assert.Equal(cheepcount, context.Cheeps.Count());
+    }
+    //cannot be made properly before pagesize can be decided by methodcall
+    //only works because we do not have more than 32 per author in database
+    [Theory]
+    [InlineData("existingAuthor", 3)]
+    [InlineData("Luanna Muro", 2)]
+    public async void GetCheepsByAuthor(string author, int cheepcountByAuthor) {
+        //arrange
+        CheepRepository cr = new CheepRepository(context);
+        int actualCount = 0;
+        //act
+        IEnumerable<CheepViewModel> result = await cr.GetPageOfCheepsByAuthor(author,1);
+        foreach(var e in result)
+            actualCount++;
+        //assert
+        Assert.Equal(actualCount, cheepcountByAuthor);
+    }
+    [Theory]
+    [InlineData("nonExisitngAuthor")]
+     public async void GetCheepsByNonExistingAuthor(string author) {
+        //arrange
+        CheepRepository cr = new CheepRepository(context);
+        //act
+        async Task result ()=> await cr.GetPageOfCheepsByAuthor(author,1);
+        //assert
+        await Assert.ThrowsAsync<ArgumentException>(result);
+    }
+    [Theory]
+    [InlineData(null)]
+     public async void GetCheepsByNullAuthor(string author) {
+        //arrange
+        CheepRepository cr = new CheepRepository(context);
+        //act
+        async Task result ()=> await cr.GetPageOfCheepsByAuthor(author,1);
+        //assert
+        await Assert.ThrowsAsync<ArgumentNullException>(result);
     }
 
-    public void testRemoveCheepDoesNotExist() {
-
-    }
-
-    public void testGetCheepsByAuthor() {
-
-    }
-
-    public void testGetCheepsByAuthorDoesNotExist() {
-
-    }
 }
