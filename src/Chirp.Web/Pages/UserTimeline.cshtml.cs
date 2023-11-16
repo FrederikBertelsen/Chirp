@@ -51,7 +51,7 @@ public class UserTimelineModel : PageModel
 
         try
         {
-            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
+            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page, pageSize);
             Cheeps = cheeps.ToList();
             count = await cheepRepository.GetCheepCountAuthor(author);
             totalPages = count/pageSize;

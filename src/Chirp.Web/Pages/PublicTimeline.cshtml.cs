@@ -46,7 +46,7 @@ public class PublicModel : PageModel
 
         try
         {
-            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheeps(page);
+            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheeps(page, pageSize);
             Cheeps = cheeps.ToList();
             count = await cheepRepository.GetCheepCountAll();
             totalPages = count/pageSize;
