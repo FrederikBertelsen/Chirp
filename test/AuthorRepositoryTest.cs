@@ -3,14 +3,14 @@ using Chirp.Core;
 using Chirp.Infrastructure;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 
 public class AuthorRepositoryTest {
-    static List<Author> Authors;
-    static List<Cheep> Cheeps;
     ChirpDBContext context;
     SqliteConnection _connection;
+    /// <summary>
+    /// The setup for Authorrepo-test, here the connection to the database and the dbContext is created 
+    /// </summary>
     public AuthorRepositoryTest()
     {
         _connection =  new SqliteConnection("Filename=:memory:");
@@ -20,7 +20,11 @@ public class AuthorRepositoryTest {
         context.Database.EnsureCreated();
         SeedDatabase(context);
     }
-    public void SeedDatabase(ChirpDBContext context) {
+     /// <summary>
+    /// method for seeding the database with data for testing
+    /// </summary>
+    /// <param name="context"> the context dbcontext for testing</param>
+    void SeedDatabase(ChirpDBContext context) {
         var a1 = new Author() { AuthorId = 1, Name = "existingAuthor", Email = "existingEmail@mail.com", Cheeps = new List<Cheep>() };
         var a2 = new Author() { AuthorId = 2, Name = "Luanna Muro", Email = "Luanna-Muro@ku.dk", Cheeps = new List<Cheep>() };
         
@@ -38,8 +42,6 @@ public class AuthorRepositoryTest {
         a2.Cheeps = new List<Cheep>() { c3,c5 };
         context.Authors.AddRange(authors);
         context.Cheeps.AddRange(cheeps);
-        Cheeps = cheeps;
-        Authors = authors;
         context.SaveChanges();
     }
 
@@ -67,6 +69,7 @@ public class AuthorRepositoryTest {
         //assert
         Assert.Equal(size+1, context.Authors.Count());  
     }
+    
     /// <summary>
     /// creates author with data already in the database
     /// </summary>
@@ -87,7 +90,12 @@ public class AuthorRepositoryTest {
         Assert.Equal(size, context.Authors.Count());  
     }
 
-
+    /// <summary>
+    /// tests that the correct Exeption is raised if the CreateAuthor 
+    /// method is called with a null values
+    /// </summary>
+    /// <param name="authorName"></param>
+    /// <param name="authorEmail"></param>
     [Theory]
     //both as null
     [InlineData(null,null)]
@@ -107,6 +115,13 @@ public class AuthorRepositoryTest {
         await Assert.ThrowsAsync<DbUpdateException>(result);
         Assert.Equal(size, context.Authors.Count());  
     }
+
+    /// <summary>
+    /// tests that the correct Exeption is raised if the CreateAuthor 
+    /// method is called twice in a row, witch would otherwise create dublicate authors
+    /// </summary>
+    /// <param name="authorName">should not already exist in the database</param>
+    /// <param name="authorEmail">should not already exist in the database</param>
     [Theory]
     //basic format
     [InlineData("someName","someEmail@mail.com")]
@@ -123,6 +138,7 @@ public class AuthorRepositoryTest {
         await Assert.ThrowsAsync<ArgumentException>(result);
         Assert.Equal(size+1, context.Authors.Count());  
     }
+
     /// <summary>
     /// tests that removing an author that exists in the database works correctly
     /// </summary>
