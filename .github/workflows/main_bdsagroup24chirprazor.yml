@@ -28,6 +28,7 @@ jobs:
         run: |
           # Define some variables for things we need
           dotnet user-secrets set "ConnectionStrings:Chirp" "${{ secrets.CONNECTION_STRING }}" --id id
+          echo "AZURE_DB_SERVER=${{ secrets.CONNECTION_STRING }}" >> $GITHUB_ENV
 
           dotnet tool install --global dotnet-ef --version 7
           # Make SQL databse runnable
