@@ -47,3 +47,14 @@
         <em>There are no cheeps here.</em>
     }
 </div>
+<div>
+    @if (Model.currentPage != 1){
+        <a href = "/?page=@(Model.currentPage-1)">&lt;Previous</a>
+    }
+    @foreach (int pageNumber in Model.numbersToShow){
+        <a href = "/?page=@(pageNumber)">@(pageNumber)</a>
+    }  
+    @if (Model.currentPage != Model.totalPages){
+        <a href = "/?page=@(Model.currentPage+1)">Next&gt;</a>
+    }
+</div>

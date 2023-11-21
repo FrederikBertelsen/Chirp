@@ -20,14 +20,16 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 7.0.13
+          dotnet-version: 7.0.111
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
         shell: bash
         run: |
           # Define some variables for things we need
-          
+          dotnet user-secrets set "ConnectionStrings:Chirp" "${{ secrets.CONNECTION_STRING }}" --id id
+          echo "AZURE_DB_SERVER=${{ secrets.CONNECTION_STRING }}" >> $GITHUB_ENV
+
           dotnet tool install --global dotnet-ef --version 7
           # Make SQL databse runnable
           
