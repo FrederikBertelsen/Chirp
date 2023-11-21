@@ -9,9 +9,10 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Configuration.AddUserSecrets("id");
 
 builder.Services.AddDbContext<ChirpDBContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("Chirp")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Chirp")));
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 
@@ -30,7 +31,7 @@ using (IServiceScope scope = app.Services.CreateScope())
 {
     IServiceProvider services = scope.ServiceProvider;
     ChirpDBContext context = services.GetRequiredService<ChirpDBContext>();
-    DbInitializer.SeedDatabase(context);
+    //DbInitializer.SeedDatabase(context);
 }
 
 // Configure the HTTP request pipeline.
