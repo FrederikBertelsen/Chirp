@@ -1,4 +1,5 @@
-﻿using Chirp.Core;
+﻿using System.Security.Claims;
+using Chirp.Core;
 using Chirp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -7,6 +8,7 @@ namespace Chirp.Web.Pages;
 
 public class UserTimelineModel : PageModel
 {
+    private readonly IAuthorRepository authorRepository;
     private readonly ICheepRepository cheepRepository;
     public List<CheepViewModel> Cheeps { get; set; }
 
@@ -23,9 +25,9 @@ public class UserTimelineModel : PageModel
 
 
     int count {get; set;}
-
-    public UserTimelineModel(ICheepRepository cheepRepository)
+    public UserTimelineModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository)
     {
+        this.authorRepository = authorRepository;
         this.cheepRepository = cheepRepository;
         Cheeps = new List<CheepViewModel>();
         pageSize = 32;
@@ -37,8 +39,42 @@ public class UserTimelineModel : PageModel
         //
         navigationAuthor = "";
     }
+    public async Task<IActionResult> OnPost()
+    {
+        string? cheepText = Request.Form["CheepText"];
+        string? userName = User.Identity?.Name;
 
-    public async Task<ActionResult> OnGetAsync(string author, [FromQuery] int page)
+        if (cheepText is null || userName is null || userName.Trim() == "" || cheepText.Trim() == "" || cheepText.Length == 0 || cheepText.Length > 160 ||
+            User.Identity?.Name is null || User.Identity.IsAuthenticated != true) return RedirectToPage();
+
+        string cheep = cheepText;
+        string authorName = userName;
+        string? authorEmail = User.Claims
+            .Where(c => c.Type == ClaimTypes.Email)
+            .Select(c => c.Value)
+            .SingleOrDefault();
+        
+        DateTime dateTime = DateTime.Now;
+
+        Task<bool> authorTask = authorRepository.DoesUserNameExists(authorName);
+        authorTask.Wait();
+        bool authorExists = authorTask.Result;
+        if (!authorExists)
+        {
+            if (authorEmail is not null)
+            {
+                await authorRepository.CreateAuthor(authorName, authorEmail);
+            }
+
+            await authorRepository.CreateAuthor(authorName, "noEmail@found.error");
+        }
+
+        await cheepRepository.CreateCheep(authorName, cheep, dateTime);
+
+        return RedirectToPage();
+    }
+    
+    public async Task<IActionResult> OnGetAsync(string author, [FromQuery] int page)
     {
         if (page < 1) page = 1;
 
