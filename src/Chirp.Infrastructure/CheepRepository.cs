@@ -9,9 +9,9 @@ public interface ICheepRepository
 
     Task<IEnumerable<CheepViewModel>> GetPageOfCheeps(int pageNumber, int pageSize);
 
-    Task<int> GetCheepCountAll();
+    Task<int> GetCheepPageAmountAll();
 
-    Task<int> GetCheepCountAuthor(string authorName);
+    Task<int> GetCheepPageAmountAuthor(string authorName);
     Task CreateCheep(string authorName, string text, DateTime timestamp);
     Task RemoveCheep(int cheepId);
 }
@@ -20,6 +20,8 @@ public class CheepRepository : ICheepRepository
 {
 
     private readonly ChirpDBContext dbContext;
+
+    int pageSize = 32;
 
     /// <summary>
     /// This Repository contains all direct communication with the database.
@@ -86,21 +88,26 @@ public class CheepRepository : ICheepRepository
     /// Returns the total amount of cheeps in the database
     /// </summary>
     /// <returns>an int count of the amount of cheeps</returns>
-    public async Task<int> GetCheepCountAll() {
+    public async Task<int> GetCheepPageAmountAll() {
 
         List<CheepViewModel> cheepList = await dbContext.Cheeps
             .Include(c => c.Author)
             .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp))
             .ToListAsync();
         
-        return cheepList.Count();
+        int totalPages = cheepList.Count()/pageSize;
+        //Adds one extra page if the amount if cheeps is not perfectly divisible by the page size, where the remaining cheeps can be shown
+        if (cheepList.Count()%pageSize != 0){
+            totalPages++;
+        }
+        return totalPages;
     }
     /// <summary>
     /// Returns the amount of cheeps associated with a specific author
     /// </summary>
     /// <param name="authorName">The author whose cheeps are to be counted</param>
     /// <returns>an int count of the amount of cheeps</returns>
-    public async Task<int> GetCheepCountAuthor(string authorName){
+    public async Task<int> GetCheepPageAmountAuthor(string authorName){
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
 
@@ -113,7 +120,12 @@ public class CheepRepository : ICheepRepository
             .Select(c => new CheepViewModel(author.Name, c.Text, c.TimeStamp))
             .ToListAsync();
 
-        return cheepList.Count();
+        int totalPages = cheepList.Count()/pageSize;
+        //Adds one extra page if the amount if cheeps is not perfectly divisible by the page size, where the remaining cheeps can be shown
+        if (cheepList.Count()%pageSize != 0){
+            totalPages++;
+        }
+        return totalPages;
         
     }
 

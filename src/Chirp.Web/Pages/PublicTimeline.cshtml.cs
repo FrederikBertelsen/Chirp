@@ -48,13 +48,7 @@ public class PublicModel : PageModel
         {
             IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheeps(page, pageSize);
             Cheeps = cheeps.ToList();
-            count = await cheepRepository.GetCheepCountAll();
-            totalPages = count/pageSize;
-            //Adds one extra page if the amount if cheeps is not perfectly divisible by the page size, where the remaining cheeps can be shown
-            if (count%pageSize != 0){
-                totalPages++;
-            }
-            int middleNumber = navigationNumber/2+1;
+            totalPages = await cheepRepository.GetCheepPageAmountAll();
             if (currentPage-navigationNumber/2 < 1){
                 for (int i = 1 ; i <= navigationNumber ; i++){
                     numbersToShow.Add(i);
