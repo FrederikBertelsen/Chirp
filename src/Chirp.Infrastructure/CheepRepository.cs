@@ -8,15 +8,20 @@ public interface ICheepRepository
     Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByAuthor(string authorName, int pageNumber);
 
     Task<IEnumerable<CheepViewModel>> GetPageOfCheeps(int pageNumber);
+
+    Task<int> GetCheepPageAmountAll();
+
+    Task<int> GetCheepPageAmountAuthor(string authorName);
     Task CreateCheep(string authorName, string text, DateTime timestamp);
     Task RemoveCheep(int cheepId);
 }
 
 public class CheepRepository : ICheepRepository
 {
-    public const int PageSize = 32;
 
     private readonly ChirpDBContext dbContext;
+
+    const int pageSize = 32;
 
     /// <summary>
     /// This Repository contains all direct communication with the database.
@@ -45,13 +50,13 @@ public class CheepRepository : ICheepRepository
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
         
-        int skipCount = (pageNumber - 1) * PageSize;
+        int skipCount = (pageNumber - 1) * pageSize;
 
         List<CheepViewModel> cheepList = await dbContext.Cheeps
             .Where(c => c.AuthorId == author.AuthorId)
             .OrderByDescending(c => c.TimeStamp)
             .Skip(skipCount)
-            .Take(PageSize)
+            .Take(pageSize)
             .Select(c => new CheepViewModel(author.Name, c.Text, c.TimeStamp))
             .ToListAsync();
         return cheepList;
@@ -67,17 +72,58 @@ public class CheepRepository : ICheepRepository
         if (pageNumber < 1)
             throw new ArgumentException("Page number cannot be under 1");
 
-        int skipCount = (pageNumber - 1) * PageSize;
+        int skipCount = (pageNumber - 1) * pageSize;
 
         List<CheepViewModel> cheepList = await dbContext.Cheeps
             .Include(c => c.Author)
             .OrderByDescending(c => c.TimeStamp)
             .Skip(skipCount)
-            .Take(PageSize)
+            .Take(pageSize)
             .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp))
             .ToListAsync();
 
         return cheepList;
+    }
+    /// <summary>
+    /// Returns the total amount of cheeps in the database
+    /// </summary>
+    /// <returns>an int count of the amount of cheeps</returns>
+    public async Task<int> GetCheepPageAmountAll() {
+
+        int count = await dbContext.Cheeps
+            .CountAsync();
+        
+        int totalPages = count/pageSize;
+        //Adds one extra page if the amount if cheeps is not perfectly divisible by the page size, where the remaining cheeps can be shown
+        if (count%pageSize != 0){
+            totalPages++;
+        }
+        return totalPages;
+    }
+    /// <summary>
+    /// Returns the amount of cheeps associated with a specific author
+    /// </summary>
+    /// <param name="authorName">The author whose cheeps are to be counted</param>
+    /// <returns>an int count of the amount of cheeps</returns>
+    public async Task<int> GetCheepPageAmountAuthor(string authorName){
+        if (authorName is null)
+            throw new ArgumentNullException(nameof(authorName));
+
+        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
+        if (author is null)
+            throw new ArgumentException($"Author with name '{authorName}' not found.");
+
+        int count = await dbContext.Cheeps
+            .Where(c => c.AuthorId == author.AuthorId)
+            .CountAsync();
+
+        int totalPages = count/pageSize;
+        //Adds one extra page if the amount if cheeps is not perfectly divisible by the page size, where the remaining cheeps can be shown
+        if (count%pageSize != 0){
+            totalPages++;
+        }
+        return totalPages;
+        
     }
 
     /// <summary>
