@@ -10,7 +10,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Configuration.AddUserSecrets("id");
-Console.WriteLine(builder.Configuration.GetConnectionString("Chirp"));
+Console.WriteLine(builder.Configuration.GetConnectionString("Chirp").Replace("Chirp", "chippers"));
 builder.Services.AddDbContext<ChirpDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Chirp")));
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
