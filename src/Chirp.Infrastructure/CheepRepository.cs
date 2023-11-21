@@ -6,6 +6,8 @@ namespace Chirp.Infrastructure;
 public interface ICheepRepository
 {
     Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByAuthor(string authorName, int pageNumber);
+    
+    Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByFollowed(string authorName, int pageNumber);
 
     Task<IEnumerable<CheepViewModel>> GetPageOfCheeps(int pageNumber);
     Task CreateCheep(string authorName, string text, DateTime timestamp);
@@ -55,6 +57,42 @@ public class CheepRepository : ICheepRepository
             .Select(c => new CheepViewModel(author.Name, c.Text, c.TimeStamp))
             .ToListAsync();
         return cheepList;
+    }
+
+    public async Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByFollowed(string authorName, int pageNumber)
+    {
+       
+        if (authorName is null)
+            throw new ArgumentNullException(nameof(authorName));
+        if (pageNumber < 1)
+            throw new ArgumentException("Page number cannot be under 1");
+
+        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
+        if (author is null)
+            throw new ArgumentException($"Author with name '{authorName}' not found.");
+        
+        int skipCount = (pageNumber - 1) * PageSize;
+
+        // this is our first attempt
+        // List<int> followingIdList = await dbContext.Follows
+        //     .Include(f => f.Follower)
+        //     .Where(f => f.Follower.Name == authorName)
+        //     .Select(f => f.Follower.AuthorId)
+        //     .ToListAsync();
+        // List<CheepViewModel> cheepList = await dbContext.Cheeps
+        //     .Where(c => followingIdList.Contains(c.AuthorId))
+        //     .Select(c => new CheepViewModel(author.Name, c.Text, c.TimeStamp))
+        //     .ToListAsync();
+        
+        var cheepList = await dbContext.Cheeps
+            .Where(c => dbContext.Follows.Any(f => f.Follower == author && f.Following == c.Author))
+            .OrderByDescending(c => c.TimeStamp)
+            .Skip(skipCount)
+            .Take(PageSize)
+            .Select(c => new CheepViewModel(author.Name, c.Text, c.TimeStamp))
+            .ToListAsync();
+        
+        return cheepList; 
     }
 
     /// <summary>
