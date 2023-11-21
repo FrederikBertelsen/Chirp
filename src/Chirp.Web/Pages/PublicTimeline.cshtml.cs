@@ -21,9 +21,6 @@ public class PublicModel : PageModel
 
     public List<int> numbersToShow {get; set;}
 
-
-    int count {get; set;}
-
     public PublicModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository)
     {
         this.authorRepository = authorRepository;

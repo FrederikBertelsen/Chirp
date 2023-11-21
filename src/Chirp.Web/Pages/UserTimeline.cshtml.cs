@@ -24,7 +24,7 @@ public class UserTimelineModel : PageModel
     public string navigationAuthor {get; set;}
 
 
-    int count {get; set;}
+    
     public UserTimelineModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository)
     {
         this.authorRepository = authorRepository;
@@ -89,7 +89,7 @@ public class UserTimelineModel : PageModel
         {
             IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page, pageSize);
             Cheeps = cheeps.ToList();
-            count = await cheepRepository.GetCheepPageAmountAuthor(author);
+            totalPages = await cheepRepository.GetCheepPageAmountAuthor(author);
             if (currentPage-navigationNumber/2 < 1){
                 for (int i = 1 ; i <= navigationNumber ; i++){
                     numbersToShow.Add(i);
