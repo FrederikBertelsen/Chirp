@@ -13,7 +13,7 @@ public class ChirpDBContext : DbContext
     {
         Database.EnsureCreated();
     }
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    /*protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Author>()
                 .HasKey(a => a.AuthorId)
@@ -22,4 +22,5 @@ public class ChirpDBContext : DbContext
                 .HasKey(a => a.CheepId)
                 .HasAnnotation("DatabaseGenerated", DatabaseGeneratedOption.Identity);
         }
+        */
 }

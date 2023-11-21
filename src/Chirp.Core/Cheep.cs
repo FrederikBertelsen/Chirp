@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema; // for [DatabaseGenerated]
 
 public class Cheep
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    //[Key]
+    //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int CheepId { get; set; }
     public required string Text { get; set; }
     public required DateTime TimeStamp { get; set; }
