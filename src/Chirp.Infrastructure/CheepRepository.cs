@@ -91,7 +91,6 @@ public class CheepRepository : ICheepRepository
     public async Task<int> GetCheepPageAmountAll() {
 
         int count = await dbContext.Cheeps
-            .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp))
             .CountAsync();
         
         int totalPages = count/pageSize;
@@ -116,7 +115,6 @@ public class CheepRepository : ICheepRepository
 
         int count = await dbContext.Cheeps
             .Where(c => c.AuthorId == author.AuthorId)
-            .Select(c => new CheepViewModel(author.Name, c.Text, c.TimeStamp))
             .CountAsync();
 
         int totalPages = count/pageSize;
