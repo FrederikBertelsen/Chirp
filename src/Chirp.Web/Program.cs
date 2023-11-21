@@ -1,5 +1,9 @@
 using Chirp.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
+
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,12 @@ builder.Services.AddDbContext<ChirpDBContext>(options =>
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 
+// add authentication
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAdB2C"));
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages()
+    .AddMicrosoftIdentityUI();
 
 
 WebApplication app = builder.Build();
@@ -36,6 +46,15 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.Run();
+
+// make the Chirp.Web Program class public so test project can access it
+public partial class Program { }

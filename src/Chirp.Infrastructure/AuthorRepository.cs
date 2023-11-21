@@ -9,6 +9,8 @@ public interface IAuthorRepository
     Task RemoveAuthor(string authorName);
     Task<AuthorViewModel> FindAuthorByName(string authorName);
     Task<AuthorViewModel> FindAuthorByEmail(string authorEmail);
+    Task<bool> DoesUserNameExists(string authorName);
+    Task<bool> DoesUserEmailExists(string authorEmail);
 }
 
 public class AuthorRepository : IAuthorRepository
@@ -64,7 +66,7 @@ public class AuthorRepository : IAuthorRepository
         dbContext.Authors.Remove(author);
         await dbContext.SaveChangesAsync();
     }
-    
+
     /// <summary>
     /// finds an author by name
     /// </summary>
@@ -97,5 +99,27 @@ public class AuthorRepository : IAuthorRepository
         AuthorViewModel authorViewModel = new AuthorViewModel(author.Name, author.Email);
 
         return authorViewModel;
+    }
+
+    /// <summary>
+    ///checks if a author with the authorName exists
+    /// </summary>
+    /// <param name="authorName">The name of the author</param>
+    /// <returns>True if the author exists</returns>
+    public async Task<bool> DoesUserNameExists(string authorName)
+    {
+        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
+        return author is not null;
+    }
+
+    /// <summary>
+    ///checks if a author with the authorEmail exists
+    /// </summary>
+    /// <param name="authorEmail">The email of the author</param>
+    /// <returns>True if the author exists</returns>
+    public async Task<bool> DoesUserEmailExists(string authorEmail)
+    {
+        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Email == authorEmail);
+        return author is not null;
     }
 }
