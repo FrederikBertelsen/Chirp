@@ -42,6 +42,13 @@ public class AuthorRepository : IAuthorRepository
         Author newAuthor = new Author() { Name = authorName, Email = authorEmail };
 
         dbContext.Authors.Add(newAuthor);
+
+        dbContext.Follows.Add(new Follow()
+        {
+            Follower = newAuthor, FollowerId = newAuthor.AuthorId, Following = newAuthor,
+            FollowingId = newAuthor.AuthorId
+        });
+
         await dbContext.SaveChangesAsync();
     }
 

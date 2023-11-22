@@ -63,8 +63,9 @@ public class UserTimelineModel : PageModel
             IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByFollowed(author, page);
             Cheeps = cheeps.ToList();
         }
-        catch
+        catch (Exception e)
         {
+            Console.WriteLine("ERROR: " + e);
             Cheeps = new List<CheepViewModel>();
         }
 

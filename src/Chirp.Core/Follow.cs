@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Chirp.Core;
 public class Follow
 {
-    [ForeignKey(nameof(Author))]
     public required Author Follower { get; set; }
-    
-    [ForeignKey(nameof(Author))]
+    public required int FollowerId { get; set; }
+
     public required Author Following { get; set; }
+    public required int FollowingId { get; set; }
 }

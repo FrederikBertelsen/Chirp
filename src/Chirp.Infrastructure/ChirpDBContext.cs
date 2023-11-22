@@ -6,23 +6,33 @@ namespace Chirp.Infrastructure;
 
 public class ChirpDBContext : DbContext
 {
-    public ChirpDBContext(DbContextOptions<ChirpDBContext> options) : base(options)
-    {
-        Database.EnsureCreated();
-    }
 
     public DbSet<Author> Authors => Set<Author>();
     public DbSet<Cheep> Cheeps => Set<Cheep>();
 
     public DbSet<Follow> Follows => Set<Follow>();
 
+    
+    public ChirpDBContext(DbContextOptions<ChirpDBContext> options) : base(options)
+    {
+        Database.EnsureCreated();
+    }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Follow>()
-            .HasKey(a => new { a.Follower, a.Following });
+            .HasKey(a => new { a.FollowerId, a.FollowingId });
+        
         modelBuilder.Entity<Follow>()
-            .HasOne(f => f.Follower }.HasMa;
+            .HasOne(f => f.Follower )
+            .WithMany()
+            .HasForeignKey(f => f.FollowerId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
         modelBuilder.Entity<Follow>()
-            .HasKey(a => new { a.Follower, a.Following });
+            .HasOne(f => f.Following )
+            .WithMany()
+            .HasForeignKey(f => f.FollowingId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
