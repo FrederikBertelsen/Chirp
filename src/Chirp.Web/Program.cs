@@ -11,9 +11,19 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Configuration.AddUserSecrets("id");
 builder.Configuration.AddEnvironmentVariables();
-Console.WriteLine(builder.Configuration.GetConnectionString("Chirp").Replace("Password", "chippers"));
-builder.Services.AddDbContext<ChirpDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Chirp")));
+var AZURE_DB_SERVER = builder.Configuration["AZURE_DB_SERVER"];
+var AZURE_DB_NAME = builder.Configuration["AZURE_DB_NAME"];
+var AZURE_DB_USER = builder.Configuration["AZURE_DB_USER"];
+var AZURE_DB_PASSWORD = builder.Configuration["AZURE_DB_PASSWORD"];
+if (builder.Configuration.GetConnectionString("Chirp") != null) {
+    builder.Services.AddDbContext<ChirpDBContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("Chirp")));
+}
+else {
+    var connectionString = $"Server={AZURE_DB_SERVER};Initial Catalog={AZURE_DB_NAME};Persist Security Info=False;User ID={AZURE_DB_USER};Password={AZURE_DB_PASSWORD};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+    builder.Services.AddDbContext<ChirpDBContext>(options =>
+        options.UseSqlServer(connectionString));
+}
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 
