@@ -10,15 +10,36 @@ public class PublicModel : PageModel
 {
     private readonly IAuthorRepository authorRepository;
     private readonly ICheepRepository cheepRepository;
+
+    private readonly IFollowRepository followRepository;
     public List<CheepViewModel> Cheeps { get; set; }
 
-    public PublicModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository)
+    public PublicModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository, IFollowRepository followRepository)
     {
         this.authorRepository = authorRepository;
         this.cheepRepository = cheepRepository;
+        this.followRepository = followRepository;
         Cheeps = new List<CheepViewModel>();
     }
 
+    public async Task<bool> CheckFollow(string followingName){
+        bool follows = await followRepository.IsFollowing(User.Identity?.Name, followingName);
+        Console.WriteLine(followingName + " AAAAAAAAAA");
+        return follows;
+    }
+
+    public async Task<IActionResult> OnPostCreateFollow(string followingName){
+        Console.WriteLine(followingName + " Creating FOLLOW");
+        await followRepository.AddFollower(User.Identity?.Name, followingName);
+        Console.WriteLine(followingName + " Created FOLLOW");
+        return RedirectToPage();
+    }
+
+     public async Task<IActionResult> OnPostDeleteFollow(string followingName){
+        await followRepository.RemoveFollower(User.Identity?.Name, followingName);
+        return RedirectToPage();
+    }
+    
     public async Task<IActionResult> OnPost()
     {
         string? cheepText = Request.Form["CheepText"];

@@ -15,6 +15,7 @@ builder.Services.AddDbContext<ChirpDBContext>(options =>
         b => b.MigrationsAssembly("Chirp")));
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IFollowRepository, FollowRepository>();
 
 // add authentication
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
