@@ -3,6 +3,7 @@ using Chirp.Core;
 using Chirp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Primitives;
 
 namespace Chirp.Web.Pages;
 
@@ -24,14 +25,11 @@ public class PublicModel : PageModel
 
     public async Task<bool> CheckFollow(string followingName){
         bool follows = await followRepository.IsFollowing(User.Identity?.Name, followingName);
-        Console.WriteLine(followingName + " AAAAAAAAAA");
         return follows;
     }
 
     public async Task<IActionResult> OnPostCreateFollow(string followingName){
-        Console.WriteLine(followingName + " Creating FOLLOW");
         await followRepository.AddFollower(User.Identity?.Name, followingName);
-        Console.WriteLine(followingName + " Created FOLLOW");
         return RedirectToPage();
     }
 
@@ -45,9 +43,27 @@ public class PublicModel : PageModel
         string? cheepText = Request.Form["CheepText"];
         string? userName = User.Identity?.Name;
 
-        if (cheepText is null || userName is null || userName.Trim() == "" || cheepText.Trim() == "" || cheepText.Length == 0 || cheepText.Length > 160 ||
-            User.Identity?.Name is null || User.Identity.IsAuthenticated != true) return RedirectToPage();
+        if (User.Identity?.Name is null || User.Identity.IsAuthenticated != true)
+            return RedirectToPage();
 
+        // if a follow button was clicked
+        if (cheepText is null)
+        {
+            string authorName = Request.Form["AuthorName"].ToString();
+
+            bool isAlreadyFollowing = await CheckFollow(authorName);
+            if (isAlreadyFollowing)
+                await followRepository.RemoveFollower(User.Identity?.Name, authorName);
+            else
+                await followRepository.AddFollower(User.Identity?.Name, authorName);
+            
+            return RedirectToPage();
+        }
+
+        
+        if (userName is null || userName.Trim() == "" || cheepText.Trim() == "" || cheepText.Length == 0 || cheepText.Length > 160) return RedirectToPage();
+
+        
         string? authorEmail = User.Claims
             .Where(c => c.Type == ClaimTypes.Email)
             .Select(c => c.Value)
