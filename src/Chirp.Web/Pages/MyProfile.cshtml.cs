@@ -16,14 +16,22 @@ public class ProfileModel : PageModel
         this.authorRepository = authorRepository;
     }
 
-    public async Task<IActionResult> OnGet()
+    public IActionResult OnGet()
     {
         return Page();
     }
     //does not work yet
-    public async Task<IActionResult> OnDelete()
+    public async Task<IActionResult> OnPostAsync()
     {
-
+        string? userName = User.Identity?.Name;
+        try
+        {
+        await authorRepository.RemoveAuthor(userName);
         return RedirectToPage("/");
+        }
+        catch
+        {
+            return RedirectToPage();
+        }
     }
 }

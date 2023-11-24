@@ -28,8 +28,9 @@
         <button type = 'button' onclick="alert('The documentation about how userdata is processed')">
             Se how your data is processed
         </button>
-        <form method="delete">
-            <input type="submit" value="Delete my profile">
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <input type="submit" value="Delete">
         </form>
     }
     else
