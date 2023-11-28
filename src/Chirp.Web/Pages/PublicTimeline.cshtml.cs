@@ -40,18 +40,6 @@ public class PublicModel : PageModel
         return follows;
     }
 
-    public async Task<IActionResult> OnPostCreateFollow(string followingName)
-    {
-        await followRepository.AddFollower(User.Identity?.Name, followingName);
-        return RedirectToPage();
-    }
-
-    public async Task<IActionResult> OnPostDeleteFollow(string followingName)
-    {
-        await followRepository.RemoveFollower(User.Identity?.Name, followingName);
-        return RedirectToPage();
-    }
-
     public async Task<IActionResult> OnPost()
     {
         string? cheepText = Request.Form["CheepText"];
