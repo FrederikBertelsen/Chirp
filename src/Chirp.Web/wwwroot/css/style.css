@@ -121,6 +121,7 @@ div.page ul.cheeps li {
 
 div.page ul.cheeps p {
     margin: 0;
+    word-break: break-all;
 }
 
 div.page ul.cheeps li img {
