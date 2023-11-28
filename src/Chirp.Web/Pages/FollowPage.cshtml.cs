@@ -9,15 +9,10 @@ namespace Chirp.Web.Pages;
 
 public class FollowModel : PageModel
 {
-    private readonly IAuthorRepository authorRepository;
-    private readonly ICheepRepository cheepRepository;
-
     private readonly IFollowRepository followRepository;
 
     public FollowModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository, IFollowRepository followRepository)
     {
-        this.authorRepository = authorRepository;
-        this.cheepRepository = cheepRepository;
         this.followRepository = followRepository;
     }
     public async Task<bool> CheckFollow(string followingName){
