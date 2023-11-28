@@ -12,7 +12,8 @@ builder.Services.AddRazorPages();
 builder.Configuration.AddUserSecrets("id");
 if (builder.Configuration.GetConnectionString("Chirp") != null) {
     builder.Services.AddDbContext<ChirpDBContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("Chirp")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("Chirp"),
+            b => b.MigrationsAssembly("Chirp")));
 }
 else {
     builder.Configuration.AddEnvironmentVariables();
@@ -26,6 +27,7 @@ else {
 }
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IFollowRepository, FollowRepository>();
 
 // add authentication
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
@@ -42,7 +44,7 @@ using (IServiceScope scope = app.Services.CreateScope())
 {
     IServiceProvider services = scope.ServiceProvider;
     ChirpDBContext context = services.GetRequiredService<ChirpDBContext>();
-    DbInitializer.SeedDatabase(context);
+    // DbInitializer.SeedDatabase(context);
 }
 
 // Configure the HTTP request pipeline.
