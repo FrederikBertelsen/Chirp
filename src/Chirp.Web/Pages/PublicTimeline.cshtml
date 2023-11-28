@@ -33,12 +33,15 @@
                         <strong>
                             <a href="/@cheep.Author">@cheep.Author</a>
                         </strong>
-                        <form method="post">
-                            @Html.AntiForgeryToken()
-                            <input style="display: none" type="text" value="@cheep.Author" name="AuthorName">
-                            <input type="submit" value="Follow">
-
-                        </form>
+                        <!--==true is required, since it is a bool? noot a bool--> 
+                        @if (User.Identity?.IsAuthenticated == true && cheep.Author != User.Identity?.Name){
+                            @if (await Model.CheckFollow(cheep.Author)){
+                                <a href="/follow/@cheep.Author"> unfollow</a>
+                            }
+                            else {
+                                <a href="/follow/@cheep.Author"> follow</a>
+                            }
+                        }
                         @cheep.Message
                         <small>&mdash; @cheep.TimeStamp</small>
                     </p>

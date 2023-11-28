@@ -43,25 +43,11 @@ public class PublicModel : PageModel
         string? cheepText = Request.Form["CheepText"];
         string? userName = User.Identity?.Name;
 
-        if (User.Identity?.Name is null || User.Identity.IsAuthenticated != true)
+        if (cheepText is null || userName is null || userName.Trim() == "" || cheepText.Trim() == "" || cheepText.Length == 0 || cheepText.Length > 160 || User.Identity?.Name is null || User.Identity.IsAuthenticated != true)
             return RedirectToPage();
-
-        // if a follow button was clicked
-        if (cheepText is null)
-        {
-            string authorName = Request.Form["AuthorName"].ToString();
-
-            bool isAlreadyFollowing = await CheckFollow(authorName);
-            if (isAlreadyFollowing)
-                await followRepository.RemoveFollower(User.Identity?.Name, authorName);
-            else
-                await followRepository.AddFollower(User.Identity?.Name, authorName);
-            
-            return RedirectToPage();
-        }
 
         
-        if (userName is null || userName.Trim() == "" || cheepText.Trim() == "" || cheepText.Length == 0 || cheepText.Length > 160) return RedirectToPage();
+        //if (userName is null || userName.Trim() == "" || cheepText.Trim() == "" || cheepText.Length == 0 || cheepText.Length > 160) return RedirectToPage();
 
         
         string? authorEmail = User.Claims
