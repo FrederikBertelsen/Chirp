@@ -1,5 +1,6 @@
 using Chirp.Core;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Chirp.Infrastructure;
 
@@ -12,4 +13,14 @@ public class ChirpDBContext : DbContext
     {
         Database.EnsureCreated();
     }
+    /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Author>()
+                .HasKey(a => a.AuthorId)
+                .HasAnnotation("DatabaseGenerated", DatabaseGeneratedOption.Identity);
+            modelBuilder.Entity<Cheep>()
+                .HasKey(a => a.CheepId)
+                .HasAnnotation("DatabaseGenerated", DatabaseGeneratedOption.Identity);
+        }
+        */
 }

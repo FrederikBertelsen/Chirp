@@ -30,7 +30,6 @@ public class UserTimelineModel : PageModel
         this.authorRepository = authorRepository;
         this.cheepRepository = cheepRepository;
         Cheeps = new List<CheepViewModel>();
-        pageSize = 32;
         totalPages = 1;
         //The amount of pages that are shown between the "previous" and "next" button
         //Should always be odd, such that the current page can be in the center when relevant
@@ -87,11 +86,11 @@ public class UserTimelineModel : PageModel
 
         try
         {
-            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page, pageSize);
+            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
             Cheeps = cheeps.ToList();
             totalPages = await cheepRepository.GetCheepPageAmountAuthor(author);
             if (currentPage-navigationNumber/2 < 1){
-                for (int i = 1 ; i <= navigationNumber ; i++){
+                for (int i = 1 ; i <= navigationNumber && i <= totalPages ; i++){
                     numbersToShow.Add(i);
                 }
             }
