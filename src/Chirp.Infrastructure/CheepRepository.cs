@@ -14,6 +14,8 @@ public interface ICheepRepository
     Task<int> GetCheepPageAmountAll();
 
     Task<int> GetCheepPageAmountAuthor(string authorName);
+
+    Task<int> GetCheepPageAmountFollowed(string authorName);
     Task CreateCheep(string authorName, string text, DateTime timestamp);
     Task RemoveCheep(int cheepId);
 }
@@ -124,7 +126,7 @@ public class CheepRepository : ICheepRepository
     /// <summary>
     /// Returns the total amount of cheeps in the database
     /// </summary>
-    /// <returns>an int count of the amount of cheeps</returns>
+    /// <returns>an int count of the amount of cheep page</returns>
     public async Task<int> GetCheepPageAmountAll() {
 
         int count = await dbContext.Cheeps
@@ -141,7 +143,7 @@ public class CheepRepository : ICheepRepository
     /// Returns the amount of cheeps associated with a specific author
     /// </summary>
     /// <param name="authorName">The author whose cheeps are to be counted</param>
-    /// <returns>an int count of the amount of cheeps</returns>
+    /// <returns>an int count of the amount of cheep pages</returns>
     public async Task<int> GetCheepPageAmountAuthor(string authorName){
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
@@ -152,6 +154,31 @@ public class CheepRepository : ICheepRepository
 
         int count = await dbContext.Cheeps
             .Where(c => c.AuthorId == author.AuthorId)
+            .CountAsync();
+
+        int totalPages = count/PageSize;
+        //Adds one extra page if the amount if cheeps is not perfectly divisible by the page size, where the remaining cheeps can be shown
+        if (count%PageSize != 0){
+            totalPages++;
+        }
+        return totalPages;
+        
+    }
+    /// <summary>
+    /// Returns the amount of cheeps associated with an author and who they follow
+    /// </summary>
+    /// <param name="authorName">The author whose cheeeps and cheeps from followed users should be counted</param>
+    /// <returns>an int count of the amount of cheep pages</returns>
+    public async Task<int> GetCheepPageAmountFollowed(string authorName){
+        if (authorName is null)
+            throw new ArgumentNullException(nameof(authorName));
+
+        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
+        if (author is null)
+            throw new ArgumentException($"Author with name '{authorName}' not found.");
+
+        int count = await dbContext.Cheeps
+            .Where(c => dbContext.Follows.Any(f => f.Follower == author && f.Following == c.Author))
             .CountAsync();
 
         int totalPages = count/PageSize;
