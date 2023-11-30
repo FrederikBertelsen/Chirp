@@ -42,6 +42,10 @@
                                 <a href="/follow/@cheep.Author"> follow</a>
                             }
                         }
+                        else if (User.Identity?.IsAuthenticated == true && cheep.Author == User.Identity?.Name){
+                            <a href="/delete/@cheep.CheepId"> delete</a>
+                        }
+                        <!--as the first check is the same as above, the two could be combined into one. less code duplication, but deeper--> 
                         @cheep.Message
                         <small>&mdash; @cheep.TimeStamp</small>
                     </p>
