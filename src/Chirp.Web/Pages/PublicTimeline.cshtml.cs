@@ -133,16 +133,6 @@ public class PublicModel : PageModel
         return Page();
     }
 
-    public string AddTagLinksToCheepMessage(string cheepMessage)
-    {
-        var result = Regex.Replace(cheepMessage, "@\\(([\\w -]+)\\)", "<strong><a href=\"/$1\">$1</a></strong>");
-
-        if (Regex.Match(cheepMessage, @"@\([\w -]+\)").Success)
-        {
-            Console.WriteLine("MATCH FOUND!");
-            Console.WriteLine($"Before: {cheepMessage}\nAfter: {result}");
-        }
-
-        return result;
-    }
+    public string AddTagLinksToCheepMessage(string cheepMessage) => 
+        Regex.Replace(cheepMessage, "@\\(([\\w -]+)\\)", "<strong><a href=\"/$1\">$1</a></strong>");
 }
