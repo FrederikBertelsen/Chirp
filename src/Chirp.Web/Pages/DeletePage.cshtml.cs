@@ -24,9 +24,9 @@ public class DeleteModel : PageModel
     public async Task<IActionResult> OnGetAsync(int CheepId)
     {
         if (User.Identity?.IsAuthenticated == true){
-            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetCheepsByAuthor(User.Identity.Name);
-            foreach (CheepViewModel cheep in cheeps){
-                if (cheep.CheepId == CheepId){
+            IEnumerable<int> ids = await cheepRepository.GetCheepIDsByAuthor(User.Identity.Name);
+            foreach (int id in ids){
+                if (id == CheepId){
                     await cheepRepository.RemoveCheep(CheepId);
                 }
             }

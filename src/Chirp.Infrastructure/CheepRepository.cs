@@ -17,7 +17,7 @@ public interface ICheepRepository
 
     Task<int> GetCheepPageAmountFollowed(string authorName);
 
-    Task<IEnumerable<CheepViewModel>> GetCheepsByAuthor(string authorName);
+    Task<IEnumerable<int>> GetCheepIDsByAuthor(string authorName);
     Task CreateCheep(string authorName, string text, DateTime timestamp);
     Task RemoveCheep(int cheepId);
 }
@@ -194,11 +194,11 @@ public class CheepRepository : ICheepRepository
 
     
     /// <summary>
-    /// Returns a list of Cheeps written by the specified Author..
+    /// Returns a list of cheep IDs from the cheeps written by the specified Author..
     /// </summary>
     /// <param name="authorName">The name of the Author</param>
-    /// <returns>A IEnumerable of Cheeps</returns>
-    public async Task<IEnumerable<CheepViewModel>> GetCheepsByAuthor(string authorName)
+    /// <returns>A IEnumerable of integers</returns>
+    public async Task<IEnumerable<int>> GetCheepIDsByAuthor(string authorName)
     {
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
@@ -207,9 +207,9 @@ public class CheepRepository : ICheepRepository
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
         
-        List<CheepViewModel> cheepList = await dbContext.Cheeps
+        List<int> cheepList = await dbContext.Cheeps
             .Where(c => c.AuthorId == author.AuthorId)
-            .Select(c => new CheepViewModel(author.Name, c.Text, c.TimeStamp, c.CheepId))
+            .Select(c => c.CheepId)
             .ToListAsync();
         return cheepList;
     }
