@@ -9,20 +9,18 @@
 <div>
     @if (User.Identity?.IsAuthenticated == true)
     {
-        <form method="post">
-            @Html.AntiForgeryToken()
-                <!--This code was taken lecture 9's notes (https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_09/README_PROJECT.md#add-feature-sending-cheeps)-->
-    
-            <div class="cheepbox">
-                <h3>What's on your mind @(User.Identity.Name)?</h3>
-                <form method="post">
-                    <input style="float: left" type="text" name="CheepText" minlength="1" maxlength="160">
-                    <input type="submit" value="Cheep!">
-                </form>
-            </div>
-        </form>
+        <!--This code was taken lecture 9's notes (https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_09/README_PROJECT.md#add-feature-sending-cheeps)-->
+
+        <div class="cheepbox">
+            <h3>What's on your mind @(User.Identity.Name)?</h3>
+            <form method="post">
+                @Html.AntiForgeryToken()
+                <input style="float: left" type="text" name="CheepText" minlength="1" maxlength="160">
+                <input type="submit" value="Cheep!">
+            </form>
+        </div>
     }
-    
+
     <h2> Public Timeline </h2>
 
     @if (Model.Cheeps.Any())
@@ -35,7 +33,18 @@
                         <strong>
                             <a href="/@cheep.Author">@cheep.Author</a>
                         </strong>
-                        @cheep.Message
+                        @if (User.Identity?.IsAuthenticated == true && cheep.Author != User.Identity?.Name)
+                        {
+                            @if (await Model.CheckFollow(cheep.Author))
+                            {
+                                <a href="/follow/@cheep.Author"> unfollow</a>
+                            }
+                            else
+                            {
+                                <a href="/follow/@cheep.Author"> follow</a>
+                            }
+                        }
+                        @Html.Raw(Model.AddTagLinksToCheepMessage(cheep.Message))
                         <small>&mdash; @cheep.TimeStamp</small>
                     </p>
                 </li>
@@ -48,13 +57,18 @@
     }
 </div>
 <div>
-    @if (Model.currentPage != 1){
-        <a href = "/?page=@(Model.currentPage-1)">&lt;Previous</a>
-    }
-    @foreach (int pageNumber in Model.numbersToShow){
-        <a href = "/?page=@(pageNumber)">@(pageNumber)</a>
-    }  
-    @if (Model.currentPage != Model.totalPages){
-        <a href = "/?page=@(Model.currentPage+1)">Next&gt;</a>
+    @if (Model.Cheeps.Any()){
+        if (Model.currentPage != 1)
+        {
+            <a href="/?page=@(Model.currentPage - 1)">&lt;Previous</a>
+        }
+        foreach (int pageNumber in Model.numbersToShow)
+        {
+            <a href="/?page=@(pageNumber)">@(pageNumber)</a>
+        }
+        if (Model.currentPage != Model.totalPages)
+        {
+            <a href="/?page=@(Model.currentPage + 1)">Next&gt;</a>
+        }
     }
 </div>

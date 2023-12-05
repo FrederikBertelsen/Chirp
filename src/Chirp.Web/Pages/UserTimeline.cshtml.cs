@@ -10,6 +10,8 @@ public class UserTimelineModel : PageModel
 {
     private readonly IAuthorRepository authorRepository;
     private readonly ICheepRepository cheepRepository;
+
+    private readonly IFollowRepository followRepository;
     public List<CheepViewModel> Cheeps { get; set; }
 
     [BindProperty(SupportsGet = true)]
@@ -25,10 +27,11 @@ public class UserTimelineModel : PageModel
 
 
     
-    public UserTimelineModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository)
+    public UserTimelineModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository, IFollowRepository followRepository)
     {
         this.authorRepository = authorRepository;
         this.cheepRepository = cheepRepository;
+        this.followRepository = followRepository;
         Cheeps = new List<CheepViewModel>();
         totalPages = 1;
         //The amount of pages that are shown between the "previous" and "next" button
@@ -38,6 +41,13 @@ public class UserTimelineModel : PageModel
         //
         navigationAuthor = "";
     }
+
+    public async Task<bool> CheckFollow(string followingName)
+    {
+        bool follows = await followRepository.IsFollowing(User.Identity?.Name, followingName);
+        return follows;
+    }
+
     public async Task<IActionResult> OnPost()
     {
         string? cheepText = Request.Form["CheepText"];
@@ -86,9 +96,17 @@ public class UserTimelineModel : PageModel
 
         try
         {
-            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
+            IEnumerable<CheepViewModel> cheeps;
+            // IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
+            if (User.Identity?.IsAuthenticated==true && User.Identity?.Name == author){
+                cheeps = await cheepRepository.GetPageOfCheepsByFollowed(author, page);
+                totalPages = await cheepRepository.GetCheepPageAmountFollowed(author);
+            }
+            else {
+                cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
+                totalPages = await cheepRepository.GetCheepPageAmountAuthor(author);
+            }
             Cheeps = cheeps.ToList();
-            totalPages = await cheepRepository.GetCheepPageAmountAuthor(author);
             if (currentPage-navigationNumber/2 < 1){
                 for (int i = 1 ; i <= navigationNumber && i <= totalPages ; i++){
                     numbersToShow.Add(i);
@@ -105,7 +123,7 @@ public class UserTimelineModel : PageModel
                 }
             }
         }
-        catch
+        catch (Exception e)
         {
             //empty list of cheeps if there are no cheeps to show, this is caught by the cshtml and shown as "There are no cheeps here"
             Cheeps = new List<CheepViewModel>();
