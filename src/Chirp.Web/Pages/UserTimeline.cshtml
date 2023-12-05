@@ -57,7 +57,7 @@
     }
 </div>
 <div>
-    @if (Model.Cheeps != null){
+    @if (Model.Cheeps.Any()){
         if (Model.currentPage != 1)
         {
             <a href="/?page=@(Model.currentPage - 1)">&lt;Previous</a>
