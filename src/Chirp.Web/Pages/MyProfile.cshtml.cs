@@ -26,11 +26,13 @@ public class ProfileModel : PageModel
         string? userName = User.Identity?.Name;
         try
         {
-        await authorRepository.RemoveAuthor(userName);
-        return RedirectToPage("/");
+            throw new NotImplementedException();
+            //await authorRepository.RemoveAuthor(userName);
+            //return RedirectToPage("/");
         }
-        catch
+        catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             return RedirectToPage();
         }
     }
