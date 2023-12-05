@@ -16,6 +16,8 @@ public interface ICheepRepository
     Task<int> GetCheepPageAmountAuthor(string authorName);
 
     Task<int> GetCheepPageAmountFollowed(string authorName);
+
+    Task<IEnumerable<int>> GetCheepIDsByAuthor(string authorName);
     Task CreateCheep(string authorName, string text, DateTime timestamp);
     Task RemoveCheep(int cheepId);
 }
@@ -61,7 +63,7 @@ public class CheepRepository : ICheepRepository
             .OrderByDescending(c => c.TimeStamp)
             .Skip(skipCount)
             .Take(PageSize)
-            .Select(c => new CheepViewModel(author.Name, c.Text, c.TimeStamp))
+            .Select(c => new CheepViewModel(author.Name, c.Text, c.TimeStamp, c.CheepId))
             .ToListAsync();
         return cheepList;
     }
@@ -95,7 +97,7 @@ public class CheepRepository : ICheepRepository
             .OrderByDescending(c => c.TimeStamp)
             .Skip(skipCount)
             .Take(PageSize)
-            .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp))
+            .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp, c.CheepId))
             .ToListAsync();
         
         return cheepList; 
@@ -118,7 +120,7 @@ public class CheepRepository : ICheepRepository
             .OrderByDescending(c => c.TimeStamp)
             .Skip(skipCount)
             .Take(PageSize)
-            .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp))
+            .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp, c.CheepId))
             .ToListAsync();
 
         return cheepList;
@@ -189,6 +191,29 @@ public class CheepRepository : ICheepRepository
         return totalPages;
         
     }
+
+    
+    /// <summary>
+    /// Returns a list of cheep IDs from the cheeps written by the specified Author..
+    /// </summary>
+    /// <param name="authorName">The name of the Author</param>
+    /// <returns>A IEnumerable of integers</returns>
+    public async Task<IEnumerable<int>> GetCheepIDsByAuthor(string authorName)
+    {
+        if (authorName is null)
+            throw new ArgumentNullException(nameof(authorName));
+
+        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
+        if (author is null)
+            throw new ArgumentException($"Author with name '{authorName}' not found.");
+        
+        List<int> cheepList = await dbContext.Cheeps
+            .Where(c => c.AuthorId == author.AuthorId)
+            .Select(c => c.CheepId)
+            .ToListAsync();
+        return cheepList;
+    }
+
 
     /// <summary>
     /// Adds a new Cheep to the database.
