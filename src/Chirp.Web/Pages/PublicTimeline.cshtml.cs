@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Chirp.Core;
 using Chirp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -131,4 +132,7 @@ public class PublicModel : PageModel
 
         return Page();
     }
+
+    public string AddTagLinksToCheepMessage(string cheepMessage) => 
+        Regex.Replace(cheepMessage, "@\\(([\\w -]+)\\)", "<strong><a href=\"/$1\">$1</a></strong>");
 }
