@@ -23,9 +23,6 @@ public class UserTimelineModel : PageModel
 
     public List<int> numbersToShow { get; set; }
 
-    public string navigationAuthor { get; set; }
-
-
     public UserTimelineModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository,
         IFollowRepository followRepository)
     {
@@ -39,7 +36,6 @@ public class UserTimelineModel : PageModel
         navigationNumber = 7;
         numbersToShow = new List<int>();
         //
-        navigationAuthor = "";
     }
 
     public async Task<bool> CheckFollow(string followingName)
@@ -90,10 +86,6 @@ public class UserTimelineModel : PageModel
 
         currentPage = page;
         numbersToShow.Clear();
-
-        //slightly wonky code necessary for the cshtml file to find the current author through Model.navigationAuthor
-        //as it cannot directly access the author argument passed to OnGetAsync
-        navigationAuthor = author;
 
         try
         {

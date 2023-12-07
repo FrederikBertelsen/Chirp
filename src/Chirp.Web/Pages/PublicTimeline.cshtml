@@ -33,22 +33,17 @@
                         <strong>
                             <a href="/@cheep.Author">@cheep.Author</a>
                         </strong>
-                        <!--==true is required, since it is a bool? not a bool-->
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            if (cheep.Author == User.Identity?.Name)
-                            {
-                                <a href="/delete/@cheep.CheepId"> delete</a>
+                        <!--==true is required, since it is a bool? not a bool--> 
+                        @if (User.Identity?.IsAuthenticated == true){
+                            if (cheep.Author == User.Identity?.Name){
+                                <a href="/delete/@cheep.CheepId/public"> delete</a>
                             }
-                            else
-                            {
-                                @if (await Model.CheckFollow(cheep.Author))
-                                {
-                                    <a href="/follow/@cheep.Author"> unfollow</a>
-                                }
-                                else
-                                {
-                                    <a href="/follow/@cheep.Author"> follow</a>
+                            else {
+                                @if (await Model.CheckFollow(cheep.Author)){
+                                <a href="/follow/@cheep.Author/public"> unfollow</a>
+                            }
+                                else {
+                                <a href="/follow/@cheep.Author/public"> follow</a>
                                 }
                             }
                         }
@@ -87,7 +82,12 @@
         }
         foreach (int pageNumber in Model.numbersToShow)
         {
-            <a href="/?page=@(pageNumber)">@(pageNumber)</a>
+            if (pageNumber == Model.currentPage){
+                <a href="/?page=@(pageNumber)"><b>@(pageNumber)</b></a>
+                }
+            else {
+                <a href="/?page=@(pageNumber)"><small>@(pageNumber)</small></a>
+            }
         }
         if (Model.currentPage != Model.totalPages)
         {

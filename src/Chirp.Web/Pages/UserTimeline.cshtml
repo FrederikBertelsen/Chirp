@@ -39,14 +39,14 @@
                         <!--==true is required, since it is a bool? not a bool--> 
                         @if (User.Identity?.IsAuthenticated == true){
                             if (cheep.Author == User.Identity?.Name){
-                                <a href="/delete/@cheep.CheepId"> delete</a>
+                                <a href="/delete/@cheep.CheepId/@routeName"> delete</a>
                             }
                             else {
                                 @if (await Model.CheckFollow(cheep.Author)){
-                                <a href="/follow/@cheep.Author"> unfollow</a>
+                                <a href="/follow/@cheep.Author/@routeName"> unfollow</a>
                             }
                                 else {
-                                <a href="/follow/@cheep.Author"> follow</a>
+                                <a href="/follow/@cheep.Author/@routeName"> follow</a>
                                 }
                             }
                         }
@@ -78,15 +78,20 @@
     @if (Model.Cheeps.Any()){
         if (Model.currentPage != 1)
         {
-            <a href="/@routeName/?page=@(Model.currentPage - 1)">&lt;Previous</a>
+            <a href="/@(routeName)/?page=@(Model.currentPage - 1)">&lt;Previous</a>
         }
         foreach (int pageNumber in Model.numbersToShow)
         {
-            <a href="/@routeName/?page=@(pageNumber)">@(pageNumber)</a>
+            if (pageNumber == Model.currentPage){
+                <a href="/@(routeName)/?page=@(pageNumber)"><b>@(pageNumber)</b></a>
+                }
+            else {
+                <a href="/@(routeName)/?page=@(pageNumber)"><small>@(pageNumber)</small></a>
+            }
         }
         if (Model.currentPage != Model.totalPages)
         {
-            <a href="/@routeName/?page=@(Model.currentPage + 1)">Next&gt;</a>
+            <a href="/@(routeName)/?page=@(Model.currentPage + 1)">Next&gt;</a>
         }
     }
 </div>
