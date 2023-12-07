@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 
+DateTime timestamp = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now.ToUniversalTime(), "Europe/Copenhagen");
+
+Console.WriteLine(timestamp);
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

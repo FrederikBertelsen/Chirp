@@ -93,16 +93,16 @@ public class CheepRepositoryTest {
     /// <param name="text">Text of the created cheep</param>
     /// <param name="dateTime">String used to create the datetime object. Format: yyyy-mm-dd hh:mm:ss</param>
     [Theory]
-    [InlineData("existingAuthor", "Hello", "2023-08-01 13:14:37")]
-    [InlineData("existingAuthor", "this string is exact 160 chars. this string is exact 160 chars. this string is exact 160 chars. this string is exact 160 chars. this string is exact 160 chars. ", "2023-08-01 13:14:37")]
-    [InlineData("existingAuthor", "1", "2023-08-01 13:14:37")]
-    public async void CreateCheep(string author, string text, string dateTime) 
+    [InlineData("existingAuthor", "Hello")]
+    [InlineData("existingAuthor", "this string is exact 160 chars. this string is exact 160 chars. this string is exact 160 chars. this string is exact 160 chars. this string is exact 160 chars. ")]
+    [InlineData("existingAuthor", "1")]
+    public async void CreateCheep(string author, string text) 
     {
         //arrange
         int cheepcount = context.Cheeps.Count();
         CheepRepository cr = new CheepRepository(context);
         //act
-        await cr.CreateCheep(author, text, DateTime.Parse(dateTime));
+        await cr.CreateCheep(author, text);
         //assert
         Assert.Equal(cheepcount+1, context.Cheeps.Count());
     }
@@ -113,18 +113,15 @@ public class CheepRepositoryTest {
     /// <param name="text">textfield of the CreateCheep method</param>
     /// <param name="dateTime">String used to create the datetime object. Format: yyyy-mm-dd hh:mm:ss</param>
     [Theory]
-    [InlineData(null, null)]
-    [InlineData(null, "2023-08-01 13:14:37")]
-    [InlineData("Hello", null)]
-
-    public async void CreateCheepWithNullValues(string text, string dateTime) 
+    [InlineData(null)]
+    public async void CreateCheepWithNullValues(string text) 
     {
         //arrange
         int cheepcount = context.Cheeps.Count();
         string author = "existingAuthor";
         CheepRepository cr = new CheepRepository(context);
         //act
-        async Task result() => await cr.CreateCheep(author, text, DateTime.Parse(dateTime));
+        async Task result() => await cr.CreateCheep(author, text);
         //assert
         await Assert.ThrowsAsync<ArgumentNullException>(result);
         Assert.Equal(cheepcount, context.Cheeps.Count());
@@ -144,9 +141,8 @@ public class CheepRepositoryTest {
         int cheepcount = context.Cheeps.Count();
         CheepRepository cr = new CheepRepository(context);
         string text = "Hello";
-        string dateTime = "2023-08-01 13:14:37";
         //act
-        async Task result() => await cr.CreateCheep(author, text, DateTime.Parse(dateTime));
+        async Task result() => await cr.CreateCheep(author, text);
         //assert
         await Assert.ThrowsAsync<ArgumentException>(result);
         Assert.Equal(cheepcount, context.Cheeps.Count());
@@ -165,10 +161,9 @@ public class CheepRepositoryTest {
         //arrange
         int cheepcount = context.Cheeps.Count();
         CheepRepository cr = new CheepRepository(context);
-        string dateTime = "2023-08-01 13:14:37";
         string text = "Hello";
         //act
-        async Task result() => await cr.CreateCheep(author, text, DateTime.Parse(dateTime));
+        async Task result() => await cr.CreateCheep(author, text);
         //assert
         await Assert.ThrowsAsync<ArgumentNullException>(result);
         Assert.Equal(cheepcount, context.Cheeps.Count());

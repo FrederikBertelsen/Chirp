@@ -79,7 +79,7 @@ public class UserTimelineModel : PageModel
             await authorRepository.CreateAuthor(authorName, "noEmail@found.error");
         }
 
-        await cheepRepository.CreateCheep(authorName, cheep, dateTime);
+        await cheepRepository.CreateCheep(authorName, cheep);
 
         return RedirectToPage();
     }
