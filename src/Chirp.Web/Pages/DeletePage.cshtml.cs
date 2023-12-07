@@ -9,33 +9,30 @@ namespace Chirp.Web.Pages;
 
 public class DeleteModel : PageModel
 {
-    private readonly IFollowRepository followRepository;
-
     private readonly ICheepRepository cheepRepository;
 
-    public List<CheepViewModel> Cheeps { get; set; }
-
-    public DeleteModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository, IFollowRepository followRepository)
+    public DeleteModel(ICheepRepository cheepRepository)
     {
-        this.followRepository = followRepository;
         this.cheepRepository = cheepRepository;
     }
 
     public async Task<IActionResult> OnGetAsync(int cheepid, string redirection)
     {
-        if (User.Identity?.IsAuthenticated == true){
+        if (User.Identity?.Name is not null && User.Identity?.IsAuthenticated == true)
+        {
             IEnumerable<int> ids = await cheepRepository.GetCheepIDsByAuthor(User.Identity.Name);
-            foreach (int id in ids){
-                if (id == cheepid){
+            foreach (int id in ids)
+            {
+                if (id == cheepid)
+                {
                     await cheepRepository.RemoveCheep(cheepid);
                 }
             }
         }
-        if (redirection == "public"){
+
+        if (redirection == "public")
             return Redirect("/");
-        }
-        else {
-            return Redirect("/" + redirection);
-        }
+        
+        return Redirect("/" + redirection);
     }
 }
