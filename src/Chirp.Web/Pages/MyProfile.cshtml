@@ -1,0 +1,42 @@
+@page "/profile"
+@using System.Security.Claims
+@using System.Text.RegularExpressions
+@model Chirp.Web.Pages.ProfileModel
+@{
+    ViewData["Title"] = "Chirp!";
+    Layout = "Shared/_Layout";
+}
+<div>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <h2>@User.Identity?.Name's Profile</h2>
+        <h3>The claims about you in Chirp</h3>
+        <table>
+            <tr>
+                <th>Claim type</th>
+                <th>Claim value</th>
+            </tr>
+            @foreach(Claim claim in User.Claims)
+            {
+                <tr>
+                    <td>@Regex.Replace(claim.Type, @"^.*\/","")</td>
+                    <td>@claim.Value</td>
+                </tr>
+            }
+        </table>
+        <br/>
+        <input type = 'submit' 
+        value = "Se how your data is processed" 
+        onclick="alert('The documentation about how userdata is processed')">
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <input type="submit" 
+                   value="Delete my profile"
+                   onclick="alert('Function not working yet')">
+        </form>
+    }
+    else
+    {
+        <em>You are not signed in, we are not processing any of your data.</em>
+    }
+</div>

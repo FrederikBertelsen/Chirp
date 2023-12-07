@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Chirp.Core;
 using Chirp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -14,20 +15,16 @@ public class UserTimelineModel : PageModel
     private readonly IFollowRepository followRepository;
     public List<CheepViewModel> Cheeps { get; set; }
 
-    [BindProperty(SupportsGet = true)]
-    public int currentPage {get; set;}
-    public int totalPages {get; set;}
-    int pageSize {get; set;}
+    [BindProperty(SupportsGet = true)] public int currentPage { get; set; }
+    public int totalPages { get; set; }
+    int pageSize { get; set; }
 
-    public int navigationNumber {get; set;}
+    public int navigationNumber { get; set; }
 
-    public List<int> numbersToShow {get; set;}
+    public List<int> numbersToShow { get; set; }
 
-    public string navigationAuthor {get; set;}
-
-
-    
-    public UserTimelineModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository, IFollowRepository followRepository)
+    public UserTimelineModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository,
+        IFollowRepository followRepository)
     {
         this.authorRepository = authorRepository;
         this.cheepRepository = cheepRepository;
@@ -39,7 +36,6 @@ public class UserTimelineModel : PageModel
         navigationNumber = 7;
         numbersToShow = new List<int>();
         //
-        navigationAuthor = "";
     }
 
     public async Task<bool> CheckFollow(string followingName)
@@ -53,7 +49,8 @@ public class UserTimelineModel : PageModel
         string? cheepText = Request.Form["CheepText"];
         string? userName = User.Identity?.Name;
 
-        if (cheepText is null || userName is null || userName.Trim() == "" || cheepText.Trim() == "" || cheepText.Length == 0 || cheepText.Length > 160 ||
+        if (cheepText is null || userName is null || userName.Trim() == "" || cheepText.Trim() == "" ||
+            cheepText.Length == 0 || cheepText.Length > 160 ||
             User.Identity?.Name is null || User.Identity.IsAuthenticated != true) return RedirectToPage();
 
         string cheep = cheepText;
@@ -62,7 +59,7 @@ public class UserTimelineModel : PageModel
             .Where(c => c.Type == ClaimTypes.Email)
             .Select(c => c.Value)
             .SingleOrDefault();
-        
+
         DateTime dateTime = DateTime.Now;
 
         Task<bool> authorTask = authorRepository.DoesUserNameExists(authorName);
@@ -82,7 +79,7 @@ public class UserTimelineModel : PageModel
 
         return RedirectToPage();
     }
-    
+
     public async Task<IActionResult> OnGetAsync(string author, [FromQuery] int page)
     {
         if (page < 1) page = 1;
@@ -90,35 +87,40 @@ public class UserTimelineModel : PageModel
         currentPage = page;
         numbersToShow.Clear();
 
-        //slightly wonky code necessary for the cshtml file to find the current author through Model.navigationAuthor
-        //as it cannot directly access the author argument passed to OnGetAsync
-        navigationAuthor = author;
-
         try
         {
             IEnumerable<CheepViewModel> cheeps;
             // IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
-            if (User.Identity?.IsAuthenticated==true && User.Identity?.Name == author){
+            if (User.Identity?.IsAuthenticated == true && User.Identity?.Name == author)
+            {
                 cheeps = await cheepRepository.GetPageOfCheepsByFollowed(author, page);
                 totalPages = await cheepRepository.GetCheepPageAmountFollowed(author);
             }
-            else {
+            else
+            {
                 cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
                 totalPages = await cheepRepository.GetCheepPageAmountAuthor(author);
             }
+
             Cheeps = cheeps.ToList();
-            if (currentPage-navigationNumber/2 < 1){
-                for (int i = 1 ; i <= navigationNumber && i <= totalPages ; i++){
+            if (currentPage - navigationNumber / 2 < 1)
+            {
+                for (int i = 1; i <= navigationNumber && i <= totalPages; i++)
+                {
                     numbersToShow.Add(i);
                 }
             }
-            else if (currentPage + navigationNumber/2 > totalPages){
-                for (int i = totalPages-navigationNumber; i <= totalPages ; i++){
+            else if (currentPage + navigationNumber / 2 > totalPages)
+            {
+                for (int i = totalPages - navigationNumber; i <= totalPages; i++)
+                {
                     numbersToShow.Add(i);
                 }
             }
-            else {
-                for (int i = currentPage - navigationNumber/2; i <= currentPage + navigationNumber/2; i++){
+            else
+            {
+                for (int i = currentPage - navigationNumber / 2; i <= currentPage + navigationNumber / 2; i++)
+                {
                     numbersToShow.Add(i);
                 }
             }
@@ -131,4 +133,12 @@ public class UserTimelineModel : PageModel
 
         return Page();
     }
+
+    public string[] GetTaggedAuthorsFromCheepMessage(string cheepMessage) =>
+        Regex.Matches(cheepMessage, @"@\(([\w -]+)\)")
+            .Select(m => m.Groups[1].Value)
+            .ToArray();
+
+    public string[] SplitCheepByTags(string cheepMessage) =>
+        Regex.Split(cheepMessage, @"@\([\w -]+\)");
 }
