@@ -1,7 +1,5 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Chirp.Core;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Chirp.Infrastructure;
 

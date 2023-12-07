@@ -37,7 +37,9 @@ public class PublicModel : PageModel
 
     public async Task<bool> CheckFollow(string followingName)
     {
-        bool follows = await followRepository.IsFollowing(User.Identity?.Name, followingName);
+        if (User.Identity?.Name is null)
+            return false;
+        bool follows = await followRepository.IsFollowing(User.Identity.Name, followingName);
         return follows;
     }
 
@@ -130,12 +132,12 @@ public class PublicModel : PageModel
 
         return Page();
     }
-    
+
     public string[] GetTaggedAuthorsFromCheepMessage(string cheepMessage) =>
         Regex.Matches(cheepMessage, @"@\(([\w -]+)\)")
             .Select(m => m.Groups[1].Value)
             .ToArray();
 
-    public string[] SplitCheepByTags(string cheepMessage) => 
+    public string[] SplitCheepByTags(string cheepMessage) =>
         Regex.Split(cheepMessage, @"@\([\w -]+\)");
 }

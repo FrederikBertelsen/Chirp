@@ -35,12 +35,14 @@ public class UserTimelineModel : PageModel
         //Should always be odd, such that the current page can be in the center when relevant
         navigationNumber = 7;
         numbersToShow = new List<int>();
-        //
+        
     }
 
     public async Task<bool> CheckFollow(string followingName)
     {
-        bool follows = await followRepository.IsFollowing(User.Identity?.Name, followingName);
+        if (User.Identity?.Name is null)
+            return false;
+        bool follows = await followRepository.IsFollowing(User.Identity.Name, followingName);
         return follows;
     }
 
@@ -87,49 +89,38 @@ public class UserTimelineModel : PageModel
         currentPage = page;
         numbersToShow.Clear();
 
-        try
+        IEnumerable<CheepViewModel> cheeps;
+        if (User.Identity?.IsAuthenticated == true && User.Identity?.Name == author)
         {
-            IEnumerable<CheepViewModel> cheeps;
-            // IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
-            if (User.Identity?.IsAuthenticated == true && User.Identity?.Name == author)
-            {
-                cheeps = await cheepRepository.GetPageOfCheepsByFollowed(author, page);
-                totalPages = await cheepRepository.GetCheepPageAmountFollowed(author);
-            }
-            else
+            cheeps = await cheepRepository.GetPageOfCheepsByFollowed(author, page);
+            totalPages = await cheepRepository.GetCheepPageAmountFollowed(author);
+        }
+        else
+        {
+            try
             {
                 cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
                 totalPages = await cheepRepository.GetCheepPageAmountAuthor(author);
             }
+            catch (Exception e)
+            {
+                cheeps = new List<CheepViewModel>();
+                Console.WriteLine(e);
+            }
+        }
 
-            Cheeps = cheeps.ToList();
-            if (currentPage - navigationNumber / 2 < 1)
-            {
-                for (int i = 1; i <= navigationNumber && i <= totalPages; i++)
-                {
-                    numbersToShow.Add(i);
-                }
-            }
-            else if (currentPage + navigationNumber / 2 > totalPages)
-            {
-                for (int i = totalPages - navigationNumber; i <= totalPages; i++)
-                {
-                    numbersToShow.Add(i);
-                }
-            }
-            else
-            {
-                for (int i = currentPage - navigationNumber / 2; i <= currentPage + navigationNumber / 2; i++)
-                {
-                    numbersToShow.Add(i);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            //empty list of cheeps if there are no cheeps to show, this is caught by the cshtml and shown as "There are no cheeps here"
-            Cheeps = new List<CheepViewModel>();
-        }
+        Cheeps = cheeps.ToList();
+        
+        
+        if (currentPage - navigationNumber / 2 < 1)
+            for (int i = 1; i <= navigationNumber && i <= totalPages; i++)
+                numbersToShow.Add(i);
+        else if (currentPage + navigationNumber / 2 > totalPages)
+            for (int i = totalPages - navigationNumber; i <= totalPages; i++)
+                numbersToShow.Add(i);
+        else
+            for (int i = currentPage - navigationNumber / 2; i <= currentPage + navigationNumber / 2; i++)
+                numbersToShow.Add(i);
 
         return Page();
     }
