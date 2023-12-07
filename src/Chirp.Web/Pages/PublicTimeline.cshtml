@@ -67,7 +67,12 @@
         }
         foreach (int pageNumber in Model.numbersToShow)
         {
-            <a href="/?page=@(pageNumber)">@(pageNumber)</a>
+            if (pageNumber == Model.currentPage){
+                <a href="/?page=@(pageNumber)"><b>@(pageNumber)</b></a>
+                }
+            else {
+                <a href="/?page=@(pageNumber)"><small>@(pageNumber)</small></a>
+            }
         }
         if (Model.currentPage != Model.totalPages)
         {

@@ -66,15 +66,20 @@
     @if (Model.Cheeps.Any()){
         if (Model.currentPage != 1)
         {
-            <a href="/?page=@(Model.currentPage - 1)">&lt;Previous</a>
+            <a href="/@(routeName)/?page=@(Model.currentPage - 1)">&lt;Previous</a>
         }
         foreach (int pageNumber in Model.numbersToShow)
         {
-            <a href="/?page=@(pageNumber)">@(pageNumber)</a>
+            if (pageNumber == Model.currentPage){
+                <a href="/@(routeName)/?page=@(pageNumber)"><b>@(pageNumber)</b></a>
+                }
+            else {
+                <a href="/@(routeName)/?page=@(pageNumber)"><small>@(pageNumber)</small></a>
+            }
         }
         if (Model.currentPage != Model.totalPages)
         {
-            <a href="/?page=@(Model.currentPage + 1)">Next&gt;</a>
+            <a href="/@(routeName)/?page=@(Model.currentPage + 1)">Next&gt;</a>
         }
     }
 </div>
