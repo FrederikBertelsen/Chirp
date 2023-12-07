@@ -132,7 +132,12 @@ public class PublicModel : PageModel
 
         return Page();
     }
+    
+    public string[] GetTaggedAuthorsFromCheepMessage(string cheepMessage) =>
+        Regex.Matches(cheepMessage, @"@\(([\w -]+)\)")
+            .Select(m => m.Groups[1].Value)
+            .ToArray();
 
-    public string AddTagLinksToCheepMessage(string cheepMessage) => 
-        Regex.Replace(cheepMessage, "@\\(([\\w -]+)\\)", "<strong><a href=\"/$1\">$1</a></strong>");
+    public string[] SplitCheepByTags(string cheepMessage) => 
+        Regex.Split(cheepMessage, @"@\([\w -]+\)");
 }

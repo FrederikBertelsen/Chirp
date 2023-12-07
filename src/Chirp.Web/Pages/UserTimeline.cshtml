@@ -50,8 +50,20 @@
                                 }
                             }
                         }
-                        @Html.Raw(Model.AddTagLinksToCheepMessage(cheep.Message))
-                        <small>&mdash; @cheep.TimeStamp</small>
+                        @{
+                            string[] cheepParts = Model.SplitCheepByTags(cheep.Message);
+                            string[] cheepTaggedAuthors = Model.GetTaggedAuthorsFromCheepMessage(cheep.Message);
+                        }
+                        @for (var i = 0; i < cheepParts.Length; i++)
+                        {
+                            @cheepParts[i]
+                            if (i < cheepTaggedAuthors.Length)
+                            {
+                                <strong>
+                                    <a href="/@cheepTaggedAuthors[i]">@cheepTaggedAuthors[i]</a>
+                                </strong>
+                            }
+                        }                        <small>&mdash; @cheep.TimeStamp</small>
                     </p>
                 </li>
             }
