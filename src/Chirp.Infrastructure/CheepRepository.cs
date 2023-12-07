@@ -18,7 +18,7 @@ public interface ICheepRepository
     Task<int> GetCheepPageAmountFollowed(string authorName);
 
     Task<IEnumerable<int>> GetCheepIDsByAuthor(string authorName);
-    Task CreateCheep(string authorName, string text, DateTime timestamp);
+    Task CreateCheep(string authorName, string text);
     Task RemoveCheep(int cheepId);
 }
 
@@ -221,7 +221,7 @@ public class CheepRepository : ICheepRepository
     /// <param name="authorName">The name of the Author of the Cheep</param>
     /// <param name="text">The text in the Cheep</param>
     /// <param name="timestamp">The time the Cheep was posted</param>
-    public async Task CreateCheep(string authorName, string text, DateTime timestamp)
+    public async Task CreateCheep(string authorName, string text)
     {
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
@@ -233,7 +233,9 @@ public class CheepRepository : ICheepRepository
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
 
-        Cheep newCheep = new Cheep() { Author = author, Text = text, TimeStamp = timestamp };
+        DateTime timestamp = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now.ToUniversalTime(), "Europe/Copenhagen");
+        
+        Cheep newCheep = new Cheep() { Author = author, Text = text, TimeStamp = timestamp};
 
         dbContext.Cheeps.Add(newCheep);
         await dbContext.SaveChangesAsync();
