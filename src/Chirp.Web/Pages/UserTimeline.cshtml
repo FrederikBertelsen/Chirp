@@ -50,7 +50,7 @@
                                 }
                             }
                         }
-                        @cheep.Message
+                        @Html.Raw(Model.AddTagLinksToCheepMessage(cheep.Message))
                         <small>&mdash; @cheep.TimeStamp</small>
                     </p>
                 </li>
