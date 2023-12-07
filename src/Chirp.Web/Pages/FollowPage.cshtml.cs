@@ -20,7 +20,7 @@ public class FollowModel : PageModel
         return follows;
     }
 
-    public async Task<IActionResult> OnGetAsync(string tofollow)
+    public async Task<IActionResult> OnGetAsync(string tofollow, string redirection)
     {
         if (User.Identity?.IsAuthenticated == true && User.Identity.Name != tofollow){
             if (await CheckFollow(tofollow)){
@@ -30,6 +30,11 @@ public class FollowModel : PageModel
                 await followRepository.AddFollower(User.Identity?.Name, tofollow);
             }
         }
-        return RedirectToPage("/");
+        if (redirection == "public"){
+            return Redirect("/");
+        }
+        else {
+            return Redirect("/" + redirection);
+        }
     }
 }
