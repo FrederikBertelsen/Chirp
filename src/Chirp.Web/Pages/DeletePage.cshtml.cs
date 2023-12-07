@@ -21,16 +21,21 @@ public class DeleteModel : PageModel
         this.cheepRepository = cheepRepository;
     }
 
-    public async Task<IActionResult> OnGetAsync(int CheepId)
+    public async Task<IActionResult> OnGetAsync(int cheepid, string redirection)
     {
         if (User.Identity?.IsAuthenticated == true){
             IEnumerable<int> ids = await cheepRepository.GetCheepIDsByAuthor(User.Identity.Name);
             foreach (int id in ids){
-                if (id == CheepId){
-                    await cheepRepository.RemoveCheep(CheepId);
+                if (id == cheepid){
+                    await cheepRepository.RemoveCheep(cheepid);
                 }
             }
         }
-        return RedirectToPage("/");
+        if (redirection == "public"){
+            return Redirect("/");
+        }
+        else {
+            return Redirect("/" + redirection);
+        }
     }
 }
