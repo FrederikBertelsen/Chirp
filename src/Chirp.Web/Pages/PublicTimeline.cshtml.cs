@@ -61,9 +61,7 @@ public class PublicModel : PageModel
             .Where(c => c.Type == ClaimTypes.Email)
             .Select(c => c.Value)
             .SingleOrDefault();
-
-        DateTime dateTime = DateTime.Now;
-
+        
         Task<bool> authorTask = authorRepository.DoesUserNameExists(userName);
         authorTask.Wait();
         bool authorExists = authorTask.Result;
@@ -77,7 +75,7 @@ public class PublicModel : PageModel
             await authorRepository.CreateAuthor(userName, "noEmail@found.error");
         }
 
-        await cheepRepository.CreateCheep(userName, cheepText, dateTime);
+        await cheepRepository.CreateCheep(userName, cheepText);
 
         return RedirectToPage();
     }
