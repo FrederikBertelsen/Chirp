@@ -36,6 +36,14 @@
                         <strong>
                             <a href="/@cheep.Author">@cheep.Author</a>
                         </strong>
+                        @if (User.Identity?.IsAuthenticated == true && cheep.Author != User.Identity?.Name){
+                            @if (await Model.CheckFollow(cheep.Author)){
+                                <a href="/follow/@cheep.Author"> unfollow</a>
+                            }
+                            else {
+                                <a href="/follow/@cheep.Author"> follow</a>
+                            }
+                        }
                         @cheep.Message
                         <small>&mdash; @cheep.TimeStamp</small>
                     </p>
