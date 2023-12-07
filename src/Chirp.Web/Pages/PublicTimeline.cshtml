@@ -47,9 +47,23 @@
                                 }
                             }
                         }
-                        @Html.Raw(Model.AddTagLinksToCheepMessage(cheep.Message))
+
+                        @{
+                            string[] cheepParts = Model.SplitCheepByTags(cheep.Message);
+                            string[] cheepTaggedAuthors = Model.GetTaggedAuthorsFromCheepMessage(cheep.Message);
+                        }
+                        @for (var i = 0; i < cheepParts.Length; i++)
+                        {
+                            @cheepParts[i]
+                            if (i < cheepTaggedAuthors.Length)
+                            {
+                                <strong>
+                                    <a href="/@cheepTaggedAuthors[i]">@cheepTaggedAuthors[i]</a>
+                                </strong>
+                            }
+                        }
                         <small>&mdash; @cheep.TimeStamp</small>
-                    </p> 
+                    </p>
                 </li>
             }
         </ul>
@@ -60,7 +74,8 @@
     }
 </div>
 <div>
-    @if (Model.Cheeps.Any()){
+    @if (Model.Cheeps.Any())
+    {
         if (Model.currentPage != 1)
         {
             <a href="/?page=@(Model.currentPage - 1)">&lt;Previous</a>
