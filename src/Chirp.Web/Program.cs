@@ -29,7 +29,7 @@ using (IServiceScope scope = app.Services.CreateScope())
 {
     IServiceProvider services = scope.ServiceProvider;
     ChirpDBContext context = services.GetRequiredService<ChirpDBContext>();
-    DbInitializer.SeedDatabase(context);
+    //DbInitializer.SeedDatabase(context);
 }
 
 // Configure the HTTP request pipeline.
