@@ -44,7 +44,7 @@ jobs:
           # Build everything
           dotnet publish src/Chirp.Web/ --runtime "linux-x64" -c Release -o "publish"
           #cd publish
-          #./Chirp &
+          ./Chirp &
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
