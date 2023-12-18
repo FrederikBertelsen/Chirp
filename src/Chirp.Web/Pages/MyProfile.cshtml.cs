@@ -44,32 +44,17 @@ public class ProfileModel : PageModel
         currentPage = page;
         numbersToShow.Clear();
 
-        IEnumerable<CheepViewModel> cheeps;
-        IEnumerable<FollowViewModel> follows;
-        if (User.Identity?.IsAuthenticated == true)
+        Cheeps = new List<CheepViewModel>();
+        Follows = new List<FollowViewModel>();
+        if (User.Identity is { IsAuthenticated: true, Name: not null })
         {
-            try
-            {
-                follows = await followRepository.GetFollowing(User.Identity?.Name);
+            IEnumerable<FollowViewModel> follows = await followRepository.GetFollowing(User.Identity.Name);
+            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(User.Identity.Name, page);
+            totalPages = await cheepRepository.GetCheepPageAmountAuthor(User.Identity.Name);
 
-                cheeps = await cheepRepository.GetPageOfCheepsByAuthor(User.Identity?.Name, page);
-                totalPages = await cheepRepository.GetCheepPageAmountAuthor(User.Identity?.Name);
-            }
-            catch (Exception e)
-            {
-                cheeps = new List<CheepViewModel>();
-                follows = new List<FollowViewModel>();
-                Console.WriteLine(e);
-            }
+            Cheeps = cheeps.ToList();
+            Follows = follows.ToList();
         }
-        else
-        {
-            cheeps = new List<CheepViewModel>();
-            follows = new List<FollowViewModel>();
-        }
-
-        Cheeps = cheeps.ToList();
-        Follows = follows.ToList();
 
         if (currentPage - navigationNumber / 2 < 1)
             for (int i = 1; i <= navigationNumber && i <= totalPages; i++)
