@@ -10,6 +10,8 @@ public interface IFollowRepository
     Task RemoveFollower(string followerName, string followingName);
 
     Task<bool> IsFollowing(string followerName, string followingName);
+
+    Task<IEnumerable<FollowViewModel>> GetFollowing(string authorName);
 }
 
 public class FollowRepository : IFollowRepository
@@ -109,6 +111,25 @@ public class FollowRepository : IFollowRepository
         Follow? follow = await GetFollow(followerName, followingName);
 
         return follow is not null;
+    }
+
+    public async Task<IEnumerable<FollowViewModel>> GetFollowing(string authorName)
+    {
+        if (authorName is null)
+            throw new ArgumentNullException(nameof(authorName));
+        
+        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
+        if (author is null)
+            throw new ArgumentException($"Author with name '{authorName}' not found.");
+
+        List<FollowViewModel> following = await dbContext.Follows
+            .Include(f => f.Following)
+            .Where(f => f.FollowerId == author.AuthorId)
+            .OrderByDescending(f => f.Following.Name)
+            .Select(f => new FollowViewModel(author, f.Following))
+            .ToListAsync();
+        
+        return following;
     }
 
     /// <summary>

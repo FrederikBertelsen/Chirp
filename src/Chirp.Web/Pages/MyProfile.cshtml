@@ -1,6 +1,7 @@
 @page "/profile"
 @using System.Security.Claims
 @using System.Text.RegularExpressions
+@using Chirp.Core
 @model Chirp.Web.Pages.ProfileModel
 @{
     ViewData["Title"] = "Chirp!";
@@ -16,24 +17,111 @@
                 <th>Claim type</th>
                 <th>Claim value</th>
             </tr>
-            @foreach(Claim claim in User.Claims)
+            @foreach (Claim claim in User.Claims)
             {
                 <tr>
-                    <td>@Regex.Replace(claim.Type, @"^.*\/","")</td>
+                    <td>@Regex.Replace(claim.Type, @"^.*\/", "")</td>
                     <td>@claim.Value</td>
                 </tr>
             }
         </table>
         <br/>
-        <input type = 'submit' 
-        value = "Se how your data is processed" 
-        onclick="alert('The documentation about how userdata is processed')">
+        <input type='submit'
+               value="Se how your data is processed"
+               onclick="alert('The documentation about how userdata is processed')">
         <form method="post">
             @Html.AntiForgeryToken()
-            <input type="submit" 
+            <input type="submit"
                    value="Delete my profile"
                    onclick="alert('Function not working yet')">
         </form>
+
+                            
+        @if (Model.Follows.Count() > 1)
+        {
+            <h2> Your Follows </h2>
+
+            <ul id="followlist" class="follows">
+                @foreach (FollowViewModel follow in Model.Follows)
+                {
+                    @if (follow.following.Name != User.Identity?.Name)
+                    {
+                        <li>
+                            <p>
+                                <strong>
+                                    <a href="/@follow.following.Name">@follow.following.Name</a>
+                                </strong>
+                                <a href="/follow/@follow.following.Name/profile"> unfollow</a>
+                            </p>
+                        </li>
+                    }
+                }
+            </ul>
+        }
+        
+
+        @if (Model.Cheeps.Any())
+        {
+            <h2> Your Cheeps </h2>
+
+            <ul id="messagelist" class="cheeps">
+                @foreach (CheepViewModel cheep in Model.Cheeps)
+                {
+                    <li>
+                        <p>
+                            <strong>
+                                <a href="/@cheep.Author">@cheep.Author</a>
+                            </strong>
+                            <!--==true is required, since it is a bool? not a bool-->
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                if (cheep.Author == User.Identity?.Name)
+                                {
+                                    <a href="/delete/@cheep.CheepId/profile"> delete</a>
+                                }
+                            }
+
+                            @{
+                                string[] cheepParts = Model.SplitCheepByTags(cheep.Message);
+                                string[] cheepTaggedAuthors = Model.GetTaggedAuthorsFromCheepMessage(cheep.Message);
+                            }
+                            @for (var i = 0; i < cheepParts.Length; i++)
+                            {
+                                @cheepParts[i]
+                                if (i < cheepTaggedAuthors.Length)
+                                {
+                                    <strong>
+                                        <a href="/@cheepTaggedAuthors[i]">@cheepTaggedAuthors[i]</a>
+                                    </strong>
+                                }
+                            }
+                            <small>&mdash; @cheep.TimeStamp</small>
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
+        <div>
+            @if (Model.Cheeps.Any()){
+                if (Model.currentPage != 1)
+                {
+                    <a href="/profile/?page=@(Model.currentPage - 1)">&lt;Previous</a>
+                }
+                foreach (int pageNumber in Model.numbersToShow)
+                {
+                    if (pageNumber == Model.currentPage){
+                        <a href="/profile/?page=@(pageNumber)"><b>@(pageNumber)</b></a>
+                    }
+                    else {
+                        <a href="/profile/?page=@(pageNumber)"><small>@(pageNumber)</small></a>
+                    }
+                }
+                if (Model.currentPage != Model.totalPages)
+                {
+                    <a href="/profile/?page=@(Model.currentPage + 1)">Next&gt;</a>
+                }
+            }
+        </div>
     }
     else
     {
