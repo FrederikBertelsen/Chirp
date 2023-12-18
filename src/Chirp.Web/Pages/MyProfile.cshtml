@@ -59,10 +59,11 @@
             </ul>
         }
         
-        <h2> Your Cheeps </h2>
 
         @if (Model.Cheeps.Any())
         {
+            <h2> Your Cheeps </h2>
+
             <ul id="messagelist" class="cheeps">
                 @foreach (CheepViewModel cheep in Model.Cheeps)
                 {
