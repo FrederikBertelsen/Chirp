@@ -1,6 +1,7 @@
 @page "/profile"
 @using System.Security.Claims
 @using System.Text.RegularExpressions
+@using Chirp.Core
 @model Chirp.Web.Pages.ProfileModel
 @{
     ViewData["Title"] = "Chirp!";
@@ -16,24 +17,64 @@
                 <th>Claim type</th>
                 <th>Claim value</th>
             </tr>
-            @foreach(Claim claim in User.Claims)
+            @foreach (Claim claim in User.Claims)
             {
                 <tr>
-                    <td>@Regex.Replace(claim.Type, @"^.*\/","")</td>
+                    <td>@Regex.Replace(claim.Type, @"^.*\/", "")</td>
                     <td>@claim.Value</td>
                 </tr>
             }
         </table>
         <br/>
-        <input type = 'submit' 
-        value = "Se how your data is processed" 
-        onclick="alert('The documentation about how userdata is processed')">
+        <input type='submit'
+               value="Se how your data is processed"
+               onclick="alert('The documentation about how userdata is processed')">
         <form method="post">
             @Html.AntiForgeryToken()
-            <input type="submit" 
+            <input type="submit"
                    value="Delete my profile"
                    onclick="alert('Function not working yet')">
         </form>
+
+        @if (Model.Cheeps.Any())
+        {
+            <ul id="messagelist" class="cheeps">
+                @foreach (CheepViewModel cheep in Model.Cheeps)
+                {
+                    <li>
+                        <p>
+                            <strong>
+                                <a href="/@cheep.Author">@cheep.Author</a>
+                            </strong>
+                            <!--==true is required, since it is a bool? not a bool-->
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                if (cheep.Author == User.Identity?.Name)
+                                {
+                                    <a href="/delete/@cheep.CheepId/@User.Identity?.Name"> delete</a>
+                                }
+                            }
+
+                            @{
+                                string[] cheepParts = Model.SplitCheepByTags(cheep.Message);
+                                string[] cheepTaggedAuthors = Model.GetTaggedAuthorsFromCheepMessage(cheep.Message);
+                            }
+                            @for (var i = 0; i < cheepParts.Length; i++)
+                            {
+                                @cheepParts[i]
+                                if (i < cheepTaggedAuthors.Length)
+                                {
+                                    <strong>
+                                        <a href="/@cheepTaggedAuthors[i]">@cheepTaggedAuthors[i]</a>
+                                    </strong>
+                                }
+                            }
+                            <small>&mdash; @cheep.TimeStamp</small>
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
     }
     else
     {
