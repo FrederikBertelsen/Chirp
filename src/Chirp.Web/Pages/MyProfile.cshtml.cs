@@ -1,3 +1,4 @@
+using System.Drawing.Printing;
 using System.Text.RegularExpressions;
 using Chirp.Core;
 using Chirp.Infrastructure;
@@ -8,23 +9,16 @@ namespace Chirp.Web.Pages;
 
 public class ProfileModel : PageModel
 {
-    //might not be needed
     private readonly IAuthorRepository authorRepository;
     private readonly ICheepRepository cheepRepository;
-
     private readonly IFollowRepository followRepository;
-
-    //what is this for?
-    //[BindProperty(SupportsGet = true)] 
+    
     public List<CheepViewModel> Cheeps { get; set; }
     public List<FollowViewModel> Follows { get; set; }
 
     [BindProperty(SupportsGet = true)] public int currentPage { get; set; }
     public int totalPages { get; set; }
-    int pageSize { get; set; }
-
     public int navigationNumber { get; set; }
-
     public List<int> numbersToShow { get; set; }
 
     public ProfileModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository,
@@ -90,21 +84,15 @@ public class ProfileModel : PageModel
         return Page();
     }
 
-    //does not work yet
     public async Task<IActionResult> OnPostAsync()
     {
-        string? userName = User.Identity?.Name;
-        try
+        if (User.Identity?.Name is not null)
         {
-            throw new NotImplementedException();
-            //await authorRepository.RemoveAuthor(userName);
-            //return RedirectToPage("/");
+            await authorRepository.RemoveAuthor(User.Identity.Name);
+            return Redirect("/MicrosoftIdentity/Account/SignOut");
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            return RedirectToPage();
-        }
+
+        return RedirectToPage();
     }
 
     public async Task<bool> CheckFollow(string followingName)

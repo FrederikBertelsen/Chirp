@@ -69,7 +69,10 @@ public class AuthorRepository : IAuthorRepository
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
 
+        var following = await dbContext.Follows.Where(f => f.FollowerId == author.AuthorId).ToListAsync();
         dbContext.Cheeps.RemoveRange(author.Cheeps);
+        dbContext.Follows.RemoveRange(following);
+        
         dbContext.Authors.Remove(author);
         await dbContext.SaveChangesAsync();
     }
