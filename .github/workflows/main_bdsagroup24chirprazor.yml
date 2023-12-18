@@ -28,7 +28,7 @@ jobs:
         run: |
           # Define some variables for things we need
           
-          dotnet tool install --global dotnet-ef -v 7.0.13
+          dotnet tool install --global dotnet-ef -v 7
           # Make SQL databse runnable
           
           # Build everything
