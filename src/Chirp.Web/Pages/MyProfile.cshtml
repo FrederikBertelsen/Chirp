@@ -36,6 +36,31 @@
                    onclick="alert('Function not working yet')">
         </form>
 
+                            
+        @if (Model.Follows.Count() > 1)
+        {
+            <h2> Your Follows </h2>
+
+            <ul id="followlist" class="follows">
+                @foreach (FollowViewModel follow in Model.Follows)
+                {
+                    @if (follow.following.Name != User.Identity?.Name)
+                    {
+                        <li>
+                            <p>
+                                <strong>
+                                    <a href="/@follow.following.Name">@follow.following.Name</a>
+                                </strong>
+                                <a href="/follow/@follow.following.Name/profile"> unfollow</a>
+                            </p>
+                        </li>
+                    }
+                }
+            </ul>
+        }
+        
+        <h2> Your Cheeps </h2>
+
         @if (Model.Cheeps.Any())
         {
             <ul id="messagelist" class="cheeps">
@@ -51,7 +76,7 @@
                             {
                                 if (cheep.Author == User.Identity?.Name)
                                 {
-                                    <a href="/delete/@cheep.CheepId/@User.Identity?.Name"> delete</a>
+                                    <a href="/delete/@cheep.CheepId/profile"> delete</a>
                                 }
                             }
 
@@ -75,6 +100,27 @@
                 }
             </ul>
         }
+        <div>
+            @if (Model.Cheeps.Any()){
+                if (Model.currentPage != 1)
+                {
+                    <a href="/profile/?page=@(Model.currentPage - 1)">&lt;Previous</a>
+                }
+                foreach (int pageNumber in Model.numbersToShow)
+                {
+                    if (pageNumber == Model.currentPage){
+                        <a href="/profile/?page=@(pageNumber)"><b>@(pageNumber)</b></a>
+                    }
+                    else {
+                        <a href="/profile/?page=@(pageNumber)"><small>@(pageNumber)</small></a>
+                    }
+                }
+                if (Model.currentPage != Model.totalPages)
+                {
+                    <a href="/profile/?page=@(Model.currentPage + 1)">Next&gt;</a>
+                }
+            }
+        </div>
     }
     else
     {

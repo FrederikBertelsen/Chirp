@@ -80,7 +80,6 @@ public class CheepRepository : ICheepRepository
     /// <exception cref="ArgumentException">The page number cannot be below 1. The Author has to exist in the database</exception>
     public async Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByFollowed(string authorName, int pageNumber)
     {
-       
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
         if (pageNumber < 1)
