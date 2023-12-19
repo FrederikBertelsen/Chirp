@@ -61,9 +61,7 @@ public class UserTimelineModel : PageModel
             .Where(c => c.Type == ClaimTypes.Email)
             .Select(c => c.Value)
             .SingleOrDefault();
-
-        DateTime dateTime = DateTime.Now;
-
+        
         Task<bool> authorTask = authorRepository.DoesUserNameExists(authorName);
         authorTask.Wait();
         bool authorExists = authorTask.Result;

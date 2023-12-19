@@ -52,7 +52,7 @@ public class ProfileModel : PageModel
 
         IEnumerable<CheepViewModel> cheeps;
         IEnumerable<FollowViewModel> follows;
-        if (User.Identity?.IsAuthenticated == true)
+        if (User.Identity?.IsAuthenticated == true )
         {
             try
             {
