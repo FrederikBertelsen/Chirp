@@ -9,6 +9,7 @@ public interface IAuthorRepository
     Task RemoveAuthor(string authorName);
     Task<AuthorViewModel> FindAuthorByName(string authorName);
     Task<bool> DoesUserNameExists(string authorName);
+
 }
 
 public class AuthorRepository : IAuthorRepository
@@ -102,4 +103,6 @@ public class AuthorRepository : IAuthorRepository
         Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
         return author is not null;
     }
+
+
 }

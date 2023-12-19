@@ -67,7 +67,9 @@ public class AuthorRepositoryTest {
         await authorRepository.CreateAuthor(authorName,authorEmail);
         
         //assert
-        Assert.Equal(size+1, context.Authors.Count());  
+        Assert.Equal(size+1, context.Authors.Count());
+        Assert.NotNull(context.Authors
+            .SingleOrDefault(f => f.Name == authorName && f.Email == authorEmail));
     }
     
     /// <summary>
@@ -88,6 +90,8 @@ public class AuthorRepositoryTest {
         //assert
         await Assert.ThrowsAsync<ArgumentException>(result);
         Assert.Equal(size, context.Authors.Count());  
+        Assert.NotNull(context.Authors
+            .SingleOrDefault(f => f.Name == authorName));
     }
 
     /// <summary>
@@ -113,7 +117,10 @@ public class AuthorRepositoryTest {
 
         //assert
         await Assert.ThrowsAsync<DbUpdateException>(result);
-        Assert.Equal(size, context.Authors.Count());  
+        Assert.Equal(size, context.Authors.Count()); 
+        Assert.Null(context.Authors
+            .SingleOrDefault(f => f.Name == authorName));
+        
     }
 
     /// <summary>
@@ -137,6 +144,8 @@ public class AuthorRepositoryTest {
         //assert
         await Assert.ThrowsAsync<ArgumentException>(result);
         Assert.Equal(size+1, context.Authors.Count());  
+        Assert.NotNull(context.Authors
+            .SingleOrDefault(f => f.Name == authorName && f.Email == authorEmail));
     }
 
     /// <summary>
@@ -153,9 +162,15 @@ public class AuthorRepositoryTest {
         //act
         int size = context.Authors.Count();
         await authorRepository.RemoveAuthor(authorName);
-
+        
         //assert
-        Assert.Equal(size-1, context.Authors.Count());  
+        Assert.Equal(size-1, context.Authors.Count());
+        Assert.Null(context.Authors
+            .SingleOrDefault(f => f.Name == authorName));
+        Assert.False(context.Cheeps.Any(c => c.Author.Name == authorName));
+        Assert.False(context.Follows.Any(f => f.Follower.Name == authorName || f.Following.Name == authorName));
+
+
 
     }
     /// <summary>
@@ -193,7 +208,9 @@ public class AuthorRepositoryTest {
 
         //assert
         await Assert.ThrowsAsync<ArgumentException>(result);
-        Assert.Equal(size-1, context.Authors.Count());  
+        Assert.Equal(size-1, context.Authors.Count()); 
+        Assert.Null(context.Authors
+            .SingleOrDefault(f => f.Name == authorName));
 
     }
     /// <summary>
@@ -278,4 +295,44 @@ public class AuthorRepositoryTest {
         //assert
         await Assert.ThrowsAsync<ArgumentException>(result);
     }
+
+    /// <summary>
+    /// checks that the DoesUserNameExists task gives a true on a existing user
+    /// </summary>
+    /// <param name="authorName"> the name of the user that is checked</param>
+    [Theory]
+    //Author names
+    [InlineData("existingAuthor")]
+    
+    public async void FindThatUserExistByName(string authorName)
+    {
+        //Arrange
+        AuthorRepository authorRepository = new AuthorRepository(context);
+        
+        //act
+         bool result = await authorRepository.DoesUserNameExists(authorName);
+        //Assert
+        
+        Assert.True(result);
+    }
+    
+    /// <summary>
+    /// checks that the DoesUserNameExists task gives a false on a nonexisting user
+    /// </summary>
+    /// <param name="authorName"> the name of the user that is checked</param>
+    [Theory]
+    //Author names
+    [InlineData("NonExistingAuthor")]
+    
+    public async void FindThatUserDoesNotExistByName(string authorName)
+    {
+        //Arrange
+        AuthorRepository authorRepository = new AuthorRepository(context);
+        
+        //act
+        bool result = await authorRepository.DoesUserNameExists(authorName);
+        //Assert
+        Assert.False(result);
+    }
+    
 }
