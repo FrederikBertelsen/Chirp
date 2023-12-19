@@ -53,7 +53,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     /// <summary>
-    /// Removes an Author and all of their Cheeps and Follows.
+    /// Removes an Author and all of their Cheeps.
     /// </summary>
     /// <param name="authorName">The name of the Author</param>
     /// <exception cref="ArgumentException">If an author with authorName doesn't exist</exception>
@@ -69,12 +69,8 @@ public class AuthorRepository : IAuthorRepository
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
 
-        List<Follow> following = await dbContext.Follows.Where(f => f.FollowerId == author.AuthorId || f.FollowingId == author.AuthorId).ToListAsync();
-        dbContext.Follows.RemoveRange(following);
         dbContext.Cheeps.RemoveRange(author.Cheeps);
-        
         dbContext.Authors.Remove(author);
-        
         await dbContext.SaveChangesAsync();
     }
 

@@ -53,10 +53,6 @@ public class PublicModel : PageModel
             User.Identity.IsAuthenticated != true)
             return RedirectToPage();
 
-
-        //if (userName is null || userName.Trim() == "" || cheepText.Trim() == "" || cheepText.Length == 0 || cheepText.Length > 160) return RedirectToPage();
-
-
         string? authorEmail = User.Claims
             .Where(c => c.Type == ClaimTypes.Email)
             .Select(c => c.Value)
@@ -97,37 +93,31 @@ public class PublicModel : PageModel
         currentPage = page;
         numbersToShow.Clear();
 
-        try
+        IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheeps(page);
+        var cheepViewModels = cheeps.ToList();
+        Cheeps = cheepViewModels.Any() ? cheepViewModels.ToList() : new List<CheepViewModel>();
+
+        totalPages = await cheepRepository.GetCheepPageAmountAll();
+        if (currentPage - navigationNumber / 2 < 1)
         {
-            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheeps(page);
-            Cheeps = cheeps.ToList();
-            totalPages = await cheepRepository.GetCheepPageAmountAll();
-            if (currentPage - navigationNumber / 2 < 1)
+            for (int i = 1; i <= navigationNumber && i <= totalPages; i++)
             {
-                for (int i = 1; i <= navigationNumber && i <= totalPages; i++)
-                {
-                    numbersToShow.Add(i);
-                }
-            }
-            else if (currentPage + navigationNumber / 2 > totalPages)
-            {
-                for (int i = totalPages - navigationNumber; i <= totalPages; i++)
-                {
-                    numbersToShow.Add(i);
-                }
-            }
-            else
-            {
-                for (int i = currentPage - navigationNumber / 2; i <= currentPage + navigationNumber / 2; i++)
-                {
-                    numbersToShow.Add(i);
-                }
+                numbersToShow.Add(i);
             }
         }
-        catch
+        else if (currentPage + navigationNumber / 2 > totalPages)
         {
-            //empty list of cheeps if there are no cheeps to show, this is caught by the cshtml and shown as "There are no cheeps here"
-            Cheeps = new List<CheepViewModel>();
+            for (int i = totalPages - navigationNumber; i <= totalPages; i++)
+            {
+                numbersToShow.Add(i);
+            }
+        }
+        else
+        {
+            for (int i = currentPage - navigationNumber / 2; i <= currentPage + navigationNumber / 2; i++)
+            {
+                numbersToShow.Add(i);
+            }
         }
 
         return Page();
