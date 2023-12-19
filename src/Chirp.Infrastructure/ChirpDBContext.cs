@@ -16,6 +16,9 @@ public class ChirpDBContext : DbContext
         Database.EnsureCreated();
     }
     
+    /// <summary>
+    /// the constraints of the database
+    /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Follow>()
