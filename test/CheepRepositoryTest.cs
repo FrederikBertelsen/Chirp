@@ -160,13 +160,17 @@ public class CheepRepositoryTest
 
         //act
         await cr.CreateCheep(author, text);
+        Cheep? matchingCheep = _context.Cheeps
+            .Include(c => c.Author)
+            .SingleOrDefault(c => c.Author.Name == author && c.Text == text);
 
         //assert
+        Assert.NotNull(matchingCheep);
         Assert.Equal(cheepCount + 1, _context.Cheeps.Count());
     }
 
     /// <summary>
-    /// Tests that the correct exeption is thrown if any or all values of data in a cheep is null
+    /// Tests that the correct exception is thrown if any or all values of data in a cheep is null
     /// </summary>
     [Fact]
     public async void CreateCheepWithNullValues()
@@ -179,13 +183,19 @@ public class CheepRepositoryTest
 
         //act
         async Task result() => await cr.CreateCheep(author, text);
+        
+        Cheep? matchingCheep = _context.Cheeps
+            .Include(c => c.Author)
+            .SingleOrDefault(c => c.Author.Name == author && c.Text == text);
+
         //assert
         await Assert.ThrowsAsync<ArgumentNullException>(result);
+        Assert.Null(matchingCheep);
         Assert.Equal(cheepCount, _context.Cheeps.Count());
     }
 
     /// <summary>
-    /// tests that the correct Exeption is raised if the CreateCheep method 
+    /// tests that the correct Exception is raised if the CreateCheep method 
     /// is called with a nonExisting author
     /// </summary>
     [Fact]
@@ -193,16 +203,20 @@ public class CheepRepositoryTest
     {
         //arrange
         string authorName = "nonExisitngAuthor";
-        int cheepcount = _context.Cheeps.Count();
+        int cheepCount = _context.Cheeps.Count();
         CheepRepository cr = new CheepRepository(_context);
         string text = "Hello";
 
         //act
         async Task result() => await cr.CreateCheep(authorName, text);
+        Cheep? matchingCheep = _context.Cheeps
+            .Include(c => c.Author)
+            .SingleOrDefault(c => c.Author.Name == authorName && c.Text == text);
 
         //assert
         await Assert.ThrowsAsync<ArgumentException>(result);
-        Assert.Equal(cheepcount, _context.Cheeps.Count());
+        Assert.Null(matchingCheep);
+        Assert.Equal(cheepCount, _context.Cheeps.Count());
     }
 
     /// <summary>
@@ -220,8 +234,13 @@ public class CheepRepositoryTest
 
         //act
         async Task result() => await cr.CreateCheep(authorName, text);
+        Cheep? matchingCheep = _context.Cheeps
+            .Include(c => c.Author)
+            .SingleOrDefault(c => c.Author.Name == authorName && c.Text == text);
+
         //assert
         await Assert.ThrowsAsync<ArgumentNullException>(result);
+        Assert.Null(matchingCheep);
         Assert.Equal(cheepcount, _context.Cheeps.Count());
     }
 
@@ -240,13 +259,17 @@ public class CheepRepositoryTest
         //arrange
         int cheepCount = _context.Cheeps.Count();
         CheepRepository cr = new CheepRepository(_context);
-        string author = "existingAuthor";
+        string authorName = "existingAuthor";
 
         //act
-        async Task result() => await cr.CreateCheep(author, text);
+        async Task result() => await cr.CreateCheep(authorName, text);
+        Cheep? matchingCheep = _context.Cheeps
+            .Include(c => c.Author)
+            .SingleOrDefault(c => c.Author.Name == authorName && c.Text == text);
 
         //assert
         await Assert.ThrowsAsync<ArgumentException>(result);
+        Assert.Null(matchingCheep);
         Assert.Equal(cheepCount, _context.Cheeps.Count());
     }
 
@@ -265,11 +288,19 @@ public class CheepRepositoryTest
         //arrange
         int cheepCount = _context.Cheeps.Count();
         CheepRepository cr = new CheepRepository(_context);
+        Cheep? beforeDeleteCheep = _context.Cheeps
+            .Include(c => c.Author)
+            .SingleOrDefault(c => c.CheepId == cheepId);
 
         //act
         await cr.RemoveCheep(cheepId);
-
+        Cheep? afterDeleteCheep = _context.Cheeps
+            .Include(c => c.Author)
+            .SingleOrDefault(c => c.CheepId == cheepId);
+        
         //assert
+        Assert.NotNull(beforeDeleteCheep);
+        Assert.Null(afterDeleteCheep);
         Assert.Equal(cheepCount - 1, _context.Cheeps.Count());
     }
 
@@ -283,7 +314,7 @@ public class CheepRepositoryTest
     public async void RemoveCheepDoesNotExist(int cheepId)
     {
         //arrange
-        int cheepcount = _context.Cheeps.Count();
+        int cheepCount = _context.Cheeps.Count();
         CheepRepository cr = new CheepRepository(_context);
 
         //act
@@ -291,7 +322,7 @@ public class CheepRepositoryTest
 
         //assert
         await Assert.ThrowsAsync<ArgumentException>(result);
-        Assert.Equal(cheepcount, _context.Cheeps.Count());
+        Assert.Equal(cheepCount, _context.Cheeps.Count());
     }
 
     //cannot be made properly before pagesize can be decided by methodcall
@@ -308,12 +339,10 @@ public class CheepRepositoryTest
     {
         //arrange
         CheepRepository cr = new CheepRepository(_context);
-        int actualCount = 0;
 
         //act
         IEnumerable<CheepViewModel> result = await cr.GetPageOfCheepsByAuthor(author, 1);
-        foreach (var e in result)
-            actualCount++;
+        int actualCount = result.Count();
 
         //assert
         Assert.Equal(actualCount, cheepCountByAuthor);
@@ -321,18 +350,19 @@ public class CheepRepositoryTest
 
 
     /// <summary>
-    /// test that an ArgumentExeption is thrown when calling the GetCheepsByAuthor method
+    /// test that an ArgumentException is thrown when calling the GetCheepsByAuthor method
     /// with an author name not in the database
     /// </summary>
     [Fact]
     public async void GetCheepsByNonExistingAuthor()
     {
         //arrange
-        string authorName = "nonExisitngAuthor";
+        string authorName = "nonExistingAuthor";
         CheepRepository cr = new CheepRepository(_context);
 
         //act
         async Task result() => await cr.GetPageOfCheepsByAuthor(authorName, 1);
+        
         //assert
         await Assert.ThrowsAsync<ArgumentException>(result);
     }
@@ -356,30 +386,28 @@ public class CheepRepositoryTest
     }
 
     /// <summary>
-    /// Checks that my timline contains the right amount of cheeps when folloing other users.
+    /// Checks that my timeline contains the right amount of cheeps when following other users.
     /// </summary>
-    /// <param name="author">the author whos timline we are checking</param>
-    /// <param name="cheepCountByFolloews">how many cheeps the individual my timline contains</param>
+    /// <param name="author">the author who's timeline we are checking</param>
+    /// <param name="cheepCountByFollows">how many cheeps the individual my timline contains</param>
     [Theory]
     [InlineData("Filip Muro", 7)]
     [InlineData("Luanna Muro", 4)]
-    public async void GetCheepsByFollows(string author, int cheepCountByFolloews)
+    public async void GetCheepsByFollows(string author, int cheepCountByFollows)
     {
         //arrange
         CheepRepository cr = new CheepRepository(_context);
-        int actualCount = 0;
 
         //act
         IEnumerable<CheepViewModel> result = await cr.GetPageOfCheepsByFollowed(author, 1);
-        foreach (var e in result)
-            actualCount++;
+        int actualCount = result.Count();
 
         //assert
-        Assert.Equal(actualCount, cheepCountByFolloews);
+        Assert.Equal(actualCount, cheepCountByFollows);
     }
 
     /// <summary>
-    ///  checks that a user that does not follow anyone only sees there own cheeps on my timline
+    ///  checks that a user that does not follow anyone only sees there own cheeps on my timeline
     /// </summary>
     [Fact]
     public async void GetCheepsByFollowsWithNoFollows()
@@ -388,12 +416,10 @@ public class CheepRepositoryTest
         string authorName = "existingAuthor";
         int cheepCountByFollows = 3;
         CheepRepository cr = new CheepRepository(_context);
-        int actualCount = 0;
 
         //act
         IEnumerable<CheepViewModel> result = await cr.GetPageOfCheepsByFollowed(authorName, 1);
-        foreach (var e in result)
-            actualCount++;
+        int actualCount = result.Count();
 
         //assert
         Assert.Equal(actualCount, cheepCountByFollows);
