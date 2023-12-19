@@ -34,6 +34,8 @@ public class CheepRepositoryTest {
     {
         var a1 = new Author() { AuthorId = 1, Name = "existingAuthor", Email = "existingEmail@mail.com", Cheeps = new List<Cheep>() };
         var a2 = new Author() { AuthorId = 2, Name = "Luanna Muro", Email = "Luanna-Muro@ku.dk", Cheeps = new List<Cheep>() };
+        var a3 = new Author() { AuthorId = 3, Name = "Filip Muro", Email = "Filip-Muro@ku.dk", Cheeps = new List<Cheep>() };
+        
         
         var authors = new List<Author>() { a1, a2};
 
@@ -42,9 +44,21 @@ public class CheepRepositoryTest {
         var c3 = new Cheep() { CheepId = 3, Author = a2, Text = "In various enchanted attitudes, like the Sperm Whale.", TimeStamp = DateTime.Parse("2023-08-01 13:14:58") };
         var c4 = new Cheep() { CheepId = 4, Author = a1, Text = "Unless we succeed in establishing ourselves in some monomaniac way whatever significance might lurk in them.", TimeStamp = DateTime.Parse("2023-08-01 13:14:34") };
         var c5 = new Cheep() { CheepId = 5, Author = a2, Text = "At last we came back!", TimeStamp = DateTime.Parse("2023-08-01 13:14:35") };
-        
-        var cheeps = new List<Cheep>(){c1,c2,c3,c4,c5};
+        var c6 = new Cheep() { CheepId = 6, Author = a3, Text = "I like the cheese.", TimeStamp = DateTime.Parse("2023-08-01 13:16:34") };
+        var c7 = new Cheep() { CheepId = 7, Author = a3, Text = "At last we came back to cheese!", TimeStamp = DateTime.Parse("2023-08-01 13:18:35") };
 
+        var cheeps = new List<Cheep>(){c1,c2,c3,c4,c5,c6,c7};
+        
+        context.Follows.Add(new Follow() {Follower =a1,FollowerId = a1.AuthorId,Following = a1, FollowingId = a1.AuthorId});
+        context.Follows.Add(new Follow() {Follower =a2,FollowerId = a2.AuthorId,Following = a2, FollowingId = a2.AuthorId});
+        context.Follows.Add(new Follow() {Follower =a3,FollowerId = a3.AuthorId,Following = a3, FollowingId = a3.AuthorId});
+
+        context.Follows.Add(new Follow() {Follower =a3,FollowerId = a3.AuthorId,Following = a2, FollowingId = a2.AuthorId});
+        context.Follows.Add(new Follow() {Follower =a3,FollowerId = a3.AuthorId,Following = a1, FollowingId = a1.AuthorId});
+        
+        context.Follows.Add(new Follow() {Follower =a2,FollowerId = a2.AuthorId,Following = a3, FollowingId = a3.AuthorId});
+
+        
         a1.Cheeps = new List<Cheep>() { c1, c2,c4 };
         a2.Cheeps = new List<Cheep>() { c3,c5 };
         context.Authors.AddRange(authors);
@@ -253,6 +267,9 @@ public class CheepRepositoryTest {
         //assert
         Assert.Equal(actualCount, cheepcountByAuthor);
     }
+   
+    
+    
 
     /// <summary>
     /// test that an ArgumentExeption is thrown when calling the GetCheepsByAuthor method
@@ -285,5 +302,46 @@ public class CheepRepositoryTest {
         //assert
         await Assert.ThrowsAsync<ArgumentNullException>(result);
     }
+    
+    /// <summary>
+    /// Checks that my timline contains the right amount of cheeps when folloing other users.
+    /// </summary>
+    /// <param name="author">the author whos timline we are checking</param>
+    /// <param name="cheepcountByFolloews">how many cheeps the individual my timline contains</param>
+    [Theory]
+    [InlineData("Filip Muro", 7)]
+    [InlineData("Luanna Muro", 4)]
+    public async void GetCheepsByFollows(string author, int cheepcountByFolloews) {
+        //arrange
+        CheepRepository cr = new CheepRepository(context);
+        int actualCount = 0;
+        //act
+        IEnumerable<CheepViewModel> result = await cr.GetPageOfCheepsByFollowed(author,1);
+        foreach(var e in result)
+            actualCount++;
+        //assert
+        Assert.Equal(actualCount, cheepcountByFolloews);
+    }
+    
+    /// <summary>
+    ///  checks that a user that does not follow anyone only sees there own cheeps on my timline
+    /// </summary>
+    /// <param name="author">the author whos timline we are checking</param>
+    /// <param name="cheepcountByFolloews">how many cheeps the individual my timline contains</param>
+    [Theory]
+    [InlineData("existingAuthor", 3)]
+    public async void GetCheepsByFollowsWithNoFollows(string author, int cheepcountByFolloews) {
+        //arrange
+        CheepRepository cr = new CheepRepository(context);
+        int actualCount = 0;
+        //act
+        IEnumerable<CheepViewModel> result = await cr.GetPageOfCheepsByFollowed(author,1);
+        foreach(var e in result)
+            actualCount++;
+        //assert
+        Assert.Equal(actualCount, cheepcountByFolloews);
+    }
+    
+
 
 }
