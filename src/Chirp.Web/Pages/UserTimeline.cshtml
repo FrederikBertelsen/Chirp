@@ -36,22 +36,17 @@
                         <strong>
                             <a href="/@cheep.Author">@cheep.Author</a>
                         </strong>
-                        <!--==true is required, since it is a bool? not a bool-->
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            if (cheep.Author == User.Identity?.Name)
-                            {
+                        <!--==true is required, since it is a bool? not a bool--> 
+                        @if (User.Identity?.IsAuthenticated == true){
+                            if (cheep.Author == User.Identity?.Name){
                                 <a href="/delete/@cheep.CheepId/@routeName"> delete</a>
                             }
-                            else
-                            {
-                                @if (await Model.CheckFollow(cheep.Author))
-                                {
-                                    <a href="/follow/@cheep.Author/@routeName"> unfollow</a>
-                                }
-                                else
-                                {
-                                    <a href="/follow/@cheep.Author/@routeName"> follow</a>
+                            else {
+                                @if (await Model.CheckFollow(cheep.Author)){
+                                <a href="/follow/@cheep.Author/@routeName"> unfollow</a>
+                            }
+                                else {
+                                <a href="/follow/@cheep.Author/@routeName"> follow</a>
                                 }
                             }
                         }
@@ -68,8 +63,7 @@
                                     <a href="/@cheepTaggedAuthors[i]">@cheepTaggedAuthors[i]</a>
                                 </strong>
                             }
-                        }
-                        <small>&mdash; @cheep.TimeStamp</small>
+                        }                        <small>&mdash; @cheep.TimeStamp</small>
                     </p>
                 </li>
             }
@@ -81,25 +75,18 @@
     }
 </div>
 <div>
-    @if (Model.Cheeps.Any())
-    {
+    @if (Model.Cheeps.Any()){
         if (Model.currentPage != 1)
         {
             <a href="/@(routeName)/?page=@(Model.currentPage - 1)">&lt;Previous</a>
         }
         foreach (int pageNumber in Model.numbersToShow)
         {
-            if (pageNumber == Model.currentPage)
-            {
-                <a href="/@(routeName)/?page=@(pageNumber)">
-                    <b>@(pageNumber)</b>
-                </a>
-            }
-            else
-            {
-                <a href="/@(routeName)/?page=@(pageNumber)">
-                    <small>@(pageNumber)</small>
-                </a>
+            if (pageNumber == Model.currentPage){
+                <a href="/@(routeName)/?page=@(pageNumber)"><b>@(pageNumber)</b></a>
+                }
+            else {
+                <a href="/@(routeName)/?page=@(pageNumber)"><small>@(pageNumber)</small></a>
             }
         }
         if (Model.currentPage != Model.totalPages)
