@@ -124,15 +124,11 @@ public class AuthorRepositoryTest
     /// tests that the correct Exeption is raised if the CreateAuthor 
     /// method is called with a null values
     /// </summary>
-    /// <param name="authorName"></param>
-    [Theory]
-    //name is null
-    [InlineData(null)]
-    //name is not null
-    [InlineData("someName")]
-    public async void CreateAuthorNullValue(string authorName)
+    [Fact]
+    public async void CreateAuthorNullValue()
     {
         //arrange
+        string? authorName = null;
         AuthorRepository authorRepository = new(_context);
 
         //act

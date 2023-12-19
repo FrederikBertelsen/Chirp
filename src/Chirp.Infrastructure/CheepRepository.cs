@@ -226,6 +226,10 @@ public class CheepRepository : ICheepRepository
             throw new ArgumentNullException(nameof(authorName));
         if (text is null)
             throw new ArgumentNullException(nameof(text));
+        if (text == "")
+            throw new ArgumentException("Text can not be empty");
+        if (text.Length > 160)
+            throw new ArgumentException("Text can not be over 160 characters");
 
         Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
 
