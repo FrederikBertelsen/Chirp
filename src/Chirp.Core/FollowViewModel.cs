@@ -1,3 +1,3 @@
 namespace Chirp.Core;
 
-public record FollowViewModel(Author follower, Author following);
+public record FollowViewModel(Author Follower, Author Following);

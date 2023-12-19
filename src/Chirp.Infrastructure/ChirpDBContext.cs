@@ -8,13 +8,12 @@ public class ChirpDBContext : DbContext
 
     public DbSet<Author> Authors => Set<Author>();
     public DbSet<Cheep> Cheeps => Set<Cheep>();
-
     public DbSet<Follow> Follows => Set<Follow>();
 
     
     public ChirpDBContext(DbContextOptions<ChirpDBContext> options) : base(options)
     {
-        Database.Migrate();
+        Database.EnsureCreated();
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

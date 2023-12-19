@@ -1,22 +1,17 @@
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Xunit.Abstractions;
 using Xunit;
 
 namespace test;
 
 public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
 {
-    private readonly WebApplicationFactory<Program> factory;
-    private readonly HttpClient client;
+    private readonly HttpClient _client;
 
     public IntegrationTesting(WebApplicationFactory<Program> factory)
     {
         // Arrange
-        this.factory = factory;
-        client = factory.CreateClient(new WebApplicationFactoryClientOptions
+        _client = factory.CreateClient(new WebApplicationFactoryClientOptions
             { AllowAutoRedirect = true, HandleCookies = true });
     }
 
@@ -29,7 +24,7 @@ public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
     public async void CanSeePublicTimeline()
     {
         // Act
-        HttpResponseMessage response = await client.GetAsync("/");
+        HttpResponseMessage response = await _client.GetAsync("/");
         response.EnsureSuccessStatusCode();
         string content = await response.Content.ReadAsStringAsync();
 
@@ -48,7 +43,7 @@ public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
     public async void CanSeePrivateTimeline(string author)
     {
         // Act
-        HttpResponseMessage response = await client.GetAsync($"/{author}");
+        HttpResponseMessage response = await _client.GetAsync($"/{author}");
         response.EnsureSuccessStatusCode();
         string content = await response.Content.ReadAsStringAsync();
 
@@ -68,7 +63,7 @@ public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
     public async void ThereAre32CheepsInPage(string page)
     {
         // Act
-        HttpResponseMessage response = await client.GetAsync($"/{page}");
+        HttpResponseMessage response = await _client.GetAsync($"/{page}");
         response.EnsureSuccessStatusCode();
         string content = await response.Content.ReadAsStringAsync();
 
@@ -79,7 +74,7 @@ public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
 
         int listElementCount = Regex.Matches(cheepListStr, "<li>").Count;
 
-        response = await client.GetAsync($"/{page}?page=2");
+        response = await _client.GetAsync($"/{page}?page=2");
         response.EnsureSuccessStatusCode();
         string page2 = await response.Content.ReadAsStringAsync();
 
@@ -108,16 +103,15 @@ public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
     public async void PaginationTest_MoreThanOnePage(string pageURL)
     {
         // Act
-        // get HTML
-        HttpResponseMessage response = await client.GetAsync($"/{pageURL}");
+        HttpResponseMessage response = await _client.GetAsync($"/{pageURL}");
         response.EnsureSuccessStatusCode();
         string page = await response.Content.ReadAsStringAsync();
 
-        response = await client.GetAsync($"/{pageURL}?page=1");
+        response = await _client.GetAsync($"/{pageURL}?page=1");
         response.EnsureSuccessStatusCode();
         string page1 = await response.Content.ReadAsStringAsync();
 
-        response = await client.GetAsync($"/{pageURL}?page=2");
+        response = await _client.GetAsync($"/{pageURL}?page=2");
         response.EnsureSuccessStatusCode();
         string page2 = await response.Content.ReadAsStringAsync();
 
@@ -155,8 +149,7 @@ public class IntegrationTesting : IClassFixture<WebApplicationFactory<Program>>
     public async void PaginationTest_PageNotFound(string pageURL)
     {
         // Act
-        // get HTML
-        HttpResponseMessage response = await client.GetAsync($"/{pageURL}");
+        HttpResponseMessage response = await _client.GetAsync($"/{pageURL}");
         response.EnsureSuccessStatusCode();
         string page = await response.Content.ReadAsStringAsync();
 
