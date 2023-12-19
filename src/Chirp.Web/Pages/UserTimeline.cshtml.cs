@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Drawing.Printing;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using Chirp.Core;
 using Chirp.Infrastructure;
@@ -77,18 +78,25 @@ public class UserTimelineModel : PageModel
         numbersToShow.Clear();
 
         IEnumerable<CheepViewModel> cheeps;
-        if (User.Identity?.IsAuthenticated == true && User.Identity?.Name == author)
+        try
         {
-            cheeps = await cheepRepository.GetPageOfCheepsByFollowed(author, page);
-            totalPages = await cheepRepository.GetCheepPageAmountFollowed(author);
+            if (User.Identity?.IsAuthenticated == true && User.Identity?.Name == author)
+            {
+                cheeps = await cheepRepository.GetPageOfCheepsByFollowed(author, page);
+                totalPages = await cheepRepository.GetCheepPageAmountFollowed(author);
+            }
+            else
+            {
+                cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
+                totalPages = await cheepRepository.GetCheepPageAmountAuthor(author);
+            }
         }
-        else
+        catch (ArgumentException e)
         {
-            cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
-            totalPages = await cheepRepository.GetCheepPageAmountAuthor(author);
+            cheeps = new List<CheepViewModel>();
+            Console.WriteLine(e);
         }
         Cheeps = cheeps.ToList();
-        
         
         if (currentPage - navigationNumber / 2 < 1)
             for (int i = 1; i <= navigationNumber && i <= totalPages; i++)
