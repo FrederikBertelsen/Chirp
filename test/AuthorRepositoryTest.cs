@@ -167,9 +167,9 @@ public class AuthorRepositoryTest {
         Assert.Equal(size-1, context.Authors.Count());
         Assert.Null(context.Authors
             .SingleOrDefault(f => f.Name == authorName));
-        Assert.False(context.Cheeps.Any(f => f.Author.Name == authorName));
-        Assert.False(context.Follows.Any(f => f.Follower.Name == authorName));
-        Assert.False(context.Follows.Any(f => f.Following.Name == authorName));
+        Assert.False(context.Cheeps.Any(c => c.Author.Name == authorName));
+        Assert.False(context.Follows.Any(f => f.Follower.Name == authorName || f.Following.Name == authorName));
+
 
 
     }
