@@ -57,25 +57,12 @@ public class UserTimelineModel : PageModel
 
         string cheep = cheepText;
         string authorName = userName;
-        string? authorEmail = User.Claims
-            .Where(c => c.Type == ClaimTypes.Email)
-            .Select(c => c.Value)
-            .SingleOrDefault();
-
-        DateTime dateTime = DateTime.Now;
-
+        
         Task<bool> authorTask = authorRepository.DoesUserNameExists(authorName);
         authorTask.Wait();
         bool authorExists = authorTask.Result;
-        if (!authorExists)
-        {
-            if (authorEmail is not null)
-            {
-                await authorRepository.CreateAuthor(authorName, authorEmail);
-            }
-
-            await authorRepository.CreateAuthor(authorName, "noEmail@found.error");
-        }
+        if (!authorExists) 
+            await authorRepository.CreateAuthor(authorName);
 
         await cheepRepository.CreateCheep(authorName, cheep);
 
@@ -97,18 +84,9 @@ public class UserTimelineModel : PageModel
         }
         else
         {
-            try
-            {
-                cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
-                totalPages = await cheepRepository.GetCheepPageAmountAuthor(author);
-            }
-            catch (Exception e)
-            {
-                cheeps = new List<CheepViewModel>();
-                Console.WriteLine(e);
-            }
+            cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
+            totalPages = await cheepRepository.GetCheepPageAmountAuthor(author);
         }
-
         Cheeps = cheeps.ToList();
         
         

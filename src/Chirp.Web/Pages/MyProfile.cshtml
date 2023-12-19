@@ -42,14 +42,14 @@
             <ul id="followlist" class="follows">
                 @foreach (FollowViewModel follow in Model.Follows)
                 {
-                    @if (follow.following.Name != User.Identity?.Name)
+                    @if (follow.Following.Name != User.Identity?.Name)
                     {
                         <li>
                             <p>
                                 <strong>
-                                    <a href="/@follow.following.Name">@follow.following.Name</a>
+                                    <a href="/@follow.Following.Name">@follow.Following.Name</a>
                                 </strong>
-                                <a href="/follow/@follow.following.Name/profile"> unfollow</a>
+                                <a href="/follow/@follow.Following.Name/profile"> unfollow</a>
                             </p>
                         </li>
                     }
