@@ -112,7 +112,13 @@ public class FollowRepository : IFollowRepository
 
         return follow is not null;
     }
-
+    
+/// <summary>
+///  returns a IEnumerable list that contains all FollowViewModel from all authors that a given author is following
+/// </summary>
+/// <param name="authorName">name of the author who is following </param>
+/// <exception cref="ArgumentNullException"> checks that the author name is not null</exception>
+/// <exception cref="ArgumentException">checks that the author with the author name exists</exception>
     public async Task<IEnumerable<FollowViewModel>> GetFollowing(string authorName)
     {
         if (authorName is null)

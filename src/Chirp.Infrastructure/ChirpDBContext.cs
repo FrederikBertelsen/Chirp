@@ -16,6 +16,9 @@ public class ChirpDBContext : DbContext
         Database.Migrate();
     }
     
+    /// <summary>
+    /// the constraints of the database
+    /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Follow>()
