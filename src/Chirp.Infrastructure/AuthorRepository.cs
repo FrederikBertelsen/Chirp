@@ -6,10 +6,9 @@ namespace Chirp.Infrastructure;
 public interface IAuthorRepository
 {
     Task CreateAuthor(string authorName);
-    Task RemoveAuthor(string authorName);
+    Task RemoveAuthor(string? authorName);
     Task<AuthorViewModel> FindAuthorByName(string authorName);
     Task<bool> DoesUserNameExists(string authorName);
-
 }
 
 public class AuthorRepository : IAuthorRepository
@@ -55,7 +54,7 @@ public class AuthorRepository : IAuthorRepository
     /// </summary>
     /// <param name="authorName">The name of the Author</param>
     /// <exception cref="ArgumentException">If an author with authorName doesn't exist</exception>
-    public async Task RemoveAuthor(string authorName)
+    public async Task RemoveAuthor(string? authorName)
     {
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
