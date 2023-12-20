@@ -13,11 +13,6 @@ jobs:
   build:
     name: Release
     runs-on: ubuntu-latest
-    env:
-      AZURE_DB_SERVER: ${{ secrets.AZURE_DB_SERVER }}
-      AZURE_DB_NAME: ${{ secrets.AZURE_DB_NAME }}
-      AZURE_DB_USER: ${{ secrets.AZURE_DB_USER }}
-      AZURE_DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -32,19 +27,14 @@ jobs:
         shell: bash
         run: |
           # Define some variables for things we need
-          dotnet user-secrets set "ConnectionStrings:Chirp" "${{ secrets.CONNECTION_STRING }}" --id id
-          echo "AZURE_DB_SERVER=${{ secrets.AZURE_DB_SERVER }}" >> $GITHUB_ENV
-          echo "AZURE_DB_NAME=${{ secrets.AZURE_DB_NAME }}" >> $GITHUB_ENV
-          echo "AZURE_DB_USER=${{ secrets.AZURE_DB_USER }}" >> $GITHUB_ENV
-          echo "AZURE_DB_PASSWORD=${{ secrets.AZURE_DB_PASSWORD }}" >> $GITHUB_ENV
-
+          
           dotnet tool install --global dotnet-ef --version 7
           # Make SQL databse runnable
           
           # Build everything
           dotnet publish src/Chirp.Web/ --runtime "linux-x64" -c Release -o "publish"
-          #cd publish
-          #./Chirp &
+          cd publish
+          ./Chirp &
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2

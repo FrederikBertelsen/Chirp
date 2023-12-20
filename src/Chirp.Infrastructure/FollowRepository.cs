@@ -3,15 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Infrastructure;
 
-public interface IFollowRepository
-{
-    Task AddFollower(string followerName, string followingName);
-
-    Task RemoveFollower(string followerName, string followingName);
-
-    Task<bool> IsFollowing(string followerName, string followingName);
-}
-
 public class FollowRepository : IFollowRepository
 {
     private readonly ChirpDBContext dbContext;
@@ -109,6 +100,31 @@ public class FollowRepository : IFollowRepository
         Follow? follow = await GetFollow(followerName, followingName);
 
         return follow is not null;
+    }
+    
+/// <summary>
+///  returns a IEnumerable list that contains all FollowViewModel from all authors that a given author is following
+/// </summary>
+/// <param name="authorName">name of the author who is following </param>
+/// <exception cref="ArgumentNullException"> checks that the author name is not null</exception>
+/// <exception cref="ArgumentException">checks that the author with the author name exists</exception>
+    public async Task<IEnumerable<FollowViewModel>> GetFollowing(string authorName)
+    {
+        if (authorName is null)
+            throw new ArgumentNullException(nameof(authorName));
+        
+        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
+        if (author is null)
+            throw new ArgumentException($"Author with name '{authorName}' not found.");
+
+        List<FollowViewModel> following = await dbContext.Follows
+            .Include(f => f.Following)
+            .Where(f => f.FollowerId == author.AuthorId)
+            .OrderByDescending(f => f.Following.Name)
+            .Select(f => new FollowViewModel(author, f.Following))
+            .ToListAsync();
+        
+        return following;
     }
 
     /// <summary>

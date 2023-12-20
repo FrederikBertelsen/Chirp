@@ -1,14 +1,19 @@
 namespace Chirp.Core;
-using System.ComponentModel.DataAnnotations; // for [Key]
-using System.ComponentModel.DataAnnotations.Schema; // for [DatabaseGenerated]
 
 public class Author
 {
-    //[Key]
-    //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    /// <summary>
+    /// the unique id of the author
+    /// </summary>
     public int AuthorId { get; set; }
+    
+    /// <summary>
+    /// the name of the author
+    /// </summary>
     public required string Name { get; set; }
-    public required string Email { get; set; }
-
+    
+    /// <summary>
+    /// the list of all cheeps written by the author
+    /// </summary>
     public List<Cheep> Cheeps { get; set; } = new();
 }

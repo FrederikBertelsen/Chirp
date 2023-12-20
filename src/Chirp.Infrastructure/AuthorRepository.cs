@@ -3,16 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Infrastructure;
 
-public interface IAuthorRepository
-{
-    Task CreateAuthor(string authorName, string authorEmail);
-    Task RemoveAuthor(string authorName);
-    Task<AuthorViewModel> FindAuthorByName(string authorName);
-    Task<AuthorViewModel> FindAuthorByEmail(string authorEmail);
-    Task<bool> DoesUserNameExists(string authorName);
-    Task<bool> DoesUserEmailExists(string authorEmail);
-}
-
 public class AuthorRepository : IAuthorRepository
 {
     private readonly ChirpDBContext dbContext;
@@ -31,15 +21,14 @@ public class AuthorRepository : IAuthorRepository
     /// Creates a new author
     /// </summary>
     /// <param name="authorName">The name of the new author</param>
-    /// <param name="authorEmail">The email of the new author</param>
     /// <exception cref="ArgumentException">If an author with the authorName already exists</exception>
-    public async Task CreateAuthor(string authorName, string authorEmail)
+    public async Task CreateAuthor(string authorName)
     {
         Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
         if (author is not null)
             throw new ArgumentException($"Author with name '{authorName}' already exists");
 
-        Author newAuthor = new Author() { Name = authorName, Email = authorEmail };
+        Author newAuthor = new Author() { Name = authorName};
 
         dbContext.Authors.Add(newAuthor);
 
@@ -53,11 +42,11 @@ public class AuthorRepository : IAuthorRepository
     }
 
     /// <summary>
-    /// Removes an Author and all of their Cheeps.
+    /// Removes an Author and all of their Cheeps and Follows.
     /// </summary>
     /// <param name="authorName">The name of the Author</param>
     /// <exception cref="ArgumentException">If an author with authorName doesn't exist</exception>
-    public async Task RemoveAuthor(string authorName)
+    public async Task RemoveAuthor(string? authorName)
     {
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
@@ -69,8 +58,12 @@ public class AuthorRepository : IAuthorRepository
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
 
+        List<Follow> following = await dbContext.Follows.Where(f => f.FollowerId == author.AuthorId || f.FollowingId == author.AuthorId).ToListAsync();
+        dbContext.Follows.RemoveRange(following);
         dbContext.Cheeps.RemoveRange(author.Cheeps);
+        
         dbContext.Authors.Remove(author);
+        
         await dbContext.SaveChangesAsync();
     }
 
@@ -78,7 +71,7 @@ public class AuthorRepository : IAuthorRepository
     /// finds an author by name
     /// </summary>
     /// <param name="authorName">The name of the author</param>
-    /// <returns>A AuthorViewModel containing the Author's name and email</returns>
+    /// <returns>A AuthorViewModel containing the Author's</returns>
     /// <exception cref="ArgumentException">If an author with the authorName doesn't exist</exception>
     public async Task<AuthorViewModel> FindAuthorByName(string authorName)
     {
@@ -86,24 +79,7 @@ public class AuthorRepository : IAuthorRepository
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' doesn't exists");
 
-        AuthorViewModel authorViewModel = new AuthorViewModel(author.Name, author.Email);
-
-        return authorViewModel;
-    }
-
-    /// <summary>
-    /// finds a author by email
-    /// </summary>
-    /// <param name="authorEmail">The email of the author</param>
-    /// <returns>A AuthorViewModel containing the Author's name and email</returns>
-    /// <exception cref="ArgumentException">If an author with the authorEmail doesn't exist</exception>
-    public async Task<AuthorViewModel> FindAuthorByEmail(string authorEmail)
-    {
-        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Email == authorEmail);
-        if (author is null)
-            throw new ArgumentException($"Author with email '{authorEmail}' doesn't exists");
-
-        AuthorViewModel authorViewModel = new AuthorViewModel(author.Name, author.Email);
+        AuthorViewModel authorViewModel = new AuthorViewModel(author.Name);
 
         return authorViewModel;
     }
@@ -119,14 +95,5 @@ public class AuthorRepository : IAuthorRepository
         return author is not null;
     }
 
-    /// <summary>
-    ///checks if a author with the authorEmail exists
-    /// </summary>
-    /// <param name="authorEmail">The email of the author</param>
-    /// <returns>True if the author exists</returns>
-    public async Task<bool> DoesUserEmailExists(string authorEmail)
-    {
-        Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Email == authorEmail);
-        return author is not null;
-    }
+
 }
