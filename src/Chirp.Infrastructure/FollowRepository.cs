@@ -3,17 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Infrastructure;
 
-public interface IFollowRepository
-{
-    Task AddFollower(string followerName, string followingName);
-
-    Task RemoveFollower(string followerName, string followingName);
-
-    Task<bool> IsFollowing(string followerName, string followingName);
-
-    Task<IEnumerable<FollowViewModel>> GetFollowing(string authorName);
-}
-
 public class FollowRepository : IFollowRepository
 {
     private readonly ChirpDBContext dbContext;

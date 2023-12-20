@@ -3,16 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Infrastructure;
 
-public interface IAuthorRepository
-{
-    Task CreateAuthor(string authorName, string authorEmail);
-    Task RemoveAuthor(string authorName);
-    Task<AuthorViewModel> FindAuthorByName(string authorName);
-    Task<AuthorViewModel> FindAuthorByEmail(string authorEmail);
-    Task<bool> DoesUserNameExists(string authorName);
-    Task<bool> DoesUserEmailExists(string authorEmail);
-}
-
 public class AuthorRepository : IAuthorRepository
 {
     private readonly ChirpDBContext dbContext;
