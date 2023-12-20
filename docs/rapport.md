@@ -77,7 +77,9 @@ Throughout development, we kept our project board updated. In the end, it looked
 ![Github Project Board](images%2FGithub%20Project%20Board.png)
 
 The two backlog issues are about “constraints on the database model” and “use GUID instead of incrementing ID”. The constraints on the data model are mostly taken care of in other places, for instance when writing a cheep, though constraining the database in addition to this would be preferable. The change from incrementing ID to GUID is mostly relevant in the hypothetical case that the database grows very large, ie. a matter of future-proofing. Both were deprioritized because of time constraints, as neither of these are essential to a program at this scale.
+
 ![Flow of issues](images%2FflowOfIssues.png)
+
 After each lecture, we went through the project readme and wrote each task as an issue. During development, we wrote further issues when necessary. After each issue was created, we decided on the urgency and size (in time). Then the issue was moved to ‘backlog’ on the project board. Group members were then assigned to work on the issue. When development on an issue started, it was moved to ‘in progress’. When the development was done, including writing and running tests, the issue was moved to ‘in review’. If the review passed, the code was merged to main, the issue was closed and the related branches were deleted. If the review did not pass, it was put back into ‘in progress’.
 
 We had 2 issue templates “Bug rapport” and “Feature request”: \
