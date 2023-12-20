@@ -10,7 +10,7 @@ public class ProfileModel : PageModel
     private readonly IAuthorRepository authorRepository;
     private readonly ICheepRepository cheepRepository;
     private readonly IFollowRepository followRepository;
-    
+
     public List<CheepDTO> Cheeps { get; set; }
     public List<FollowDTO> Follows { get; set; }
 

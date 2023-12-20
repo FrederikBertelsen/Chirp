@@ -1,4 +1,5 @@
 namespace Chirp.Core;
+
 public interface IAuthorRepository
 {
     Task CreateAuthor(string authorName);

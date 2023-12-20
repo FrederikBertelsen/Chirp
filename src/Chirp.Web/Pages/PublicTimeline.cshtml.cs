@@ -50,11 +50,11 @@ public class PublicModel : PageModel
             cheepText.Length == 0 || cheepText.Length > 160 || User.Identity?.Name is null ||
             User.Identity.IsAuthenticated != true)
             return RedirectToPage();
-        
+
         Task<bool> authorTask = authorRepository.DoesUserNameExists(userName);
         authorTask.Wait();
         bool authorExists = authorTask.Result;
-        if (!authorExists) 
+        if (!authorExists)
             await authorRepository.CreateAuthor(userName);
 
         await cheepRepository.CreateCheep(userName, cheepText);
@@ -72,7 +72,7 @@ public class PublicModel : PageModel
             if (!authorExists)
                 await authorRepository.CreateAuthor(User.Identity.Name);
         }
-        
+
         if (page < 1) page = 1;
 
         currentPage = page;

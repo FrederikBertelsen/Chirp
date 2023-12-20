@@ -28,7 +28,7 @@ public class AuthorRepository : IAuthorRepository
         if (author is not null)
             throw new ArgumentException($"Author with name '{authorName}' already exists");
 
-        Author newAuthor = new Author() { Name = authorName};
+        Author newAuthor = new Author() { Name = authorName };
 
         dbContext.Authors.Add(newAuthor);
 
@@ -58,12 +58,13 @@ public class AuthorRepository : IAuthorRepository
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
 
-        List<Follow> following = await dbContext.Follows.Where(f => f.FollowerId == author.AuthorId || f.FollowingId == author.AuthorId).ToListAsync();
+        List<Follow> following = await dbContext.Follows
+            .Where(f => f.FollowerId == author.AuthorId || f.FollowingId == author.AuthorId).ToListAsync();
         dbContext.Follows.RemoveRange(following);
         dbContext.Cheeps.RemoveRange(author.Cheeps);
-        
+
         dbContext.Authors.Remove(author);
-        
+
         await dbContext.SaveChangesAsync();
     }
 
@@ -94,6 +95,4 @@ public class AuthorRepository : IAuthorRepository
         Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
         return author is not null;
     }
-
-
 }

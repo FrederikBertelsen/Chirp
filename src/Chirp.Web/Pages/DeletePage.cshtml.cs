@@ -29,7 +29,7 @@ public class DeleteModel : PageModel
 
         if (redirection == "public")
             return Redirect("/");
-        
+
         return Redirect("/" + redirection);
     }
 }

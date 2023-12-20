@@ -6,12 +6,12 @@
 @{
     ViewData["Title"] = "Chirp!";
     Layout = "Shared/_Layout";
-    string processExplanation = "We use the username from your Github account to identify you to other users on the site." 
-    + " Alongside this, we store information regarding your cheeps, the users you follow, and the users who follow you."
-    +" The rest of the data we process, and which you can view on this page,"
-    +" is used for authentication, and to authorize you to use the features of the platform."
-    +" No unnecessary data is processed. The data processed is strictly the data necessary for Chirp to function."
-    +" No data is sold or shared with anyone, and it never will be.";
+    string processExplanation = "We use the username from your Github account to identify you to other users on the site."
+                                + " Alongside this, we store information regarding your cheeps, the users you follow, and the users who follow you."
+                                + " The rest of the data we process, and which you can view on this page,"
+                                + " is used for authentication, and to authorize you to use the features of the platform."
+                                + " No unnecessary data is processed. The data processed is strictly the data necessary for Chirp to function."
+                                + " No data is sold or shared with anyone, and it never will be.";
 }
 <div>
     @if (User.Identity?.IsAuthenticated == true)
@@ -40,7 +40,7 @@
             <input type="submit" value="Delete my profile">
         </form>
 
-                            
+
         @if (Model.Follows.Count() > 1)
         {
             <h2> Your Follows </h2>
@@ -62,7 +62,7 @@
                 }
             </ul>
         }
-        
+
 
         @if (Model.Cheeps.Any())
         {
@@ -106,18 +106,25 @@
             </ul>
         }
         <div>
-            @if (Model.Cheeps.Any()){
+            @if (Model.Cheeps.Any())
+            {
                 if (Model.currentPage != 1)
                 {
                     <a href="/profile/?page=@(Model.currentPage - 1)">&lt;Previous</a>
                 }
                 foreach (int pageNumber in Model.numbersToShow)
                 {
-                    if (pageNumber == Model.currentPage){
-                        <a href="/profile/?page=@(pageNumber)"><b>@(pageNumber)</b></a>
+                    if (pageNumber == Model.currentPage)
+                    {
+                        <a href="/profile/?page=@(pageNumber)">
+                            <b>@(pageNumber)</b>
+                        </a>
                     }
-                    else {
-                        <a href="/profile/?page=@(pageNumber)"><small>@(pageNumber)</small></a>
+                    else
+                    {
+                        <a href="/profile/?page=@(pageNumber)">
+                            <small>@(pageNumber)</small>
+                        </a>
                     }
                 }
                 if (Model.currentPage != Model.totalPages)

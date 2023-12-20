@@ -33,7 +33,6 @@ public class UserTimelineModel : PageModel
         //Should always be odd, such that the current page can be in the center when relevant
         navigationNumber = 7;
         numbersToShow = new List<int>();
-        
     }
 
     public async Task<bool> CheckFollow(string followingName)
@@ -55,11 +54,11 @@ public class UserTimelineModel : PageModel
 
         string cheep = cheepText;
         string authorName = userName;
-        
+
         Task<bool> authorTask = authorRepository.DoesUserNameExists(authorName);
         authorTask.Wait();
         bool authorExists = authorTask.Result;
-        if (!authorExists) 
+        if (!authorExists)
             await authorRepository.CreateAuthor(authorName);
 
         await cheepRepository.CreateCheep(authorName, cheep);
@@ -93,8 +92,9 @@ public class UserTimelineModel : PageModel
             cheeps = new List<CheepDTO>();
             Console.WriteLine(e);
         }
+
         Cheeps = cheeps.ToList();
-        
+
         if (currentPage - navigationNumber / 2 < 1)
             for (int i = 1; i <= navigationNumber && i <= totalPages; i++)
                 numbersToShow.Add(i);

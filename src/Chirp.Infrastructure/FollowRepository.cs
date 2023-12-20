@@ -42,11 +42,11 @@ public class FollowRepository : IFollowRepository
 
         if (await IsFollowing(followerName, followingName))
             throw new ArgumentException($"This follow already exists: '{followerName}' -> '{followingName}'");
-        
+
         Follow newFollow = new Follow()
         {
-            Follower = followerAuthor, 
-            FollowerId = followerAuthor.AuthorId, 
+            Follower = followerAuthor,
+            FollowerId = followerAuthor.AuthorId,
             Following = followingAuthor,
             FollowingId = followingAuthor.AuthorId
         };
@@ -69,7 +69,7 @@ public class FollowRepository : IFollowRepository
         if (followingName is null)
             throw new ArgumentNullException(nameof(followingName));
         if (followerName == followingName)
-            throw new ArgumentException( followerName + " You can't unfollow yourself");
+            throw new ArgumentException(followerName + " You can't unfollow yourself");
 
         Follow? follow = await dbContext.Follows
             .Include(f => f.Follower)
@@ -101,18 +101,18 @@ public class FollowRepository : IFollowRepository
 
         return follow is not null;
     }
-    
-/// <summary>
-///  returns a IEnumerable list that contains all FollowDTO from all authors that a given author is following
-/// </summary>
-/// <param name="authorName">name of the author who is following </param>
-/// <exception cref="ArgumentNullException"> checks that the author name is not null</exception>
-/// <exception cref="ArgumentException">checks that the author with the author name exists</exception>
+
+    /// <summary>
+    ///  returns a IEnumerable list that contains all FollowDTO from all authors that a given author is following
+    /// </summary>
+    /// <param name="authorName">name of the author who is following </param>
+    /// <exception cref="ArgumentNullException"> checks that the author name is not null</exception>
+    /// <exception cref="ArgumentException">checks that the author with the author name exists</exception>
     public async Task<IEnumerable<FollowDTO>> GetFollowing(string authorName)
     {
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
-        
+
         Author? author = await dbContext.Authors.SingleOrDefaultAsync(a => a.Name == authorName);
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
@@ -123,7 +123,7 @@ public class FollowRepository : IFollowRepository
             .OrderByDescending(f => f.Following.Name)
             .Select(f => new FollowDTO(author, f.Following))
             .ToListAsync();
-        
+
         return following;
     }
 

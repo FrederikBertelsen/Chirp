@@ -38,7 +38,7 @@ public class FollowModel : PageModel
 
         if (redirection == "public")
             return Redirect("/");
-        
+
         return Redirect("/" + redirection);
     }
 }
