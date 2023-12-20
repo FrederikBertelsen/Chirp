@@ -35,10 +35,14 @@ After changing Chirp to work with an Azure SQL database, we quickly ran out of c
 ![Architecture of deployed application](images%2FArchitecture%20of%20deployed%20application.png)
 
 ## User activities
-![Follow Flow](images%2FFollowFlow.png)
-![Forgetme Flow](images%2FForgetmeFlow.png)
-![Write Cheep](images%2FWriteCheep.png)
+Below are the illustrations of the most important user activities in Chirp. These includes log in, follow another user, write cheep and deleting your profile. For each task or page, if it is not specified, the user is authorised. Cheep and follow can start from all timeline pages.
+
 ![unauth Flow](images%2FunauthFlow.png)
+![Follow Flow](images%2FFollowFlow.png)
+![Write Cheep](images%2FWriteCheep.png)
+![Forgetme Flow](images%2FForgetmeFlow.png)
+
+
 
 ## Sequence of functionality/calls trough _Chirp!_
 As seen in the sequence diagram, when connecting to the web application as an unauthorized user two calls to the database are made. First the cheeps that should be displayed are retrieved from the database. Secondly in order to display page count in the user interface, the total amount of cheeps accessible are retrieved. Then the finished page is returned to the user.
