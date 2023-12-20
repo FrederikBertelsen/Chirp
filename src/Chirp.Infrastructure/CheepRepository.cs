@@ -27,7 +27,7 @@ public class CheepRepository : ICheepRepository
     /// <param name="authorName">The name of the Author</param>
     /// <param name="pageNumber">The page number (starts at 1)</param>
     /// <returns>A IEnumerable of Cheeps</returns>
-    public async Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByAuthor(string authorName, int pageNumber)
+    public async Task<IEnumerable<CheepDTO>> GetPageOfCheepsByAuthor(string authorName, int pageNumber)
     {
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
@@ -40,12 +40,12 @@ public class CheepRepository : ICheepRepository
         
         int skipCount = (pageNumber - 1) * PageSize;
 
-        List<CheepViewModel> cheepList = await dbContext.Cheeps
+        List<CheepDTO> cheepList = await dbContext.Cheeps
             .Where(c => c.AuthorId == author.AuthorId)
             .OrderByDescending(c => c.TimeStamp)
             .Skip(skipCount)
             .Take(PageSize)
-            .Select(c => new CheepViewModel(author.Name, c.Text, c.TimeStamp, c.CheepId))
+            .Select(c => new CheepDTO(author.Name, c.Text, c.TimeStamp, c.CheepId))
             .ToListAsync();
         return cheepList;
     }
@@ -60,7 +60,7 @@ public class CheepRepository : ICheepRepository
     /// <returns>A list of CheepDTOs</returns>
     /// <exception cref="ArgumentNullException">The name of the Author cannot be null</exception>
     /// <exception cref="ArgumentException">The page number cannot be below 1. The Author has to exist in the database</exception>
-    public async Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByFollowed(string authorName, int pageNumber)
+    public async Task<IEnumerable<CheepDTO>> GetPageOfCheepsByFollowed(string authorName, int pageNumber)
     {
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
@@ -73,12 +73,12 @@ public class CheepRepository : ICheepRepository
         
         int skipCount = (pageNumber - 1) * PageSize;
         
-        List<CheepViewModel> cheepList = await dbContext.Cheeps
+        List<CheepDTO> cheepList = await dbContext.Cheeps
             .Where(c => dbContext.Follows.Any(f => f.Follower == author && f.Following == c.Author))
             .OrderByDescending(c => c.TimeStamp)
             .Skip(skipCount)
             .Take(PageSize)
-            .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp, c.CheepId))
+            .Select(c => new CheepDTO(c.Author.Name, c.Text, c.TimeStamp, c.CheepId))
             .ToListAsync();
         
         return cheepList; 
@@ -89,19 +89,19 @@ public class CheepRepository : ICheepRepository
     /// </summary>
     /// <param name="pageNumber">The page number (starts at 1)</param>
     /// <returns></returns>
-    public async Task<IEnumerable<CheepViewModel>> GetPageOfCheeps(int pageNumber)
+    public async Task<IEnumerable<CheepDTO>> GetPageOfCheeps(int pageNumber)
     {
         if (pageNumber < 1)
             throw new ArgumentException("Page number cannot be under 1");
 
         int skipCount = (pageNumber - 1) * PageSize;
 
-        List<CheepViewModel> cheepList = await dbContext.Cheeps
+        List<CheepDTO> cheepList = await dbContext.Cheeps
             .Include(c => c.Author)
             .OrderByDescending(c => c.TimeStamp)
             .Skip(skipCount)
             .Take(PageSize)
-            .Select(c => new CheepViewModel(c.Author.Name, c.Text, c.TimeStamp, c.CheepId))
+            .Select(c => new CheepDTO(c.Author.Name, c.Text, c.TimeStamp, c.CheepId))
             .ToListAsync();
 
         return cheepList;

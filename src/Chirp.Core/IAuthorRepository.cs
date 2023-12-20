@@ -3,6 +3,6 @@ public interface IAuthorRepository
 {
     Task CreateAuthor(string authorName);
     Task RemoveAuthor(string authorName);
-    Task<AuthorViewModel> FindAuthorByName(string authorName);
+    Task<AuthorDTO> FindAuthorByName(string authorName);
     Task<bool> DoesUserNameExists(string authorName);
 }

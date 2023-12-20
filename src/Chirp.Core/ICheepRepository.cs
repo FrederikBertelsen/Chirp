@@ -2,11 +2,11 @@ namespace Chirp.Core;
 
 public interface ICheepRepository
 {
-    Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByAuthor(string authorName, int pageNumber);
+    Task<IEnumerable<CheepDTO>> GetPageOfCheepsByAuthor(string authorName, int pageNumber);
     
-    Task<IEnumerable<CheepViewModel>> GetPageOfCheepsByFollowed(string authorName, int pageNumber);
+    Task<IEnumerable<CheepDTO>> GetPageOfCheepsByFollowed(string authorName, int pageNumber);
 
-    Task<IEnumerable<CheepViewModel>> GetPageOfCheeps(int pageNumber);
+    Task<IEnumerable<CheepDTO>> GetPageOfCheeps(int pageNumber);
 
     Task<int> GetCheepPageAmountAll();
 

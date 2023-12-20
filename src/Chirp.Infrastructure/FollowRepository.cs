@@ -103,12 +103,12 @@ public class FollowRepository : IFollowRepository
     }
     
 /// <summary>
-///  returns a IEnumerable list that contains all FollowViewModel from all authors that a given author is following
+///  returns a IEnumerable list that contains all FollowDTO from all authors that a given author is following
 /// </summary>
 /// <param name="authorName">name of the author who is following </param>
 /// <exception cref="ArgumentNullException"> checks that the author name is not null</exception>
 /// <exception cref="ArgumentException">checks that the author with the author name exists</exception>
-    public async Task<IEnumerable<FollowViewModel>> GetFollowing(string authorName)
+    public async Task<IEnumerable<FollowDTO>> GetFollowing(string authorName)
     {
         if (authorName is null)
             throw new ArgumentNullException(nameof(authorName));
@@ -117,11 +117,11 @@ public class FollowRepository : IFollowRepository
         if (author is null)
             throw new ArgumentException($"Author with name '{authorName}' not found.");
 
-        List<FollowViewModel> following = await dbContext.Follows
+        List<FollowDTO> following = await dbContext.Follows
             .Include(f => f.Following)
             .Where(f => f.FollowerId == author.AuthorId)
             .OrderByDescending(f => f.Following.Name)
-            .Select(f => new FollowViewModel(author, f.Following))
+            .Select(f => new FollowDTO(author, f.Following))
             .ToListAsync();
         
         return following;

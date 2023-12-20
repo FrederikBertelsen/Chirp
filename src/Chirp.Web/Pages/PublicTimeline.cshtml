@@ -26,7 +26,7 @@
     @if (Model.Cheeps.Any())
     {
         <ul id="messagelist" class="cheeps">
-            @foreach (CheepViewModel cheep in Model.Cheeps)
+            @foreach (CheepDTO cheep in Model.Cheeps)
             {
                 <li>
                     <p>

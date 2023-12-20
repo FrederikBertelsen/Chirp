@@ -46,7 +46,7 @@
             <h2> Your Follows </h2>
 
             <ul id="followlist" class="follows">
-                @foreach (FollowViewModel follow in Model.Follows)
+                @foreach (FollowDTO follow in Model.Follows)
                 {
                     @if (follow.Following.Name != User.Identity?.Name)
                     {
@@ -69,7 +69,7 @@
             <h2> Your Cheeps </h2>
 
             <ul id="messagelist" class="cheeps">
-                @foreach (CheepViewModel cheep in Model.Cheeps)
+                @foreach (CheepDTO cheep in Model.Cheeps)
                 {
                     <li>
                         <p>

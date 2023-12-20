@@ -1,7 +1,5 @@
-using System.Drawing.Printing;
 using System.Text.RegularExpressions;
 using Chirp.Core;
-using Chirp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -13,8 +11,8 @@ public class ProfileModel : PageModel
     private readonly ICheepRepository cheepRepository;
     private readonly IFollowRepository followRepository;
     
-    public List<CheepViewModel> Cheeps { get; set; }
-    public List<FollowViewModel> Follows { get; set; }
+    public List<CheepDTO> Cheeps { get; set; }
+    public List<FollowDTO> Follows { get; set; }
 
     [BindProperty(SupportsGet = true)] public int currentPage { get; set; }
     public int totalPages { get; set; }
@@ -28,8 +26,8 @@ public class ProfileModel : PageModel
         this.authorRepository = authorRepository;
         this.followRepository = followRepository;
 
-        Follows = new List<FollowViewModel>();
-        Cheeps = new List<CheepViewModel>();
+        Follows = new List<FollowDTO>();
+        Cheeps = new List<CheepDTO>();
         totalPages = 1;
         //The amount of pages that are shown between the "previous" and "next" button
         //Should always be odd, such that the current page can be in the center when relevant
@@ -44,12 +42,12 @@ public class ProfileModel : PageModel
         currentPage = page;
         numbersToShow.Clear();
 
-        Cheeps = new List<CheepViewModel>();
-        Follows = new List<FollowViewModel>();
+        Cheeps = new List<CheepDTO>();
+        Follows = new List<FollowDTO>();
         if (User.Identity is { IsAuthenticated: true, Name: not null })
         {
-            IEnumerable<FollowViewModel> follows = await followRepository.GetFollowing(User.Identity.Name);
-            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(User.Identity.Name, page);
+            IEnumerable<FollowDTO> follows = await followRepository.GetFollowing(User.Identity.Name);
+            IEnumerable<CheepDTO> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(User.Identity.Name, page);
             totalPages = await cheepRepository.GetCheepPageAmountAuthor(User.Identity.Name);
 
             Cheeps = cheeps.ToList();
