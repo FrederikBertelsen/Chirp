@@ -8,8 +8,7 @@ public class FollowModel : PageModel
 {
     private readonly IFollowRepository followRepository;
 
-    public FollowModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository,
-        IFollowRepository followRepository)
+    public FollowModel(IFollowRepository followRepository)
     {
         this.followRepository = followRepository;
     }
