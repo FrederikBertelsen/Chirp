@@ -87,6 +87,13 @@ We had 2 issue templates “Bug rapport” and “Feature request”: \
 ![Feature Request](images%2FFeature%20Request.png)
 
 ## How to make _Chirp!_ work locally
+First, clone the repository from github to local storage. Do so however you prefer.
+Navigate to  */Chirp/src/Chirp.Web*, and run:
+```
+dotnet run
+```
+This starts Chirp. A localhost link will be written in the terminal. Follow it, and you are now on a locally hosted Chirp.
+
 See [README.md](..%2FREADME.md)
 
 ## How to run test suite locally
