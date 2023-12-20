@@ -82,7 +82,7 @@ The two backlog issues are about “constraints on the database model” and “
 
 After each lecture, we went through the project readme and wrote each task as an issue. During development, we wrote further issues when necessary. After each issue was created, we decided on the urgency and size (in time). Then the issue was moved to ‘backlog’ on the project board. Group members were then assigned to work on the issue. When development on an issue started, it was moved to ‘in progress’. When the development was done, including writing and running tests, the issue was moved to ‘in review’. If the review passed, the code was merged to main, the issue was closed and the related branches were deleted. If the review did not pass, it was put back into ‘in progress’.
 
-We had 2 issue templates “Bug rapport” and “Feature request”: \
+We had 2 issue templates “Bug rapport” and “Feature request”:
 ![Bug Report](images%2FBug%20Report.png)
 ![Feature Request](images%2FFeature%20Request.png)
 
