@@ -30,3 +30,9 @@ Both of these are run to make the SQL database work. Stay in */Chirp/src/Chirp.W
 dotnet run
 ```
 This starts Chirp. A localhost link will be written in the terminal. Follow it, and you are now on a locally hosted Chirp.
+
+### How to run test suite locally
+Run command in repository root:
+```
+dotnet test
+```
