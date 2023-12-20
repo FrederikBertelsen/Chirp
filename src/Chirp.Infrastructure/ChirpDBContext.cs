@@ -13,7 +13,7 @@ public class ChirpDBContext : DbContext
     
     public ChirpDBContext(DbContextOptions<ChirpDBContext> options) : base(options)
     {
-        Database.Migrate();
+        Database.EnsureCreated();
     }
     
     /// <summary>
