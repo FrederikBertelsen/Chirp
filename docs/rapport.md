@@ -29,7 +29,9 @@ Program.cs exists outside of the onion architecture and runs the setup and organ
 
 ## Architecture of deployed application
 Above is shown two illustrations one depicting the client server relationship while having a sqlite database and the other with an sql server database.
-After changing Chirp to work with an Azure SQL database, we quickly ran out of credits. We could have solved this by switching to using a different group member’s credits. However, had we done this, we would still risk running out of credits before the project was graded. Instead we chose to switch back to using SQLite. We saw no issue in doing this, as we had already demonstrated that we could get Chirp to work with the Azure SQL database. Link to commit hash of last version of Chirp with a hosted database: [Commit link](https://github.com/ITU-BDSA23-GROUP24/Chirp/tree/9e05008fab7e9c4d4fc7709a31296f601a372c11)
+After changing Chirp to work with an Azure SQL database, we quickly ran out of credits. We could have solved this by switching to using a different group member’s credits. However, had we done this, we would still risk running out of credits before the project was graded. Instead we chose to switch back to using SQLite. We saw no issue in doing this, as we had already demonstrated that we could get Chirp to work with the Azure SQL database. Link to commit hash of last version of Chirp with a hosted database:
+[Commit link](https://github.com/ITU-BDSA23-GROUP24/Chirp/tree/9e05008fab7e9c4d4fc7709a31296f601a372c11)
+
 ![Architecture of deployed application](images%2FArchitecture%20of%20deployed%20application.png)
 
 ## User activities
