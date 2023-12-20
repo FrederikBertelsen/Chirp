@@ -1,7 +1,5 @@
-﻿using System.Security.Claims;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Chirp.Core;
-using Chirp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -12,7 +10,7 @@ public class PublicModel : PageModel
     private readonly IAuthorRepository authorRepository;
     private readonly ICheepRepository cheepRepository;
     private readonly IFollowRepository followRepository;
-    public List<CheepViewModel> Cheeps { get; set; }
+    public List<CheepDTO> Cheeps { get; set; }
 
     [BindProperty(SupportsGet = true)] public int currentPage { get; set; }
     public int totalPages { get; set; }
@@ -27,7 +25,7 @@ public class PublicModel : PageModel
         this.authorRepository = authorRepository;
         this.cheepRepository = cheepRepository;
         this.followRepository = followRepository;
-        Cheeps = new List<CheepViewModel>();
+        Cheeps = new List<CheepDTO>();
         totalPages = 1;
         //The amount of pages that are shown between the "previous" and "next" button
         //Should always be odd, such that the current page can be in the center when relevant
@@ -52,11 +50,11 @@ public class PublicModel : PageModel
             cheepText.Length == 0 || cheepText.Length > 160 || User.Identity?.Name is null ||
             User.Identity.IsAuthenticated != true)
             return RedirectToPage();
-        
+
         Task<bool> authorTask = authorRepository.DoesUserNameExists(userName);
         authorTask.Wait();
         bool authorExists = authorTask.Result;
-        if (!authorExists) 
+        if (!authorExists)
             await authorRepository.CreateAuthor(userName);
 
         await cheepRepository.CreateCheep(userName, cheepText);
@@ -74,13 +72,13 @@ public class PublicModel : PageModel
             if (!authorExists)
                 await authorRepository.CreateAuthor(User.Identity.Name);
         }
-        
+
         if (page < 1) page = 1;
 
         currentPage = page;
         numbersToShow.Clear();
 
-        IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheeps(page);
+        IEnumerable<CheepDTO> cheeps = await cheepRepository.GetPageOfCheeps(page);
         Cheeps = cheeps.ToList();
 
         totalPages = await cheepRepository.GetCheepPageAmountAll();

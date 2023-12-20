@@ -254,7 +254,7 @@ public class AuthorRepositoryTest
         AuthorRepository authorRepository = new AuthorRepository(_context);
 
         //act
-        AuthorViewModel foundAuthor = await authorRepository.FindAuthorByName(authorName);
+        AuthorDTO foundAuthor = await authorRepository.FindAuthorByName(authorName);
         //assert
         Assert.Equal("existingAuthor", foundAuthor.AuthorName);
     }

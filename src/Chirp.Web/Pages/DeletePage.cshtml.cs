@@ -1,9 +1,6 @@
-using System.Security.Claims;
 using Chirp.Core;
-using Chirp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Primitives;
 
 namespace Chirp.Web.Pages;
 
@@ -32,7 +29,7 @@ public class DeleteModel : PageModel
 
         if (redirection == "public")
             return Redirect("/");
-        
+
         return Redirect("/" + redirection);
     }
 }

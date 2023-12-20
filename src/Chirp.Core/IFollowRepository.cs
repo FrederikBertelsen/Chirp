@@ -8,5 +8,5 @@ public interface IFollowRepository
 
     Task<bool> IsFollowing(string followerName, string followingName);
 
-    Task<IEnumerable<FollowViewModel>> GetFollowing(string authorName);
+    Task<IEnumerable<FollowDTO>> GetFollowing(string authorName);
 }

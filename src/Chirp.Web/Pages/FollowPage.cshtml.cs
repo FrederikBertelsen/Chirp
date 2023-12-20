@@ -1,9 +1,6 @@
-using System.Security.Claims;
 using Chirp.Core;
-using Chirp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Primitives;
 
 namespace Chirp.Web.Pages;
 
@@ -11,8 +8,7 @@ public class FollowModel : PageModel
 {
     private readonly IFollowRepository followRepository;
 
-    public FollowModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository,
-        IFollowRepository followRepository)
+    public FollowModel(IFollowRepository followRepository)
     {
         this.followRepository = followRepository;
     }
@@ -41,7 +37,7 @@ public class FollowModel : PageModel
 
         if (redirection == "public")
             return Redirect("/");
-        
+
         return Redirect("/" + redirection);
     }
 }

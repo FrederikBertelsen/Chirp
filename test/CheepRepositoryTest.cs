@@ -116,7 +116,7 @@ public class CheepRepositoryTest
         CheepRepository cr = new CheepRepository(_context);
 
         //act
-        IEnumerable<CheepViewModel> result = await cr.GetPageOfCheeps(1);
+        IEnumerable<CheepDTO> result = await cr.GetPageOfCheeps(1);
         foreach (var e in result)
             actualCount++;
 
@@ -341,7 +341,7 @@ public class CheepRepositoryTest
         CheepRepository cr = new CheepRepository(_context);
 
         //act
-        IEnumerable<CheepViewModel> result = await cr.GetPageOfCheepsByAuthor(author, 1);
+        IEnumerable<CheepDTO> result = await cr.GetPageOfCheepsByAuthor(author, 1);
         int actualCount = result.Count();
 
         //assert
@@ -399,7 +399,7 @@ public class CheepRepositoryTest
         CheepRepository cr = new CheepRepository(_context);
 
         //act
-        IEnumerable<CheepViewModel> result = await cr.GetPageOfCheepsByFollowed(author, 1);
+        IEnumerable<CheepDTO> result = await cr.GetPageOfCheepsByFollowed(author, 1);
         int actualCount = result.Count();
 
         //assert
@@ -418,7 +418,7 @@ public class CheepRepositoryTest
         CheepRepository cr = new CheepRepository(_context);
 
         //act
-        IEnumerable<CheepViewModel> result = await cr.GetPageOfCheepsByFollowed(authorName, 1);
+        IEnumerable<CheepDTO> result = await cr.GetPageOfCheepsByFollowed(authorName, 1);
         int actualCount = result.Count();
 
         //assert

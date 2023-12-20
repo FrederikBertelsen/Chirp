@@ -1,8 +1,5 @@
-﻿using System.Drawing.Printing;
-using System.Security.Claims;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Chirp.Core;
-using Chirp.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -14,7 +11,7 @@ public class UserTimelineModel : PageModel
     private readonly ICheepRepository cheepRepository;
 
     private readonly IFollowRepository followRepository;
-    public List<CheepViewModel> Cheeps { get; set; }
+    public List<CheepDTO> Cheeps { get; set; }
 
     [BindProperty(SupportsGet = true)] public int currentPage { get; set; }
     public int totalPages { get; set; }
@@ -30,13 +27,12 @@ public class UserTimelineModel : PageModel
         this.authorRepository = authorRepository;
         this.cheepRepository = cheepRepository;
         this.followRepository = followRepository;
-        Cheeps = new List<CheepViewModel>();
+        Cheeps = new List<CheepDTO>();
         totalPages = 1;
         //The amount of pages that are shown between the "previous" and "next" button
         //Should always be odd, such that the current page can be in the center when relevant
         navigationNumber = 7;
         numbersToShow = new List<int>();
-        
     }
 
     public async Task<bool> CheckFollow(string followingName)
@@ -58,11 +54,11 @@ public class UserTimelineModel : PageModel
 
         string cheep = cheepText;
         string authorName = userName;
-        
+
         Task<bool> authorTask = authorRepository.DoesUserNameExists(authorName);
         authorTask.Wait();
         bool authorExists = authorTask.Result;
-        if (!authorExists) 
+        if (!authorExists)
             await authorRepository.CreateAuthor(authorName);
 
         await cheepRepository.CreateCheep(authorName, cheep);
@@ -77,7 +73,7 @@ public class UserTimelineModel : PageModel
         currentPage = page;
         numbersToShow.Clear();
 
-        IEnumerable<CheepViewModel> cheeps;
+        IEnumerable<CheepDTO> cheeps;
         try
         {
             if (User.Identity?.IsAuthenticated == true && User.Identity?.Name == author)
@@ -93,11 +89,12 @@ public class UserTimelineModel : PageModel
         }
         catch (ArgumentException e)
         {
-            cheeps = new List<CheepViewModel>();
+            cheeps = new List<CheepDTO>();
             Console.WriteLine(e);
         }
+
         Cheeps = cheeps.ToList();
-        
+
         if (currentPage - navigationNumber / 2 < 1)
             for (int i = 1; i <= navigationNumber && i <= totalPages; i++)
                 numbersToShow.Add(i);
