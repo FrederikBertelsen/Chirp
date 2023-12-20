@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Drawing.Printing;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using Chirp.Core;
 using Chirp.Infrastructure;
@@ -57,25 +58,12 @@ public class UserTimelineModel : PageModel
 
         string cheep = cheepText;
         string authorName = userName;
-        string? authorEmail = User.Claims
-            .Where(c => c.Type == ClaimTypes.Email)
-            .Select(c => c.Value)
-            .SingleOrDefault();
-
-        DateTime dateTime = DateTime.Now;
-
+        
         Task<bool> authorTask = authorRepository.DoesUserNameExists(authorName);
         authorTask.Wait();
         bool authorExists = authorTask.Result;
-        if (!authorExists)
-        {
-            if (authorEmail is not null)
-            {
-                await authorRepository.CreateAuthor(authorName, authorEmail);
-            }
-
-            await authorRepository.CreateAuthor(authorName, "noEmail@found.error");
-        }
+        if (!authorExists) 
+            await authorRepository.CreateAuthor(authorName);
 
         await cheepRepository.CreateCheep(authorName, cheep);
 
@@ -90,27 +78,25 @@ public class UserTimelineModel : PageModel
         numbersToShow.Clear();
 
         IEnumerable<CheepViewModel> cheeps;
-        if (User.Identity?.IsAuthenticated == true && User.Identity?.Name == author)
+        try
         {
-            cheeps = await cheepRepository.GetPageOfCheepsByFollowed(author, page);
-            totalPages = await cheepRepository.GetCheepPageAmountFollowed(author);
-        }
-        else
-        {
-            try
+            if (User.Identity?.IsAuthenticated == true && User.Identity?.Name == author)
+            {
+                cheeps = await cheepRepository.GetPageOfCheepsByFollowed(author, page);
+                totalPages = await cheepRepository.GetCheepPageAmountFollowed(author);
+            }
+            else
             {
                 cheeps = await cheepRepository.GetPageOfCheepsByAuthor(author, page);
                 totalPages = await cheepRepository.GetCheepPageAmountAuthor(author);
             }
-            catch (Exception e)
-            {
-                cheeps = new List<CheepViewModel>();
-                Console.WriteLine(e);
-            }
         }
-
+        catch (ArgumentException e)
+        {
+            cheeps = new List<CheepViewModel>();
+            Console.WriteLine(e);
+        }
         Cheeps = cheeps.ToList();
-        
         
         if (currentPage - navigationNumber / 2 < 1)
             for (int i = 1; i <= navigationNumber && i <= totalPages; i++)

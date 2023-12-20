@@ -8,7 +8,6 @@ public class ChirpDBContext : DbContext
 
     public DbSet<Author> Authors => Set<Author>();
     public DbSet<Cheep> Cheeps => Set<Cheep>();
-
     public DbSet<Follow> Follows => Set<Follow>();
 
     
@@ -17,6 +16,9 @@ public class ChirpDBContext : DbContext
         Database.EnsureCreated();
     }
     
+    /// <summary>
+    /// the constraints of the database
+    /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Follow>()

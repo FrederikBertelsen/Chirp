@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Chirp.Web.Migrations
 {
     /// <inheritdoc />
-    public partial class FollowUpdate : Migration
+    public partial class RemoveEmail : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,10 +15,9 @@ namespace Chirp.Web.Migrations
                 name: "Authors",
                 columns: table => new
                 {
-                    AuthorId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    AuthorId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,11 +28,11 @@ namespace Chirp.Web.Migrations
                 name: "Cheeps",
                 columns: table => new
                 {
-                    CheepId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AuthorId = table.Column<int>(type: "int", nullable: false)
+                    CheepId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Text = table.Column<string>(type: "TEXT", nullable: false),
+                    TimeStamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    AuthorId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,8 +49,8 @@ namespace Chirp.Web.Migrations
                 name: "Follows",
                 columns: table => new
                 {
-                    FollowerId = table.Column<int>(type: "int", nullable: false),
-                    FollowingId = table.Column<int>(type: "int", nullable: false)
+                    FollowerId = table.Column<int>(type: "INTEGER", nullable: false),
+                    FollowingId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

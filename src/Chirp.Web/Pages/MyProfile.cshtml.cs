@@ -1,3 +1,4 @@
+using System.Drawing.Printing;
 using System.Text.RegularExpressions;
 using Chirp.Core;
 using Chirp.Infrastructure;
@@ -8,23 +9,16 @@ namespace Chirp.Web.Pages;
 
 public class ProfileModel : PageModel
 {
-    //might not be needed
     private readonly IAuthorRepository authorRepository;
     private readonly ICheepRepository cheepRepository;
-
     private readonly IFollowRepository followRepository;
-
-    //what is this for?
-    //[BindProperty(SupportsGet = true)] 
+    
     public List<CheepViewModel> Cheeps { get; set; }
     public List<FollowViewModel> Follows { get; set; }
 
     [BindProperty(SupportsGet = true)] public int currentPage { get; set; }
     public int totalPages { get; set; }
-    int pageSize { get; set; }
-
     public int navigationNumber { get; set; }
-
     public List<int> numbersToShow { get; set; }
 
     public ProfileModel(ICheepRepository cheepRepository, IAuthorRepository authorRepository,
@@ -50,32 +44,17 @@ public class ProfileModel : PageModel
         currentPage = page;
         numbersToShow.Clear();
 
-        IEnumerable<CheepViewModel> cheeps;
-        IEnumerable<FollowViewModel> follows;
-        if (User.Identity?.IsAuthenticated == true)
+        Cheeps = new List<CheepViewModel>();
+        Follows = new List<FollowViewModel>();
+        if (User.Identity is { IsAuthenticated: true, Name: not null })
         {
-            try
-            {
-                follows = await followRepository.GetFollowing(User.Identity?.Name);
+            IEnumerable<FollowViewModel> follows = await followRepository.GetFollowing(User.Identity.Name);
+            IEnumerable<CheepViewModel> cheeps = await cheepRepository.GetPageOfCheepsByAuthor(User.Identity.Name, page);
+            totalPages = await cheepRepository.GetCheepPageAmountAuthor(User.Identity.Name);
 
-                cheeps = await cheepRepository.GetPageOfCheepsByAuthor(User.Identity?.Name, page);
-                totalPages = await cheepRepository.GetCheepPageAmountAuthor(User.Identity?.Name);
-            }
-            catch (Exception e)
-            {
-                cheeps = new List<CheepViewModel>();
-                follows = new List<FollowViewModel>();
-                Console.WriteLine(e);
-            }
+            Cheeps = cheeps.ToList();
+            Follows = follows.ToList();
         }
-        else
-        {
-            cheeps = new List<CheepViewModel>();
-            follows = new List<FollowViewModel>();
-        }
-
-        Cheeps = cheeps.ToList();
-        Follows = follows.ToList();
 
         if (currentPage - navigationNumber / 2 < 1)
             for (int i = 1; i <= navigationNumber && i <= totalPages; i++)
@@ -90,21 +69,15 @@ public class ProfileModel : PageModel
         return Page();
     }
 
-    //does not work yet
     public async Task<IActionResult> OnPostAsync()
     {
-        string? userName = User.Identity?.Name;
-        try
+        if (User.Identity?.Name is not null)
         {
-            throw new NotImplementedException();
-            //await authorRepository.RemoveAuthor(userName);
-            //return RedirectToPage("/");
+            await authorRepository.RemoveAuthor(User.Identity.Name);
+            return Redirect("/MicrosoftIdentity/Account/SignOut");
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            return RedirectToPage();
-        }
+
+        return RedirectToPage();
     }
 
     public async Task<bool> CheckFollow(string followingName)
