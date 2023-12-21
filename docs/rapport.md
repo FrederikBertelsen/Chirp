@@ -68,6 +68,7 @@ For our builds, tests, releases and deployments we use github workflows exclusiv
 ### Build and test workflow
 Our build and test workflow triggers on all pushes to branches main and development. This had the purpose of running before we merged into the main branch. However, this functionality was lost, when we were asked to not use a development branch, as we did not update our workflow. Our intention was to have a development branch, that all code would be reviewed on, before it being merged into main. We decided that it was obsolete to have this workflow run on all pushes.
 
+![buildAndTest.png](images%2FbuildAndTest.png)
 ### Release workflow
 This workflow triggers when we manually create a release. We wanted to use github to automatically create a release when we pushed with a tag, but we could not get it to work. We prioritized continuing development, as this wouldn’t save a lot of time compared to manually creating releases.
 This workflow creates a build for each OS and cleans up and zips the files, and sends them to the release.
