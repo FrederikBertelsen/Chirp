@@ -44,14 +44,14 @@ Below are the illustrations of the most important user activities in Chirp. Thes
 
 
 
-## Sequence of functionality/calls trough _Chirp!_
+## Sequence of functionality/calls through _Chirp!_
 As seen in the sequence diagram, when connecting to the web application as an unauthorized user two calls to the database are made. First the cheeps that should be displayed are retrieved from the database. Secondly in order to display page count in the user interface, the total amount of cheeps accessible are retrieved. Then the finished page is returned to the user.
 ![Sequence Diagram Unauthorized](images%2FSequenceDiagramUnauthorized.png)
 
 ## Extra features - wild style
 We chose to implement two extra features beyond the required functionality of Chirp. The first was cheep deletion. Implementing it was simple, as a method for removing cheeps from the database already existed in the cheep repository. However, it also required us to include the ID of cheeps in the cheep DTO even though the ID is never shown to users. This is not ideal, though it is a necessary compromise to make. The same would be necessary for most features that add further functionality to cheeps, like “likes”, commenting, etc.
 
-The second feature we added was “tagging” other authors in cheeps. This means a user can create links to other authors when writing cheeps. (For tagging use this format ‘@(author)’). A tagged author is not notified of them being tagged. The intention was for tagging to be for readers of the cheep more so than the tagged author. Notifying tagged authors would be a good, and obvious, further enhancement for this feature. \
+The second feature we added was “tagging” other authors in cheeps. This means a user can create links to other authors when writing cheeps. (For tagging use this format ‘@(author)’). A tagged author is not notified of them being tagged. The intention was for tagging to be for readers of the cheep more so than the tagged author. Notifying tagged authors would be a good, and obvious, further enhancement for this feature. 
 
 **Usage example:**
 ![Tagging usage example](images%2Ftagexample.PNG)
