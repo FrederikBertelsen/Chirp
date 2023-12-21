@@ -52,7 +52,7 @@ As seen in the sequence diagram, when connecting to the web application as an un
 ## Extra features - wild style
 We chose to implement two extra features beyond the required functionality of Chirp. The first was cheep deletion. Implementing it was simple, as a method for removing cheeps from the database already existed in the cheep repository. However, it also required us to include the ID of cheeps in the cheep DTO even though the ID is never shown to users. This is not ideal, though it is a necessary compromise to make. The same would be necessary for most features that add further functionality to cheeps, like “likes”, commenting, etc.
 
-The second feature we added was “tagging” other authors in cheeps. This means a user can create links to other authors when writing cheeps. (For tagging use this format ‘@(author)’). A tagged author is not notified of them being tagged. The intention was for tagging to be for readers of the cheep more so than the tagged author. Notifying tagged authors would be a good, and obvious, further enhancement for this feature. 
+The second feature we added was “tagging” other authors in cheeps. This means a user can create links to other authors when writing cheeps (to tag, use the format ‘@(author)’). A tagged author is not notified of them being tagged. The intention was for tagging to be for readers of the cheep more so than the tagged author. Notifying tagged authors would be a good, and obvious, further enhancement for this feature. 
 
 **Usage example:**
 
@@ -94,7 +94,7 @@ The two backlog issues are about “constraints on the database model” and “
 
 After each lecture, we went through the project readme and wrote each task as an issue. During development, we wrote further issues when necessary. After each issue was created, we decided on the urgency and size (in time). Then the issue was moved to ‘backlog’ on the project board. Group members were then assigned to work on the issue. When development on an issue started, it was moved to ‘in progress’. When the development was done, including writing and running tests, the issue was moved to ‘in review’. If the review passed, the code was merged to main, the issue was closed and the related branches were deleted. If the review did not pass, it was put back into ‘in progress’.
 
-We had 2 issue templates “Bug rapport” and “Feature request”:
+We had 2 issue templates “Bug report” and “Feature request”:
 
 ![Bug Report](images%2FBug%20Report.png)
 ![Feature Request](images%2FFeature%20Request.png)
@@ -107,7 +107,7 @@ dotnet run
 ```
 This starts Chirp. A localhost link will be written in the terminal. Follow it, and you are now on a locally hosted Chirp.
 
-See [README.md](..%2FREADME.md)
+See [README.md](..%2FREADME.md) for how to run with a SQL Server database.
 
 ## How to run test suite locally
 Run command in repository root:
