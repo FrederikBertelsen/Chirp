@@ -1,6 +1,6 @@
 ---
 title: _Chirp!_ Project Report
-subtitle: ITU BDSA 2023 Group `24`
+subtitle: ITU BDSA 2023 Group `24` https://github.com/ITU-BDSA23-GROUP24/Chirp
 author:
 - "Anton Vadsholt <avad@itu.dk>"
 - "David August Ringenson <drin@itu.dk>"
