@@ -119,7 +119,7 @@ We have two types of tests. Firstly we have unit tests in the form of tests on t
 For Chirp, we do not need to process much data about a user. We justify our data processing with point (f) of the first subparagraph of article 6 of the GDPR[^gdpr], with the data processing being in the legitimate interest of the users. The data processed is strictly the data necessary for Chirp to function. The legal requirement of data security is mostly ensured by Azure AD B2C. The “my profile”-page of a user is only available to the user itself, to protect data confidentiality, meaning a user is only authorized to view their own profile page. This page exists to fulfill the user’s “right to access”[^accessright], ie. the right to know what data is being processed about them, and why. Here a user will also find the “Delete my profile”-button, which removes all data about a user from both public view and the database. This button is a requirement, as users have a “right to erasure”[^erasureright]. The current implementation does not erase user Identity data from Azure B2C, due to time constraints.
 
 [^gdpr]: https://gdpr-info.eu/art-6-gdpr/
-[^acessright]: https://gdpr-info.eu/art-15-gdpr/
+[^accessright]: https://gdpr-info.eu/art-15-gdpr/
 [^erasureright]: https://gdpr-info.eu/art-17-gdpr/
 
 ## License
