@@ -10,6 +10,7 @@ author:
 numbersections: true
 ---
 ![Chirp Logo](images%2FChirpLogo.png)
+
 # Design and Architecture of _Chirp!_
 
 ## Domain model
