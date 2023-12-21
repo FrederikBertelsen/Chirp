@@ -54,9 +54,9 @@ We chose to implement two extra features beyond the required functionality of Ch
 The second feature we added was “tagging” other authors in cheeps. This means a user can create links to other authors when writing cheeps. (For tagging use this format ‘@(author)’). A tagged author is not notified of them being tagged. The intention was for tagging to be for readers of the cheep more so than the tagged author. Notifying tagged authors would be a good, and obvious, further enhancement for this feature. \
 
 **Usage example:**
-![Tagging usage example](images%2FTagging%20usage%20example.png)
+![Tagging usage example](images%2Ftagexample.PNG)
 **Example result:**
-![Tagging example result](images%2FTagging%20example%20result.png)
+![Tagging example result](images%2Ftagexamplecheeped.PNG)
 
 # Process
 ## Build, test, release, and deployment
