@@ -21,14 +21,14 @@ The chirp model contains 3 entities Author, Cheep and Follow
 ![ERDiagramChirpDB.png](images%2FERDiagramChirpDB.png)
 
 ## Architecture — In the small
-This application is structured in an onion architecture. The entities in the domain model have DTOs which contain all data necessary for the view. As seen in the illustration below the AuthorDTO does not contain the values 'AuthorID' or 'Cheeps' though they are contained in the Author entity. This is because these values are not necessary in the view, but are useful in the database. Though the DTOs contain almost the same values as the entities, these ensure forward compatibility by making dependency injection possible.
+This application is structured in an onion architecture. The entities in the domain model have DTOs which contain all data necessary for the view. As seen in the illustration below the AuthorDTO does not contain the values 'AuthorID' or 'Cheeps' even though they are contained in the Author entity. This is because these values are not necessary in the view, but are useful in the database. Though the DTOs contain almost the same values as the entities, these ensure forward compatibility by making dependency injection possible.
 The repositories for the entities in the domain services layer are kept in the infrastructure layer. The repositories implement from an interface in the domain layer which is available to the UI. The repositories translate the data stored in the database to DTOs. The repositories also make the necessary checks on the input values to avoid invalid data being saved to the database. The user interface consists of Razor pages which have references to the repository interfaces.
 Program.cs exists outside of the onion architecture and runs the setup and organizes the interactions across layers.
 
 ![Onion Diagram](images%2FOnionDiagram.png)
 
 ## Architecture of deployed application
-Above is shown two illustrations one depicting the client server relationship while having a sqlite database and the other with an sql server database.
+Below is shown two illustrations one depicting the client server relationship while having a sqlite database and the other with an sql server database.
 After changing Chirp to work with an Azure SQL database, we quickly ran out of credits. We could have solved this by switching to using a different group member’s credits. However, had we done this, we would still risk running out of credits before the project was graded. Instead we chose to switch back to using SQLite. We saw no issue in doing this, as we had already demonstrated that we could get Chirp to work with the Azure SQL database. Link to commit hash of last version of Chirp with a hosted database:
 [Commit link](https://github.com/ITU-BDSA23-GROUP24/Chirp/tree/9e05008fab7e9c4d4fc7709a31296f601a372c11)
 
@@ -109,14 +109,20 @@ We have two types of tests. Firstly we have unit tests in the form of tests on t
 
 # Ethics
 ## Data handling
-For Chirp, we do not need to process much data about a user. We justify our data processing with point (f) of the first subparagraph of [article 6 of the GDPR](https://gdpr-info.eu/art-6-gdpr/), with the data processing being in the legitimate interest of the users. The data processed is strictly the data necessary for Chirp to function. The legal requirement of data security is mostly ensured by Azure AD B2C. The “my profile”-page of a user is only available to the user itself, to protect data confidentiality, meaning a user is only authorized to view their own profile page. This page exists to fulfill the user’s [“right to access”](https://gdpr-info.eu/art-15-gdpr/), ie. the right to know what data is being processed about them, and why. Here a user will also find the “Delete my profile”-button, which removes all data about a user from both public view and the database. This button is a requirement, as users have a [“right to erasure”](https://gdpr-info.eu/art-17-gdpr/). The current implementation does not erase user Identity data from Azure B2C, due to time constraints.
+For Chirp, we do not need to process much data about a user. We justify our data processing with point (f) of the first subparagraph of article 6 of the GDPR[^1], with the data processing being in the legitimate interest of the users. The data processed is strictly the data necessary for Chirp to function. The legal requirement of data security is mostly ensured by Azure AD B2C. The “my profile”-page of a user is only available to the user itself, to protect data confidentiality, meaning a user is only authorized to view their own profile page. This page exists to fulfill the user’s “right to access”[^2], ie. the right to know what data is being processed about them, and why. Here a user will also find the “Delete my profile”-button, which removes all data about a user from both public view and the database. This button is a requirement, as users have a “right to erasure”[^3]. The current implementation does not erase user Identity data from Azure B2C, due to time constraints.
+
+[^1]: https://gdpr-info.eu/art-6-gdpr/
+[^2]: https://gdpr-info.eu/art-15-gdpr/
+[^3]: https://gdpr-info.eu/art-17-gdpr/
 
 ## License
-After some consideration, we decided to use the [“GNU General Public License”, Version 3](https://www.gnu.org/licenses/gpl-3.0.en.html), which is an open source, “copyleft” license. Most importantly, this means that:
+After some consideration, we decided to use the “GNU General Public License”, Version 3[^4], which is an open source, “copyleft” license. Most importantly, this means that:
 - The code is open for anyone to use, copy, and modify.
 - Any derivative work must also be licensed under the GNU General Public License Version 3, and therefore also open for others to use, copy and modify.
 
 We chose this license because of our shared interest in open source development. Another alternative we considered was the MIT license, which would allow anyone to copy or use our code in any way, including for closed source purposes. While it is quite unlikely that anyone will ever use our code for a different project, we still chose this “copyleft” license out of principle. All used libraries use the MIT license which is less restrictive, meaning that there are no licensing conflicts as far as we can tell.
+
+[^4]: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 ## LLMs, ChatGPT, CoPilot, and others
 Throughout the development process, we made limited usage of LLMs, in particular ChatGPT. When setting up Azure B2C and other things relating to the Azure server, we made use of ChatGPT, as we found many of the guides relating to Azure to be confusing or inconsistent. We chose to use ChatGPT to boil these down to a few briefly-described steps. As such, ChatGPT was used more as a summation tool than a “problem solver” in these cases.
