@@ -15,10 +15,10 @@ This starts Chirp. A localhost link will be written in the terminal. Follow it, 
 
 
 ### SQL Server
-> We ended with SQLite as we ran out of credits. But SQL server works with at this [commit](https://github.com/ITU-BDSA23-GROUP24/Chirp/tree/9e05008fab7e9c4d4fc7709a31296f601a372c11).
+> We ended with SQLite as we ran out of credits. For the last commit that works with SQL Server, see: [commit](https://github.com/ITU-BDSA23-GROUP24/Chirp/tree/9e05008fab7e9c4d4fc7709a31296f601a372c11).
 
 First, clone the repository from github to local storage. Do so however you prefer.
-Then start a docker container with a SQL server database
+Then start a docker container with a SQL Server database
 ```
  docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=%Password123' -p 1433:1433 --name sql_server_container -d mcr.microsoft.com/mssql/server
 ```
